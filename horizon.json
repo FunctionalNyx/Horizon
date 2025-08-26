@@ -1,7 +1,7 @@
 {
     "id": "Horizon",
     "name": "Horizon",
-    "author": ["nyx","bozo!","astololofo","Milk Mann"],
+    "author": ["nyx","bozo!","Milk Mann","astololofo"],
     "description": "Shitty mod that does stuff",
     "prefix": "nyx",
     "main_file": "horizon.lua",

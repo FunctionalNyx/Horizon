@@ -58,7 +58,6 @@ SMODS.ObjectType({
 		SMODS.ObjectType.inject(self)
 	end,
 })
-
 SMODS.ObjectType({
 	key = "Horizonjokers",
 	default = "j_joker",
@@ -3779,7 +3778,7 @@ SMODS.Atlas{
     py = 95 -- height of one card
 }
 SMODS.Consumable{
-    key = 'NewWeakness', --key
+    key = 'Weakness', --key
     set = 'Tarot', --the set of the card: corresponds to a consumable type
     atlas = 'Tarot', 
     pos = {x = 0, y = 0},
@@ -3999,7 +3998,7 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = 'Blessing',
+    key = 'blessing',
     set = 'Spectral',
 	atlas = 'Spectral',
     pos = { x = 1, y = 0 },
@@ -4042,7 +4041,7 @@ SMODS.Consumable {
 				}))
 			else
 				SMODS.add_card {
-					key = 'c_nyx_Blessing'
+					key = 'c_nyx_blessing'
 				}
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
@@ -4190,7 +4189,7 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = 'Curse',
+    key = 'curse',
     set = 'Spectral',
 	atlas = 'Spectral',
     pos = { x = 3, y = 0 },
