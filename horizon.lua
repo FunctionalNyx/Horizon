@@ -1347,7 +1347,8 @@ SMODS.Joker{
         name = '{C:edition,E:1}Steam Sale{}',
         text = {
           '{C:dark_edition,E:1,s:2}EVERYTHING IS 50% OFF!{}',
-		  '{C:red,s:0.5}Destroyed when leaving the shop{}'
+		  '{C:red,s:0.5}Destroyed when leaving the shop{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
@@ -1413,7 +1414,8 @@ SMODS.Joker{
         text = {
           '{C:gold,s:1.2,E:2}The Golden Ratio{}',
 		  'Scored {C:attention}Gold{} Cards give {X:mult,C:white}X#1#{}',
-		  '{C:attention}Steel{} Cards in hand give {C:money}$#2#{}'
+		  '{C:attention}Steel{} Cards in hand give {C:money}$#2#{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
