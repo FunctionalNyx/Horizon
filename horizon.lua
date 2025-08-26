@@ -578,7 +578,8 @@ SMODS.Joker{
         name = 'Fenestration',
         text = {
           '{C:red}-#1#{} Hand size',
-		  '{C:green}#2# in #3#{} Chance to create a {C:attention}Glass Card{}'
+		  '{C:green}#2# in #3#{} Chance to create a {C:attention}Glass Card{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -734,7 +735,8 @@ SMODS.Joker{
         name = 'Glutton',
         text = {
           'Gain {C:red}+1{} Discard',
-		  'Able to discard {C:red}6{} cards'
+		  'Able to discard {C:red}6{} cards',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {["Horizonjokers"] = true},
@@ -780,7 +782,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Stethoscope',
         text = {
-          '{C:green}Diseased{} cards always {C:red}decay{}'
+          '{C:green}Diseased{} cards always {C:red}decay{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {["Horizonjokers"] = true},
@@ -2780,6 +2783,7 @@ SMODS.Joker{
         text = {
           'After {C:attention}5{} rounds, becomes a {C:purple}Legendary{} Joker... {C:red,E:1}sometimes{}.',
 		  "{C:inactive,s:0.8}(#1#/5){}",
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {["Horizonjokers"] = true},
@@ -4491,7 +4495,8 @@ SMODS.Booster {
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From {C:attention,E:2}Dark Pyro Gaming{}'
+			'From {C:attention,E:2}Dark Pyro Gaming{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         }
     },
 	 config = {
