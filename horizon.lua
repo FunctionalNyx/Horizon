@@ -5,18 +5,63 @@
 
 -- i want to die - Nyx
 
-local mainmenuref = Game.main_menu
-Game.main_menu = function(change_context)
-    local ret = mainmenuref(change_context)
+local game_main_menu_ref = Game.main_menu
+function Game:main_menu(change_context)
+	G.C.COLORSS = HEX("be93d4")
+	G.C.COLORSSTHESECOND = HEX("ffffff")
+	G.C.mid_flash = 0
+	G.C.vort_time = 7
+	G.C.vort_speed = 0.4
+    local ret = game_main_menu_ref(self, change_context)
 
-    local newcard = SMODS.create_card({key='c_nyx_horizon',area = G.title_top})
-    G.title_top.T.w = G.title_top.T.w * 1.7675
-    G.title_top.T.x = G.title_top.T.x - 0.8
-    G.title_top:emplace(newcard)
-    newcard:start_materialize()
-    newcard.T.w = newcard.T.w * 1.1 * 1.2
-    newcard.T.h = newcard.T.h * 1.1 * 1.2
-    newcard.no_ui = true
+    local newcard = SMODS.create_card({key='c_nyx_horizon', area = G.title_top, no_edition = true })
+    self.title_top.T.w = self.title_top.T.w * 1.7675
+	self.title_top.T.x = self.title_top.T.x - 0.8
+
+	newcard.T.w = newcard.T.w * 1.1 * 1.2
+	newcard.T.h = newcard.T.h * 1.1 * 1.2
+	newcard.no_ui = true
+	newcard.states.visible = false
+	self.title_top:emplace(newcard)
+	self.title_top:align_cards()
+
+	G.SPLASH_BACK:define_draw_steps({
+		{
+			shader = "splash",
+			send = {
+				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
+				{name = 'vort_speed', val = G.C.vort_speed},
+				{name = 'colour_1', ref_table = G.C, ref_value = 'COLORSS'},
+				{name = 'colour_2', ref_table = G.C, ref_value = 'COLORSSTHESECOND'},
+				{name = 'mid_flash', ref_table = G.C, ref_value = 'mid_flash'},
+			},
+		},
+	})
+	if change_context == "splash" then
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			delay = 0,
+			blockable = false,
+			blocking = false,
+			func = function()
+				newcard.states.visible = true
+				newcard:start_materialize({ G.C.WHITE, G.C.WHITE }, true, 2.5)
+				return true
+			end,
+		}))
+	else
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			delay = 0,
+			blockable = false,
+			blocking = false,
+			func = function()
+				newcard.states.visible = true
+				newcard:start_materialize({ G.C.WHITE, G.C.WHITE }, nil, 1.2)
+				return true
+			end,
+		}))
+	end
 
 	return ret
 end
