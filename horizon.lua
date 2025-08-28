@@ -94,7 +94,6 @@ function Card:release(dragged)
     SMODS.calculate_context({card_released = self})
 end
 --
-
 SMODS.ObjectType({
 	key = "ModJonklers",
 	default = "j_joker",
@@ -136,6 +135,21 @@ SMODS.ObjectType({
 	end,
 })
 
+SMODS.Rarity {
+	key = 'LostSoul',
+	loc_txt = {
+		name = 'Lost Souls',
+		text = {
+			'Cards that have been lost to time',
+			'and space, only to be found again'
+		}
+	},
+	default_weight = 0.5,
+	badge_colour = HEX("87c1ff"),
+	{
+    	["Joker"] = true
+	}
+}
 -- Jokers
 
 -- Common --
@@ -2550,9 +2564,9 @@ SMODS.Joker{
     pos = {x = 8, y = 2},
 	config = { 
 		extra = {
-			mult = 4,
-			chips = 2,
-			retrigger = 1
+			mult = 8,
+			chips = 4,
+			retrigger = 2
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -2579,89 +2593,6 @@ SMODS.Joker{
 				return {
 					repetitions = card.ability.extra.retrigger,
 					card = card
-				}
-			end
-		end
-	end
-}
-SMODS.Joker{
-	key = 'plaguebearer',
-    loc_txt = {
-        name = 'Plague Bearer',
-        text = {
-          'All {C:attention}Diseased{} cards give {X:mult,C:white}X#1#{}',
-		  '{C:attention}Evolves{} when all cards are {C:attention}Diseased{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
-        },
-    },
-	pools = {["ModJonklers"] = true,["Horizonjokers"] = true}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-    atlas = 'Jokers',
-    rarity = 3,
-    cost = 12,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 18, y = 2},
-	in_pool = function(self, args)
-        for _, playing_card in ipairs(G.playing_cards or {}) do
-            if SMODS.has_enhancement(playing_card, 'm_nyx_diseased') then
-                return true
-            end
-        end
-        return false
-    end,
-	config = { 
-		extra = {
-			xMult = 1.5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.m_nyx_diseased
-		return{
-			vars = {
-				center.ability.extra.xMult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-			if SMODS.has_enhancement(context.other_card, 'm_nyx_diseased') then
-				return {
-					Xmult = card.ability.extra.xMult,
-					card = card
-				}
-			end
-		end
-		if context.after and not context.blueprint then
-			local count = 0
-			for i=1, #G.playing_cards do
-				if SMODS.has_enhancement(G.playing_cards[i], 'm_nyx_diseased') then
-					count = count + 1
-				end
-			end
-			if count == #G.playing_cards then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
-						return true
-					end
-				})) 
-				return {
-					message = "Evolved!",
-					colour = G.C.GREEN,
-					SMODS.add_card {
-						key = "j_nyx_pestilence"
-					}
 				}
 			end
 		end
@@ -2885,6 +2816,81 @@ SMODS.Joker{
 }
 -- Legendary --
 SMODS.Joker{
+	key = 'plaguebearer',
+    loc_txt = {
+        name = 'Plague Bearer',
+        text = {
+          'All {C:attention}Diseased{} cards give {X:mult,C:white}X#1#{}',
+		  '{C:attention}Evolves{} when all cards are {C:attention}Diseased{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
+        },
+    },
+	pools = {["ModJonklers"] = true,["Horizonjokers"] = true}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 18, y = 2},
+	config = { 
+		extra = {
+			xMult = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_nyx_diseased
+		return{
+			vars = {
+				center.ability.extra.xMult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+			if SMODS.has_enhancement(context.other_card, 'm_nyx_diseased') then
+				return {
+					Xmult = card.ability.extra.xMult,
+					card = card
+				}
+			end
+		end
+		if context.after and not context.blueprint then
+			local count = 0
+			for i=1, #G.playing_cards do
+				if SMODS.has_enhancement(G.playing_cards[i], 'm_nyx_diseased') then
+					count = count + 1
+				end
+			end
+			if count == #G.playing_cards then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+							return true; end})) 
+						return true
+					end
+				})) 
+				return {
+					message = "Evolved!",
+					colour = G.C.GREEN,
+					SMODS.add_card {
+						key = "j_nyx_pestilence"
+					}
+				}
+			end
+		end
+	end
+}
+SMODS.Joker{
     key = 'Sybyrr', --joker key
     loc_txt = { -- local text
         name = 'Sybyrrrrrr',
@@ -3032,6 +3038,7 @@ SMODS.Joker{
 		-- return SMODS.merge_effects(effects)
     end
 }
+-- LOST SOULS --
 SMODS.Joker{
 	key = 'pestilence',
     loc_txt = {
@@ -3050,7 +3057,7 @@ SMODS.Joker{
 		return false 
 	end,
     atlas = 'Jokers',
-    rarity = 4,
+    rarity = 'nyx_LostSoul',
     cost = 18,
     unlocked = true,
     discovered = false,
@@ -3090,7 +3097,6 @@ SMODS.Joker{
         end
 	end
 }
-
 local jimboLines = {
 	"You Aced it!",
 	"You dealt with that pretty well!",
@@ -3139,7 +3145,7 @@ SMODS.Joker{
 		["ModJonklers"] = true
 	},
     atlas = 'Jokers',
-    rarity = 4,
+    rarity = "nyx_LostSoul",
     cost = 10,
     unlocked = true,
     discovered = false,
@@ -3201,6 +3207,7 @@ SMODS.Joker{
 		end
 	end
 }
+--
 --[[
 SMODS.Joker{
 	key = '',
@@ -3293,6 +3300,97 @@ SMODS.Joker{
    		G.consumeables.config.card_limit = G.consumeables.config.card_limit + card.ability.extra.slots
 		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
   	end
+}
+SMODS.Joker{
+	key = 'origin',
+    loc_txt = {
+        name = 'The Origin',
+        text = {
+          'All {C:attention}Odd{} cards',
+		  '{C:attention}retrigger #1#{} time when scored',
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			retrigger = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 1) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    repetitions = card.ability.extra.retrigger
+                }
+            end
+        end
+	end
+}
+SMODS.Joker{
+	key = 'end',
+    loc_txt = {
+        name = 'The End',
+        text = {
+          'All {C:attention}Even{} cards',
+		  '{C:attention}retrigger #1#{} time when scored',
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			retrigger = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 0) then
+                return {
+                    repetitions = card.ability.extra.retrigger
+                }
+            end
+        end
+	end
 }
 -- Uncommon --
 SMODS.Joker{
@@ -4452,6 +4550,59 @@ SMODS.Consumable {
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
     end
+}
+SMODS.Consumable {
+    key = 'lostsoul',
+    set = 'Spectral',
+    pos = { x = 6, y = 0 },
+    hidden = true,
+    soul_set = 'Tarot',
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('timpani')
+                SMODS.add_card({ set = 'Joker', legendary = true })
+                check_for_unlock { type = 'spawn_legendary' }
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        delay(0.6)
+    end,
+    can_use = function(self, card)
+        return G.jokers and #G.jokers.cards < G.jokers.config.card_limit
+    end,
+    draw = function(self, card, layer)
+        -- This is for the Spectral shader. You don't need this with `set = "Spectral"`
+        -- Also look into SMODS.DrawStep if you make multiple cards that need the same shader
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+
+-- Adds soul sprite to The Soul
+-- We can't use `draw` due to some draw order issues
+SMODS.DrawStep {
+    key = 'lostsouleffect',
+    order = 50,
+    func = function(card)
+        if card.config.center.key == "c_nyx_lostsoul" and (card.config.center.discovered or card.bypass_discovery_center) then
+            local scale_mod = 0.05 + 0.05 * math.sin(1.8 * G.TIMERS.REAL) +
+                0.07 * math.sin((G.TIMERS.REAL - math.floor(G.TIMERS.REAL)) * math.pi * 14) *
+                (1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 3
+            local rotate_mod = 0.1 * math.sin(1.219 * G.TIMERS.REAL) +
+                0.07 * math.sin((G.TIMERS.REAL) * math.pi * 5) * (1 - (G.TIMERS.REAL - math.floor(G.TIMERS.REAL))) ^ 2
+
+            G.shared_soul.role.draw_major = card
+            G.shared_soul:draw_shader('dissolve', 0, nil, nil, card.children.center, scale_mod, rotate_mod, nil,
+                0.1 + 0.03 * math.sin(1.8 * G.TIMERS.REAL), nil, 0.6)
+            G.shared_soul:draw_shader('dissolve', nil, nil, nil, card.children.center, scale_mod, rotate_mod)
+        end
+    end,
+    conditions = { vortex = false, facing = 'front' },
 }
 --
 
