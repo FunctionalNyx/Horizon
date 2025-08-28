@@ -3844,13 +3844,14 @@ SMODS.Joker{
           '{C:green}#1# in #2#{} Chance to make a',
 		  '{C:attention}Joker{} in the shop {C:green}Free{}',
 		  '{C:green}#1# in #3#{} Chance to {C:red}destroy{}',
-		  'this card when {C:attention}purchasing{}'
+		  'this card when {C:attention}purchasing{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 1,
     cost = 0,
     unlocked = true,
@@ -3858,7 +3859,8 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 2, y = 0},
+    pos = {x = 6, y = 3},
+	soul_pos = {x = 6, y = 1},
 	in_pool = function(self)
 		return false 
 	end,
@@ -3881,26 +3883,22 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if G.Shop then
-			if not card.ability.extra.complete then
-				for i=1, #G.shop_jokers.cards do
-					if not card.ability.extra.complete then
-						local jonkler = G.shop_jokers.cards[i]
-						if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
-							jonkler.config.center.cost = 0
-							card.ability.extra.complete = true
-							return {
-								message = "Stolen!",
-								message_card = card
-							}
-						end
-					end
-				end
-				if not card.ability.extra.complete then
+			for i=1, #G.shop_jokers.cards and not card.ability.extra.complete do
+				local jonkler = G.shop_jokers.cards[i]
+				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+					jonkler.config.center.cost = 0
+					card.ability.extra.complete = true
 					return {
-						message = "Failed!",
+						message = "Stolen!",
 						message_card = card
 					}
 				end
+			end
+			if not card.ability.extra.complete then
+				return {
+					message = "Failed!",
+					message_card = card
+				}
 			end
 		end
 		if context.buying_card then
