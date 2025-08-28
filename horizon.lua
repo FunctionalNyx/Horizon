@@ -2969,18 +2969,29 @@ SMODS.Joker{
     pos = {x = 10, y = 0},
 	calculate = function(self,card,context)
 		if context.setting_blind then
-			return {
-				message = 'Server Crash!',
-				message_card = card,
-				G.jokers:remove_card(card),
-				card:remove(),
-				card = nil,
-				SMODS.add_card {
-					set = 'Joker',
-					area = G.jokers,
-					rarity = "Legendary"
+			if math.random(0,3) <= 2 then
+				return {
+					message = 'Server Crash!',
+					message_card = card,
+					G.jokers:remove_card(card),
+					card:remove(),
+					card = nil,
+					SMODS.add_card {
+						key = 'c_soul'
+					}
 				}
-			}
+			else
+				return {
+					message = 'Server Crash!',
+					message_card = card,
+					G.jokers:remove_card(card),
+					card:remove(),
+					card = nil,
+					SMODS.add_card {
+						key = 'c_nyx_lostsoul'
+					}
+				}
+			end
 		end
 	end
 }
