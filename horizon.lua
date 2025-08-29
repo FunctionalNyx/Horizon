@@ -3842,7 +3842,7 @@ SMODS.Joker{
         name = 'Goose',
         text = {
           '{C:green}#1# in #2#{} Chance to make a',
-		  '{C:attention}Joker{} in the shop {C:green}Free{}',
+		  '{C:attention}Card{} in the shop {C:green}Free{}',
 		  '{C:green}#1# in #3#{} Chance to {C:red}destroy{}',
 		  'this card when {C:attention}purchasing{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
@@ -3880,22 +3880,48 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		local complete = false
 		if context.starting_shop then
-			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 1,
-					func = function()
-						G.shop_jokers.cards[1].ability.cost = 0
-						G.shop_jokers.cards[1].ability.couponed = true
-						G.shop_jokers.cards[1]:set_cost()
-						return {
-							message = "Stolen!",
-							message_card = card
-						}
-					end
-				})) 
-			else
+			for i=1, #G.shop_jokers.cards and not complete do
+				local jonkler = G.shop_jokers.cards[i]
+				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+					jonkler.ability.cost = 0
+					jonkler.ability.couponed = true
+					jonkler:set_cost()
+					complete = true
+					return {
+						message = "Stolen!",
+						message_card = card
+					}
+				end
+			end
+			for i=1, #G.shop_booster.cards and not complete do
+				local jonkler = G.shop_booster.cards[i]
+				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+					jonkler.ability.cost = 0
+					jonkler.ability.couponed = true
+					jonkler:set_cost()
+					complete = true
+					return {
+						message = "Stolen!",
+						message_card = card
+					}
+				end
+			end
+			for i=1, #G.shop_vouchers.cards and not complete do
+				local jonkler = G.shop_vouchers.cards[i]
+				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+					jonkler.ability.cost = 0
+					jonkler.ability.couponed = true
+					jonkler:set_cost()
+					complete = true
+					return {
+						message = "Stolen!",
+						message_card = card
+					}
+				end
+			end
+			if not complete then
 				return {
 					message = "Failed!",
 					message_card = card
@@ -3920,6 +3946,9 @@ SMODS.Joker{
 					end
 				})) 
 			end
+		end
+		if context.ending_shop then
+			complete = false
 		end
 	end
 }
