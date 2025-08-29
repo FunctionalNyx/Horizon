@@ -3867,8 +3867,7 @@ SMODS.Joker{
 	config = { 
 		extra = {
 			odds1 = 2,
-			odds2 = 6,
-			complete = false
+			odds2 = 6
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -3876,25 +3875,27 @@ SMODS.Joker{
 			vars = {
 				(G.GAME and G.GAME.probabilities.normal or 1),
 				center.ability.extra.odds1,
-				center.ability.extra.odds2,
-				center.ability.extra.complete
+				center.ability.extra.odds2
 			}
 		}
 	end,
 	calculate = function(self,card,context)
 		if G.Shop then
-			for i=1, #G.shop_jokers.cards and not card.ability.extra.complete do
-				local jonkler = G.shop_jokers.cards[i]
-				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
-					jonkler.config.center.cost = 0
-					card.ability.extra.complete = true
-					return {
-						message = "Stolen!",
-						message_card = card
-					}
-				end
-			end
-			if not card.ability.extra.complete then
+			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 1,
+					func = function()
+						G.shop_jokers.cards[0].ability.cost = 0
+						G.shop_jokers.cards[0].ability.couponed = true
+						G.shop_jokers.cards[0]:set_cost()
+						return {
+							message = "Stolen!",
+							message_card = card
+						}
+					end
+				})) 
+			else
 				return {
 					message = "Failed!",
 					message_card = card
@@ -3919,9 +3920,6 @@ SMODS.Joker{
 					end
 				})) 
 			end
-		end
-		if context.ending_shop then
-			card.ability.extra.complete = false
 		end
 	end
 }
