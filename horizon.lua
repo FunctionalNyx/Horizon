@@ -3880,15 +3880,15 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		if G.Shop then
+		if context.starting_shop then
 			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
 					delay = 1,
 					func = function()
-						G.shop_jokers.cards[0].ability.cost = 0
-						G.shop_jokers.cards[0].ability.couponed = true
-						G.shop_jokers.cards[0]:set_cost()
+						G.shop_jokers.cards[1].ability.cost = 0
+						G.shop_jokers.cards[1].ability.couponed = true
+						G.shop_jokers.cards[1]:set_cost()
 						return {
 							message = "Stolen!",
 							message_card = card
