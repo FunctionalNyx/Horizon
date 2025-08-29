@@ -867,6 +867,114 @@ SMODS.Joker{
         return false
     end
 }
+SMODS.Joker{
+	key = 'goose',
+    loc_txt = {
+        name = 'Goose',
+        text = {
+          '{C:green}#1# in #2#{} Chance to make a',
+		  '{C:attention}Item{} in the shop {C:green}Free{}',
+		  '{C:green}#1# in #3#{} Chance to {C:red}destroy{}',
+		  'this card when {C:attention}purchasing{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 6, y = 3},
+	soul_pos = {x = 6, y = 1},
+	in_pool = function(self)
+		return false 
+	end,
+	config = { 
+		extra = {
+			odds1 = 2,
+			odds2 = 6
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				(G.GAME and G.GAME.probabilities.normal or 1),
+				center.ability.extra.odds1,
+				center.ability.extra.odds2
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local complete = false
+		local jonkler = nil
+		if context.starting_shop then
+			for i=1, #G.shop_jokers.cards do
+				if not complete then
+					jonkler = G.shop_jokers.cards[i]
+					if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+						jonkler.ability.cost = 0
+						jonkler.ability.couponed = true
+						jonkler:set_cost()
+						complete = true
+						return {
+							message = "Stolen!",
+							message_card = card
+						}
+					end
+				end
+			end
+			for i=1, #G.shop_booster.cards do
+				if not complete then
+					jonkler = G.shop_booster.cards[i]
+					if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+						jonkler.ability.cost = 0
+						jonkler.ability.couponed = true
+						jonkler:set_cost()
+						complete = true
+						return {
+							message = "Stolen!",
+							message_card = card
+						}
+					end
+				end
+			end
+			if not complete then
+				return {
+					message = "Failed!",
+					message_card = card
+				}
+			end
+		end
+		if context.buying_card then
+			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds2 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+							return true; end})) 
+						return true
+					end
+				})) 
+			end
+		end
+		if context.ending_shop then
+			complete = false
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'Dopi',
@@ -3834,125 +3942,6 @@ SMODS.Joker{
 
 --
 
-
--- DOESNT WORK RN I DUNNO WHY BUT PLZ FIX IT BOZOOOOOOO
-SMODS.Joker{
-	key = 'goose',
-    loc_txt = {
-        name = 'Goose',
-        text = {
-          '{C:green}#1# in #2#{} Chance to make a',
-		  '{C:attention}Card{} in the shop {C:green}Free{}',
-		  '{C:green}#1# in #3#{} Chance to {C:red}destroy{}',
-		  'this card when {C:attention}purchasing{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Jokers',
-    rarity = 1,
-    cost = 0,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 6, y = 3},
-	soul_pos = {x = 6, y = 1},
-	in_pool = function(self)
-		return false 
-	end,
-	config = { 
-		extra = {
-			odds1 = 2,
-			odds2 = 6
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				(G.GAME and G.GAME.probabilities.normal or 1),
-				center.ability.extra.odds1,
-				center.ability.extra.odds2
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		local complete = false
-		if context.starting_shop then
-			for i=1, #G.shop_jokers.cards and not complete do
-				local jonkler = G.shop_jokers.cards[i]
-				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
-					jonkler.ability.cost = 0
-					jonkler.ability.couponed = true
-					jonkler:set_cost()
-					complete = true
-					return {
-						message = "Stolen!",
-						message_card = card
-					}
-				end
-			end
-			for i=1, #G.shop_booster.cards and not complete do
-				local jonkler = G.shop_booster.cards[i]
-				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
-					jonkler.ability.cost = 0
-					jonkler.ability.couponed = true
-					jonkler:set_cost()
-					complete = true
-					return {
-						message = "Stolen!",
-						message_card = card
-					}
-				end
-			end
-			for i=1, #G.shop_vouchers.cards and not complete do
-				local jonkler = G.shop_vouchers.cards[i]
-				if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
-					jonkler.ability.cost = 0
-					jonkler.ability.couponed = true
-					jonkler:set_cost()
-					complete = true
-					return {
-						message = "Stolen!",
-						message_card = card
-					}
-				end
-			end
-			if not complete then
-				return {
-					message = "Failed!",
-					message_card = card
-				}
-			end
-		end
-		if context.buying_card then
-			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds2 then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
-						return true
-					end
-				})) 
-			end
-		end
-		if context.ending_shop then
-			complete = false
-		end
-	end
-}
---
 
 --- Other Stuff ---
 -- Tarot --
