@@ -4670,18 +4670,86 @@ SMODS.Booster {
         name = 'Horizon Pack',
 		group_name = 'Dont pick Joe',
         text = {
-            'Choose {C:attention}1{} of up to {C:attention}3{} Joker cards',
+            'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
 			'From the {C:attention,E:2}Horizon{} Mod'
         }
     },
 	 config = {
-        extra = 3,
+        extra = 2,
         choose = 1, 
     },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.choose, card.ability.extra } }
     end,
 	cost = 4,
+	create_card = function(self, card, i)
+        ease_background_colour(HEX("eb17eb"))
+        return SMODS.create_card({
+            set = "Horizonjokers",
+            area = G.pack_cards,
+            skip_materialize = true,
+            soulable = true
+        })
+    end,
+	in_pool = function() 
+		return true 
+	end
+}
+SMODS.Booster {
+	key = 'horizonboost_jumbo',
+	atlas = 'Placeholder',
+	pos = { x = 0, y = 0 },
+	kind = "horizon_pack",
+	loc_txt = {
+        name = 'Jumbo Horizon Pack',
+		group_name = 'Dont pick Joe',
+        text = {
+            'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
+			'From the {C:attention,E:2}Horizon{} Mod'
+        }
+    },
+	 config = {
+        extra = 4,
+        choose = 1, 
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.choose, card.ability.extra } }
+    end,
+	cost = 6,
+	create_card = function(self, card, i)
+        ease_background_colour(HEX("eb17eb"))
+        return SMODS.create_card({
+            set = "Horizonjokers",
+            area = G.pack_cards,
+            skip_materialize = true,
+            soulable = true
+        })
+    end,
+	in_pool = function() 
+		return true 
+	end
+}
+SMODS.Booster {
+	key = 'horizonboost_mega',
+	atlas = 'Placeholder',
+	pos = { x = 0, y = 0 },
+	kind = "horizon_pack",
+	loc_txt = {
+        name = 'Mega Horizon Pack',
+		group_name = 'Dont pick Joe',
+        text = {
+            'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
+			'From the {C:attention,E:2}Horizon{} Mod'
+        }
+    },
+	 config = {
+        extra = 4,
+        choose = 2, 
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.choose, card.ability.extra } }
+    end,
+	cost = 8,
 	create_card = function(self, card, i)
         ease_background_colour(HEX("eb17eb"))
         return SMODS.create_card({
@@ -4729,6 +4797,91 @@ SMODS.Booster {
 	in_pool = function() 
 		return true 
 	end
+}
+--
+
+-- TAGS --
+SMODS.Atlas{
+	key = 'Tags', --atlas key
+	path = 'tags.png', --atlas' path in (yourMod)/assets/1x or (yourMod)/assets/2x
+	px = 34, --width of one card
+	py = 34 -- height of one card
+}
+SMODS.Tag {
+    key = "horizontag",
+    min_ante = 2,
+	atlas = 'Tags',
+    pos = { x = 0, y = 0 },
+    loc_vars = function(self, info_queue, tag)
+        info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_horizonboost_mega
+    end,
+	loc_txt = {
+		name = "Horizon Tag",
+		text = {
+			'Immediately open a free',
+			'{C:attention}Mega Horizon Pack.{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+    apply = function(self, tag, context)
+        if context.type == 'new_blind_choice' then
+            local lock = tag.ID
+            G.CONTROLLER.locks[lock] = true
+            tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
+                local booster = SMODS.create_card { key = 'p_nyx_horizonboost_mega', area = G.play }
+                booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
+                booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
+                booster.T.w = G.CARD_W * 1.27
+                booster.T.h = G.CARD_H * 1.27
+                booster.cost = 0
+                booster.from_tag = true
+                G.FUNCS.use_card({ config = { ref_table = booster } })
+                booster:start_materialize()
+                G.CONTROLLER.locks[lock] = nil
+                return true
+            end)
+            tag.triggered = true
+            return true
+        end
+    end
+}
+SMODS.Tag {
+    key = "dpgtag",
+    min_ante = 2,
+    atlas = 'Tags',
+    pos = { x = 1, y = 0 },
+    loc_vars = function(self, info_queue, tag)
+        info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_dpgbooster
+    end,
+	loc_txt = {
+		name = "DPG Tag",
+		text = {
+			'Immediately open a free',
+			'{C:attention}DPG Pack.{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+    apply = function(self, tag, context)
+        if context.type == 'new_blind_choice' then
+            local lock = tag.ID
+            G.CONTROLLER.locks[lock] = true
+            tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
+                local booster = SMODS.create_card { key = 'p_nyx_dpgbooster', area = G.play }
+                booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
+                booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
+                booster.T.w = G.CARD_W * 1.27
+                booster.T.h = G.CARD_H * 1.27
+                booster.cost = 0
+                booster.from_tag = true
+                G.FUNCS.use_card({ config = { ref_table = booster } })
+                booster:start_materialize()
+                G.CONTROLLER.locks[lock] = nil
+                return true
+            end)
+            tag.triggered = true
+            return true
+        end
+    end
 }
 --
 
@@ -5106,6 +5259,9 @@ NYX = {
 	--- * `reference`: initial values for the provided table. If nil, defaults to `table_in`.
 	--- 
 	--- This function scans all sub-tables for numeric values, so it's recommended to pass the card's ability table rather than the entire card object.
+	--- 
+	--- SHUT THE FUCK UP VSCODE!
+	---@diagnostic disable-next-line: undefined-doc-name
 	---@param table_in table|Card
 	---@param config table
 	mod_card_values = function (table_in, config)
