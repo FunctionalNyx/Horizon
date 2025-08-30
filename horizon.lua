@@ -128,7 +128,8 @@ SMODS.ObjectType({
 		["j_cavendish"] = true,
 		["j_turtle_bean"] = true,
 		["j_popcorn"] = true, 
-		["j_ramen"] = true
+		["j_ramen"] = true,
+		["j_diet_cola"] = true
 	},
 	inject = function(self)
 		SMODS.ObjectType.inject(self)
