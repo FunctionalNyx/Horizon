@@ -14,7 +14,7 @@ function Game:main_menu(change_context)
 	G.C.vort_speed = 0.4
     local ret = game_main_menu_ref(self, change_context)
 
-    local newcard = SMODS.create_card({key='c_nyx_horizon', area = G.title_top, no_edition = true })
+    local newcard = SMODS.create_card({key='j_nyx_frontcard', area = G.title_top, no_edition = true })
     self.title_top.T.w = self.title_top.T.w * 1.7675
 	self.title_top.T.x = self.title_top.T.x - 0.8
 
@@ -3982,9 +3982,10 @@ SMODS.Joker{
 		if context.individual and context.cardarea == G.play then
             if (context.other_card:get_id() <= 10 and
                     context.other_card:get_id() >= 0 and
-                    context.other_card:get_id() % 2 == 1) then
+                    context.other_card:get_id() % 2 == 1) or
+                (context.other_card:get_id() == 14) then
                 return {
-                    xMult = card.ability.extra.xmult
+                    Xmult = card.ability.extra.xmult
                 }
             end
         end
@@ -4029,7 +4030,7 @@ SMODS.Joker{
                     context.other_card:get_id() >= 0 and
                     context.other_card:get_id() % 2 == 0) then
                 return {
-                    xMult = card.ability.extra.xmult
+                    Xmult = card.ability.extra.xmult
                 }
             end
         end
@@ -5373,7 +5374,14 @@ SMODS.Enhancement{
 -- 
 
 -- Nyx bullshit --
-
+SMODS.Joker{
+	key = 'frontcard',
+    atlas = 'Jokers',
+    unlocked = true,
+    discovered = true,
+	no_collection =  true,
+    pos = {x = 8, y = 3},
+}
 -- I have no idea how this all works but it does so dont question it
 -- This is required for the Joker that multiplies other joker values
 NYX = {
