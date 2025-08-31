@@ -976,6 +976,99 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'origin',
+    loc_txt = {
+        name = 'The Origin',
+        text = {
+          'All {C:attention}Odd{} cards',
+		  '{C:attention}retrigger #1#{} time when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 8, y = 3},
+	config = { 
+		extra = {
+			retrigger = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 1) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    repetitions = card.ability.extra.retrigger
+                }
+            end
+        end
+	end
+}
+SMODS.Joker{
+	key = 'end',
+    loc_txt = {
+        name = 'The End',
+        text = {
+          'All {C:attention}Even{} cards',
+		  '{C:attention}retrigger #1#{} time when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 9, y = 3},
+	config = { 
+		extra = {
+			retrigger = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 0) then
+                return {
+                    repetitions = card.ability.extra.retrigger
+                }
+            end
+        end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'Dopi',
@@ -2379,6 +2472,64 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'vending',
+    loc_txt = {
+        name = 'Vending Machine',
+        text = {
+          'When leaving the {C:attention}shop{} takes {C:money}$#1#{}',
+		  'But has a {C:green}#2# in #3#{} chance',
+		  'to create a random {C:attention}Food{} Joker',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 7, y = 3},
+	config = { 
+		extra = {
+			cost = 1,
+			odds = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.cost,
+				(G.GAME and G.GAME.probabilities.normal or 1),
+				center.ability.extra.odds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.ending_shop then
+			if pseudorandom('nyx_vending') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				return { -- bozo code gone!
+					SMODS.add_card {
+						set = 'FoodJokers',
+						area = G.jokers,
+					},
+					dollars = -card.ability.extra.cost,
+					card = card
+				}
+			else
+				return {
+					message_card = card,
+					message = "Jammed!",
+					dollars = -card.ability.extra.cost,
+					card = card
+				}
+			end
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -3421,97 +3572,6 @@ SMODS.Joker{
 		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
   	end
 }
-SMODS.Joker{
-	key = 'origin',
-    loc_txt = {
-        name = 'The Origin',
-        text = {
-          'All {C:attention}Odd{} cards',
-		  '{C:attention}retrigger #1#{} time when scored',
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 0,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			retrigger = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.retrigger
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.repetition and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0 and
-                    context.other_card:get_id() % 2 == 1) or
-                (context.other_card:get_id() == 14) then
-                return {
-                    repetitions = card.ability.extra.retrigger
-                }
-            end
-        end
-	end
-}
-SMODS.Joker{
-	key = 'end',
-    loc_txt = {
-        name = 'The End',
-        text = {
-          'All {C:attention}Even{} cards',
-		  '{C:attention}retrigger #1#{} time when scored',
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 0,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			retrigger = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.retrigger
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.repetition and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0 and
-                    context.other_card:get_id() % 2 == 0) then
-                return {
-                    repetitions = card.ability.extra.retrigger
-                }
-            end
-        end
-	end
-}
 -- Uncommon --
 SMODS.Joker{
 	key = 'allinred',
@@ -3805,62 +3865,6 @@ SMODS.Joker{
 					return true
 				end
 			}))
-		end
-	end
-}
-SMODS.Joker{
-	key = 'vending',
-    loc_txt = {
-        name = 'Vending Machine',
-        text = {
-          'When leaving the {C:attention}shop{} takes {C:money}$#1#{}',
-		  'But has a {C:green}#2# in #3#{} chance to create a random {C:attention}Food{} Joker'
-        },
-    },
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	config = { 
-		extra = {
-			cost = 1,
-			odds = 3
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.cost,
-				(G.GAME and G.GAME.probabilities.normal or 1),
-				center.ability.extra.odds
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.ending_shop then
-			if pseudorandom('nyx_vending') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				return { -- bozo code gone!
-					SMODS.add_card {
-						set = 'FoodJokers',
-						area = G.jokers,
-					},
-					dollars = -card.ability.extra.cost,
-					card = card
-				}
-			else
-				return {
-					message_card = card,
-					message = "Jammed!",
-					dollars = -card.ability.extra.cost,
-					card = card
-				}
-			end
 		end
 	end
 }
