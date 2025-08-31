@@ -5343,8 +5343,8 @@ SMODS.Enhancement{
 	discovered = false,
 	config = {
 		extra = {
-			chips = 0,
-			chips_gain = 15
+			chips = 50,
+			chips_gain = 10
 		}
 	},
 	loc_vars = function(self,info_queue,center)
