@@ -885,7 +885,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Jokers',
     rarity = 1,
-    cost = 0,
+    cost = 4,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -991,7 +991,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Jokers',
     rarity = 1,
-    cost = 0,
+    cost = 3,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -1038,7 +1038,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Jokers',
     rarity = 1,
-    cost = 0,
+    cost = 3,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -3945,7 +3945,98 @@ SMODS.Joker{
 	end
 }
 -- Rare --
-
+SMODS.Joker{
+	key = 'fresh_start',
+    loc_txt = {
+        name = 'Fresh Start',
+        text = {
+          'All {C:attention}Odd{} cards',
+		  'Give {X:mult,C:white}X#1#{} Mult when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			xmult = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 1) then
+                return {
+                    xMult = card.ability.extra.xmult
+                }
+            end
+        end
+	end
+}
+SMODS.Joker{
+	key = 'familiar_end',
+    loc_txt = {
+        name = 'Familiar End',
+        text = {
+          'All {C:attention}Even{} cards',
+		  'Give {X:mult,C:white}X#1#{} Mult when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			xmult = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 0) then
+                return {
+                    xMult = card.ability.extra.xmult
+                }
+            end
+        end
+	end
+}
 -- Legendary --
 
 --
