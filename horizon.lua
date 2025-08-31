@@ -3951,8 +3951,7 @@ SMODS.Joker{
         name = 'Fresh Start',
         text = {
           'All {C:attention}Odd{} cards',
-		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		  'Give {X:mult,C:white}X#1#{} Mult when scored'
         },
     },
 	pools = {
@@ -3997,8 +3996,7 @@ SMODS.Joker{
         name = 'Familiar End',
         text = {
           'All {C:attention}Even{} cards',
-		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		  'Give {X:mult,C:white}X#1#{} Mult when scored'
         },
     },
 	pools = {
