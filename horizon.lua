@@ -3086,7 +3086,9 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
         },
     },
-	pools = {["ModJonklers"] = true,["Horizonjokers"] = true}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	pools = {
+		["ModJonklers"] = true
+	}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
     atlas = 'Jokers',
     rarity = 4,
     cost = 12,
@@ -4703,8 +4705,8 @@ SMODS.Booster {
 }
 SMODS.Booster {
 	key = 'horizonboost_jumbo',
-	atlas = 'Placeholder',
-	pos = { x = 0, y = 0 },
+	atlas = 'Boosters',
+	pos = { x = 1, y = 0 },
 	kind = "horizon_pack",
 	loc_txt = {
         name = 'Jumbo Horizon Pack',
@@ -5233,6 +5235,49 @@ SMODS.Enhancement{
 					repetitions = retriggers
 				}
 			end
+		end
+	end
+}
+SMODS.Enhancement{
+	key = 'diamond',
+	atlas = 'enhancements',
+	pos = { x = 3, y = 0 },
+	loc_txt = {
+		name = 'Diamond Card',
+		text = {
+			'{C:chips}+#1#{} Chips when held in hand',
+			'Gains {C:chips}#2#{} Chips when played',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	unlocked = true,
+	discovered = false,
+	config = {
+		extra = {
+			chips = 0,
+			chips_gain = 15
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.chips,
+				center.ability.extra.chips_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			card.ability.extra.chips = card.ability.extra.chips + card.ability.extra.chips_gain
+			return {
+				message = "Upgraded",
+				message_card = card
+			}
+		end
+		if context.main_scoring and context.cardarea == G.hand then
+			return {
+                chips = card.ability.extra.chips
+            }
 		end
 	end
 }
