@@ -2580,7 +2580,8 @@ SMODS.Joker{
         name = 'The Nickle Monster',
         text = {
           'Either {X:mult,C:white}XMult{} of {X:mult,C:white}50{} or {X:mult,C:white}0.02{}',
-		  '{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}'
+		  '{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
@@ -2618,7 +2619,8 @@ SMODS.Joker{
     loc_txt = { -- local text
         name = '{C:red}Beastmode{}',
         text = {
-          'There can only be {C:red}one{}'
+          'There can only be {C:red}one{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
@@ -2627,7 +2629,6 @@ SMODS.Joker{
 		["DPGJokers"] = true
 	},
     atlas = 'Jokers', --atlas' key
-	soul_pos = { x = 2, y = 1 },
     rarity = 3,
     cost = 9,
     unlocked = true,
