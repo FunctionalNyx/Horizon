@@ -426,9 +426,9 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'duplicator',
+	key = 'printer',
     loc_txt = {
-        name = 'Duplicator',
+        name = 'Printer',
         text = {
           '{C:green}#1# in 4{} Chance to Generate a {C:attention}Consumable{}',
 		  'when using a {C:attention}Consumable{}',
@@ -3944,6 +3944,68 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'Aurafarm',
+    loc_txt = {
+        name = 'Aura Farm',
+        text = {
+          '{C:green}#1# in #2#{} chance for each played {C:attention}Ace{}',
+		  'to create an {C:spectral}Aura{} card when scored',
+		  '{C:inactive,s:0.8}(Must have room){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 2,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 0},
+	config = { 
+		extra = {
+			odds = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				(G.GAME and G.GAME.probabilities.normal or 1), 
+				center.ability.extra.odds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play and
+            #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+            if (context.other_card:get_id() == 14) and (pseudorandom('nyx_aurafarm') < G.GAME.probabilities.normal / card.ability.extra.odds) then
+                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                return {
+                    extra = {
+                        message = localize('k_plus_spectral'),
+                        message_card = card,
+						colour = G.C.SECONDARY_SET.Spectral,
+                        func = function() -- This is for timing purposes, everything here runs after the message
+                            G.E_MANAGER:add_event(Event({
+                                func = (function()
+                                    SMODS.add_card {
+                                        key = 'c_spectral_aura'
+                                    }
+                                    G.GAME.consumeable_buffer = 0
+                                    return true
+                                end)
+                            }))
+                        end
+                    },
+                }
+            end
+        end
+	end
+}
 -- Rare --
 SMODS.Joker{
 	key = 'fresh_start',
@@ -4064,7 +4126,7 @@ SMODS.Joker{
 				-- PREPARE THYSELF! NYX COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE! I did this at midnight leave me alone im tired and none of this makes sense
 				if (other_joker.config.center.key == 'j_fibionacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
-				(other_joker.config.center.key == 'j_nyx_bellcurve' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') then
+				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
@@ -4833,16 +4895,52 @@ SMODS.Booster {
 	end
 }
 SMODS.Booster {
+	key = 'horizonboost2',
+	atlas = 'Boosters',
+	pos = { x = 2, y = 0 },
+	kind = "horizon_pack",
+	loc_txt = {
+        name = 'Horizon Pack',
+		group_name = 'Dont pick Joe',
+        text = {
+            'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
+			'From the {C:attention,E:2}Horizon{} Mod',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        }
+    },
+	 config = {
+        extra = 2,
+        choose = 1, 
+    },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.choose, card.ability.extra } }
+    end,
+	cost = 4,
+	create_card = function(self, card, i)
+        ease_background_colour(HEX("eb17eb"))
+        return SMODS.create_card({
+            set = "Horizonjokers",
+            area = G.pack_cards,
+            skip_materialize = true,
+            soulable = true
+        })
+    end,
+	in_pool = function() 
+		return true 
+	end
+}
+SMODS.Booster {
 	key = 'horizonboost_jumbo',
 	atlas = 'Boosters',
-	pos = { x = 1, y = 0 },
+	pos = { x = 3, y = 0 },
 	kind = "horizon_pack",
 	loc_txt = {
         name = 'Jumbo Horizon Pack',
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod'
+			'From the {C:attention,E:2}Horizon{} Mod',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         }
     },
 	 config = {
@@ -4869,14 +4967,15 @@ SMODS.Booster {
 SMODS.Booster {
 	key = 'horizonboost_mega',
 	atlas = 'Boosters',
-	pos = { x = 2, y = 0 },
+	pos = { x = 4, y = 0 },
 	kind = "horizon_pack",
 	loc_txt = {
         name = 'Mega Horizon Pack',
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod'
+			'From the {C:attention,E:2}Horizon{} Mod',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         }
     },
 	 config = {
@@ -5420,7 +5519,9 @@ SMODS.Joker{
     discovered = true,
 	no_collection =  true,
     pos = {x = 8, y = 1},
-	in_pool = function() return false end
+	in_pool = function(self) 
+		return false 
+	end
 }
 -- I have no idea how this all works but it does so dont question it
 -- This is required for the Joker that multiplies other joker values
