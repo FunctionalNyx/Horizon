@@ -3993,7 +3993,7 @@ SMODS.Joker{
                             G.E_MANAGER:add_event(Event({
                                 func = (function()
                                     SMODS.add_card {
-                                        key = 'c_spectral_aura'
+                                        key = 'c_aura'
                                     }
                                     G.GAME.consumeable_buffer = 0
                                     return true
