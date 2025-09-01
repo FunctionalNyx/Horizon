@@ -5380,7 +5380,7 @@ SMODS.Joker{
     unlocked = true,
     discovered = true,
 	no_collection =  true,
-    pos = {x = 8, y = 3},
+    pos = {x = 8, y = 1},
 	in_pool = function() return false end
 }
 -- I have no idea how this all works but it does so dont question it
