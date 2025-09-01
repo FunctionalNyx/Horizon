@@ -127,7 +127,7 @@ SMODS.ObjectType({
 		["j_ice_cream"] = true,
 		["j_cavendish"] = true,
 		["j_turtle_bean"] = true,
-		["j_popcorn"] = true, 
+		["j_popcorn"] = true,
 		["j_ramen"] = true,
 		["j_diet_cola"] = true
 	},
@@ -5381,6 +5381,7 @@ SMODS.Joker{
     discovered = true,
 	no_collection =  true,
     pos = {x = 8, y = 3},
+	in_pool = function() return false end
 }
 -- I have no idea how this all works but it does so dont question it
 -- This is required for the Joker that multiplies other joker values
