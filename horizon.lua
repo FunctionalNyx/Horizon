@@ -4036,6 +4036,45 @@ SMODS.Joker{
         end
 	end
 }
+SMODS.Joker{
+	key = 'Mathboy',
+    loc_txt = {
+        name = 'Mathematician',
+        text = {
+          '{C:attention}Copies{} all {E:2,C:dark_edition}Math{} Jokers'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	calculate = function(self,card,context)
+		local effects = {}
+		for i=1, #G.jokers.cards do -- for all jokers
+			if G.jokers.cards[i] ~= card then -- not itself
+				local other_joker = G.jokers.cards[i]
+				-- PREPARE THYSELF! NYX COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE! I did this at midnight leave me alone im tired and none of this makes sense
+				if (other_joker.config.center.key == 'j_fibionacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
+				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
+				(other_joker.config.center.key == 'j_nyx_bellcurve' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') then
+					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
+					if effect then
+						table.insert(effects, effect) -- add to array
+					end
+				end
+			end
+		end
+		return SMODS.merge_effects(effects) -- Do
+	end
+}
 -- Legendary --
 
 --
@@ -4829,8 +4868,8 @@ SMODS.Booster {
 }
 SMODS.Booster {
 	key = 'horizonboost_mega',
-	atlas = 'Placeholder',
-	pos = { x = 0, y = 0 },
+	atlas = 'Boosters',
+	pos = { x = 2, y = 0 },
 	kind = "horizon_pack",
 	loc_txt = {
         name = 'Mega Horizon Pack',
