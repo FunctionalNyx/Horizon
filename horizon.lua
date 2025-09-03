@@ -4862,15 +4862,16 @@ SMODS.Atlas{
 }
 SMODS.Booster {
 	key = 'horizonboost',
-	atlas = 'Placeholder',
-	pos = { x = 0, y = 0 },
+	atlas = 'Boosters',
+	pos = { x = 1, y = 0 },
 	kind = "horizon_pack",
 	loc_txt = {
         name = 'Horizon Pack',
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod'
+			'From the {C:attention,E:2}Horizon{} Mod',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         }
     },
 	 config = {
