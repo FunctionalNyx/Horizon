@@ -4139,6 +4139,48 @@ SMODS.Joker{
 }
 -- Legendary --
 
+-- LOST SOULS --
+SMODS.Joker{
+	key = '@everyone',
+    loc_txt = {
+        name = '{X:chips,C:white}@everyone{}',
+        text = {
+          '{C:inactive,s:1.2,E:2}[11:43 PM]{} {C:green,s:1.2,E:2}Juic+e [131/150]{}{C:inactive,s:1.2,E:2}:{} {s:1.2,E:2}Oops{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 'nyx_LostSoul',
+    cost = 15,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	config = { 
+		extra = {
+			mult = 161156
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				mult = center.ability.extra.mult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				mult = card.ability.extra.mult,
+				card = card
+			}
+		end
+	end
+}
 --
 
 
