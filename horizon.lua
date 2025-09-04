@@ -4347,7 +4347,8 @@ SMODS.Joker{
 				-- PREPARE THYSELF! NYX COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE! I did this at midnight leave me alone im tired and none of this makes sense
 				if (other_joker.config.center.key == 'j_fibionacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
-				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') then
+				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
+				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_av') then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
