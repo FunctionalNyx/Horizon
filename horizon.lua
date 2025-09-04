@@ -299,7 +299,7 @@ SMODS.Joker{
 		end
 		if context.end_of_round and context.cardarea == G.jokers then
 			local decrease = (-1*G.GAME.hands['High Card'].level)+2
-			if pseudorandom('nyx_asto') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if pseudorandom('nyx_asto') < G.GAME.probabilities.normal / card.ability.extra.odds and not card.ability.eternal then
 				level_up_hand(card, 'High Card', nil, decrease)
 				SMODS.smart_level_up_hand(card, 'High Card', nil, -1)
 				G.E_MANAGER:add_event(Event({
@@ -764,7 +764,7 @@ SMODS.Joker{
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
-    eternal_compat = true,
+    eternal_compat = false,
     perishable_compat = true,
     pos = {x = 1, y = 3},
 	calculate = function(self,card,context)
@@ -953,7 +953,7 @@ SMODS.Joker{
 			end
 		end
 		if context.buying_card then
-			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds2 then
+			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds2 and not card.ability.eternal then
 				G.E_MANAGER:add_event(Event({
 					func = function()
 						card.T.r = -0.2
@@ -1274,8 +1274,10 @@ SMODS.Joker{
     loc_txt = {
         name = 'bozo!',
         text = {
-          'Changes all {C:attention}Cards{} in {C:attention}hand{}',
-		  'To a random {C:attention}suit{} and {C:attention}rank{}'
+			'If the first {C:attention}hand{} has {C:attention}one card{}',
+        	'Change all {C:attention}Cards{} in {C:attention}hand{}',
+			'To a random {C:attention}suit{} and {C:attention}rank{}',
+			'{C:red}-#1#{} hand size'
         },
     },
 	pools = {
@@ -1292,39 +1294,59 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 12, y = 0},
+	config = { 
+		extra = { 
+			hand_size = 2 
+		} 
+	},
+    loc_vars = function(self, info_queue, card)
+        return { 
+			vars = { 
+				card.ability.extra.hand_size 
+			} 
+		}
+    end,
+	add_to_deck = function(self, card, from_debuff)
+        G.hand:change_size(-card.ability.extra.hand_size)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+        G.hand:change_size(card.ability.extra.hand_size)
+    end,
 	calculate = function(self,card,context)
-		if context.joker_main then 
-			for i=1, #G.hand.cards do
-				local percent = 1.15 - (i-0.999)/(#G.hand.cards-0.998)*0.3
-				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.hand.cards[i]:flip();play_sound('card1', percent);G.hand.cards[i]:juice_up(0.3, 0.3);return true end }))
+		if context.scoring_hand ~= nil and G.GAME.current_round.hands_played == 0 then
+			if context.individual and #context.full_hand == 1 and context.cardarea == G.play then
+				for i=1, #G.hand.cards do
+					local percent = 1.15 - (i-0.999)/(#G.hand.cards-0.998)*0.3
+					G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.hand.cards[i]:flip();play_sound('card1', percent);G.hand.cards[i]:juice_up(0.3, 0.3);return true end }))
+				end
+				delay(0.2)
+				local _suit = pseudorandom_element({'S','H','D','C'}, pseudoseed('sigil'))
+				for i=1, #G.hand.cards do
+					G.E_MANAGER:add_event(Event({func = function()
+						local card = G.hand.cards[i]
+						local suit_prefix = _suit..'_'
+						local rank_suffix = card.base.id < 10 and tostring(card.base.id) or
+											card.base.id == 10 and 'T' or card.base.id == 11 and 'J' or
+											card.base.id == 12 and 'Q' or card.base.id == 13 and 'K' or
+											card.base.id == 14 and 'A'
+						card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
+					return true end }))
+				end  
+				local _rank = pseudorandom_element({'2','3','4','5','6','7','8','9','T','J','Q','K','A'}, pseudoseed('ouija'))
+				for i=1, #G.hand.cards do
+					G.E_MANAGER:add_event(Event({func = function()
+						local card = G.hand.cards[i]
+						local suit_prefix = string.sub(card.base.suit, 1, 1)..'_'
+						local rank_suffix =_rank
+						card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
+					return true end }))
+				end
+				for i=1, #G.hand.cards do
+					local percent = 0.85 + (i-0.999)/(#G.hand.cards-0.998)*0.3
+					G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.hand.cards[i]:flip();play_sound('tarot2', percent, 0.6);G.hand.cards[i]:juice_up(0.3, 0.3);return true end }))
+				end
+				delay(0.5)
 			end
-			delay(0.2)
-            local _suit = pseudorandom_element({'S','H','D','C'}, pseudoseed('sigil'))
-            for i=1, #G.hand.cards do
-                G.E_MANAGER:add_event(Event({func = function()
-                    local card = G.hand.cards[i]
-                    local suit_prefix = _suit..'_'
-                    local rank_suffix = card.base.id < 10 and tostring(card.base.id) or
-                                        card.base.id == 10 and 'T' or card.base.id == 11 and 'J' or
-                                        card.base.id == 12 and 'Q' or card.base.id == 13 and 'K' or
-                                        card.base.id == 14 and 'A'
-                    card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
-                return true end }))
-            end  
-            local _rank = pseudorandom_element({'2','3','4','5','6','7','8','9','T','J','Q','K','A'}, pseudoseed('ouija'))
-            for i=1, #G.hand.cards do
-                G.E_MANAGER:add_event(Event({func = function()
-                    local card = G.hand.cards[i]
-                    local suit_prefix = string.sub(card.base.suit, 1, 1)..'_'
-                    local rank_suffix =_rank
-                    card:set_base(G.P_CARDS[suit_prefix..rank_suffix])
-                return true end }))
-            end
-			for i=1, #G.hand.cards do
-				local percent = 0.85 + (i-0.999)/(#G.hand.cards-0.998)*0.3
-				G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.hand.cards[i]:flip();play_sound('tarot2', percent, 0.6);G.hand.cards[i]:juice_up(0.3, 0.3);return true end }))
-			end
-			delay(0.5)
 		end
 	end
 }
@@ -1547,7 +1569,7 @@ SMODS.Joker{
 				card = card
 			}
 		end
-		if context.ending_shop and not (pseudorandom('nyx_milk') < G.GAME.probabilities.normal / card.ability.extra.odds) then
+		if context.ending_shop and not (pseudorandom('nyx_milk') < G.GAME.probabilities.normal / card.ability.extra.odds) and not card.ability.eternal then
 			return {
 				message = "Drunk!",
 				message_card = card,
@@ -2669,7 +2691,7 @@ SMODS.Joker{
 			end
 		end
 		if context.end_of_round and context.cardarea == G.jokers and not hasDeleted then
-			if pseudorandom('nyx_straz') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if pseudorandom('nyx_straz') < G.GAME.probabilities.normal / card.ability.extra.odds and not card.ability.eternal then
 				G.E_MANAGER:add_event(Event({
                     func = function()
                         card.T.r = -0.2
@@ -4178,6 +4200,23 @@ SMODS.Joker{
 				mult = card.ability.extra.mult,
 				card = card
 			}
+		end
+		if context.starting_shop and not card.ability.eternal then
+			G.E_MANAGER:add_event(Event({
+                func = function()
+                    card.T.r = -0.2
+                    card:juice_up(0.3, 0.4)
+                    card.states.drag.is = true
+                    card.children.center.pinch.x = true
+                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+                        func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+            })) 
 		end
 	end
 }
