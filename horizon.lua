@@ -478,7 +478,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Scratch Ticket',
         text = {
-          '{C:green}#2# in #1#{} Chance to give {C:money}$#3#{} every hand',
+          '{C:green}#2# in #1#{} Chance to',
+		  'give {C:money}$#3#{} every hand',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}astololofo{}'
         },
     },
@@ -1461,7 +1462,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Fuck You Baron',
         text = {
-          'Turns all played {C:attention}Kings{} into {C:attention}Queens{}'
+          'Turns all played',
+		  '{C:attention}Kings{} into {C:attention}Queens{}'
         },
     },
 	pools = {
@@ -1558,7 +1560,8 @@ SMODS.Joker{
         name = 'Milk',
         text = {
           'Gains {X:mult,C:white}#2#X{} Mult for every {C:attention}Milk{} owned',
-		  '{C:green}#3# in #4#{} Chance to {C:red}not{} be {C:attention}consumed{} when leaving the {C:attention}shop{}',
+		  '{C:green}#3# in #4#{} Chance to {C:red}not{} be {C:attention}consumed{}',
+		  'when leaving the {C:attention}shop{}',
 		  '{C:inactive,s:0.9}(Currently{} {X:mult,C:white,s:0.8}#1#X{} {C:inactive,s:0.8}Mult){}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
@@ -1882,7 +1885,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Tower of Heaven',
         text = {
-		  'Gains {X:mult,C:white}X0.2{} Mult for every {C:attention}Stone{} Card in deck',
+		  'Gains {X:mult,C:white}X0.2{} Mult for every',
+		  '{C:attention}Stone{} Card in deck',
 		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
         },
@@ -1939,7 +1943,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Bell Curve',
         text = {
-          'Converges the {C:attention}first{} and {C:attention}last{} scored cards towards {C:attention}8{}',
+          'Converges the {C:attention}first{} and',
+		  '{C:attention}last{} scored cards towards {C:attention}8{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}',
         },
     },
