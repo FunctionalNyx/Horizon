@@ -1068,47 +1068,40 @@ SMODS.Joker{
                 }
             end
         end
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_origin' then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						other_joker.T.r = -0.2
-						other_joker:juice_up(0.3, 0.4)
-						other_joker.states.drag.is = true
-						other_joker.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(other_joker)
-								other_joker:remove()
-								other_joker = nil
-							return true; end})) 
-						return true
-					end
-            	})) 
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
-						return true
-					end
-            	})) 
-				SMODS.add_card{
-					key = 'j_nyx_journey'
-				}
-				return {
-					message = "Combined!",
-					colour = G.C.RED,
-					card = nil
-				}
+		if context.ending_shop then
+			for i = 1, #G.jokers.cards do
+				local other_joker = G.jokers.cards[i]
+				if other_joker.config.center.key == 'j_nyx_origin' then
+					G.E_MANAGER:add_event(Event({
+						func = function()
+							other_joker.T.r = -0.2
+							other_joker:juice_up(0.3, 0.4)
+							other_joker.states.drag.is = true
+							other_joker.children.center.pinch.x = true
+							card.T.r = -0.2
+							card:juice_up(0.3, 0.4)
+							card.states.drag.is = true
+							card.children.center.pinch.x = true
+							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+								func = function()
+									G.jokers:remove_card(other_joker)
+									G.jokers:remove_card(card)
+									other_joker:remove()
+									card:remove()
+									other_joker = nil
+									card = nil
+								return true; end})) 
+							return true
+						end
+					})) 
+					SMODS.add_card{
+						key = 'j_nyx_journey'
+					}
+					return {
+						message = "Combined!",
+						colour = G.C.RED
+					}
+				end
 			end
 		end
 	end
@@ -4271,6 +4264,42 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		if context.ending_shop then
+			for i = 1, #G.jokers.cards do
+				local other_joker = G.jokers.cards[i]
+				if other_joker.config.center.key == 'j_nyx_fresh_start' then
+					G.E_MANAGER:add_event(Event({
+						func = function()
+							other_joker.T.r = -0.2
+							other_joker:juice_up(0.3, 0.4)
+							other_joker.states.drag.is = true
+							other_joker.children.center.pinch.x = true
+							card.T.r = -0.2
+							card:juice_up(0.3, 0.4)
+							card.states.drag.is = true
+							card.children.center.pinch.x = true
+							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+								func = function()
+									G.jokers:remove_card(other_joker)
+									G.jokers:remove_card(card)
+									other_joker:remove()
+									card:remove()
+									other_joker = nil
+									card = nil
+								return true; end})) 
+							return true
+						end
+					})) 
+					SMODS.add_card{
+						key = 'j_nyx_av'
+					}
+					return {
+						message = "Combined!",
+						colour = G.C.RED
+					}
+				end
+			end
+		end
 		if context.individual and context.cardarea == G.play then
             if (context.other_card:get_id() <= 10 and
                     context.other_card:get_id() >= 0 and
@@ -4280,48 +4309,6 @@ SMODS.Joker{
                 }
             end
         end
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_fresh_start' then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						other_joker.T.r = -0.2
-						other_joker:juice_up(0.3, 0.4)
-						other_joker.states.drag.is = true
-						other_joker.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(other_joker)
-								other_joker:remove()
-								other_joker = nil
-							return true; end})) 
-						return true
-					end
-            	})) 
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
-						return true
-					end
-            	})) 
-				SMODS.add_card{
-					key = 'j_nyx_av'
-				}
-				return {
-					message = "Combined!",
-					colour = G.C.RED
-				}
-			end
-		end
 	end
 }
 SMODS.Joker{
