@@ -5827,6 +5827,76 @@ SMODS.Enhancement{
 		end
 	end
 }
+SMODS.Enhancement{
+	key = 'wet',
+	atlas = 'enhancements',
+	pos = { x = 4, y = 0 },
+	loc_txt = {
+		name = 'Wet card',
+		text = {
+			'All cards to the {C:attention}left{}',
+			'will be {C:green}Moisturized{}',
+			'Increases hand size by {C:attention}#3#{}',
+			'{C:green}#2# in #1#{} chance to {C:red}Dry{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	unlocked = true,
+	discovered = false,
+	config = {
+		extra = {
+			odds = 5,
+			hand_size = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1),
+				center.ability.extra.hand_size
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+        G.hand:change_size(card.ability.extra.hand_size)
+    end,
+    remove_from_deck = function(self, card, from_debuff)
+        G.hand:change_size(-card.ability.extra.hand_size)
+    end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			local index
+			for i, v in ipairs(context.scoring_hand) do
+        		if v == card then
+          			index = i
+         			break
+        		end
+      		end
+			if index and context.scoring_hand[index - 1] then
+				local right_card = context.scoring_hand[index - 1]
+				if right_card then
+					if not SMODS.has_enhancement(right_card, 'm_nyx_wet') then
+						right_card:set_ability(G.P_CENTERS.m_nyx_wet)
+						return {
+							juice_card = right_card
+						}
+					end
+				end
+			end
+		end
+		if context.individual and context.cardarea == G.play then
+			if pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				card:set_ability(G.P_CENTERS.c_base)
+				return {
+					message = "Dried",
+					message_card = card,
+					juice_card = card
+				}
+			end
+    	end
+	end
+}
 -- 
 
 -- Nyx bullshit --
