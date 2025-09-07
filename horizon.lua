@@ -5927,13 +5927,12 @@ SMODS.Enhancement{
 				end
 			end
 		end
-		if context.individual and context.cardarea == G.play then
+		if context.after and context.cardarea == G.play then
 			if pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				card:set_ability(G.P_CENTERS.c_base)
+				card:set_ability(G.P_CENTERS.m_nyx_dry)
 				return {
 					message = "Dried",
-					message_card = card,
-					juice_card = card
+					message_card = card
 				}
 			end
     	end
@@ -5946,7 +5945,7 @@ SMODS.Enhancement{
 	loc_txt = {
 		name = 'Dry card',
 		text = {
-			'{C:chips}-#1#{} Chips when scored',
+			'{C:chips}#1#{} Chips when scored',
 			'{C:red}Very Brittle{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
@@ -5955,7 +5954,7 @@ SMODS.Enhancement{
 	discovered = false,
 	config = {
 		extra = {
-			chips = -5,
+			chips = -10,
 			odds = 3
 		}
 	},
