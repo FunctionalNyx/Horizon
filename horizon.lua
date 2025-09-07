@@ -4218,6 +4218,9 @@ SMODS.Joker{
 			retrigger = 1
 		}
 	},
+	in_pool = function(self, args)
+		return false
+	end,
 	loc_vars = function(self,info_queue,center)
 		return{
 			vars = {
