@@ -5895,6 +5895,66 @@ SMODS.Enhancement{
 				}
 			end
     	end
+		if context.playing_card_added then
+			if context.other_card == card then
+				G.hand:change_size(card.ability.extra.hand_size)
+			end
+		end
+		if context.remove_playing_cards then
+			for k, v in ipairs(context.removed_cards) do
+				if v == card then
+					G.hand:change_size(-card.ability.extra.hand_size)
+					break
+				end
+			end
+		end
+	end
+}
+SMODS.Enhancement{
+	key = 'dry',
+	atlas = 'enhancements',
+	pos = { x = 5, y = 0 },
+	loc_txt = {
+		name = 'Dry card',
+		text = {
+			'{C:chips}-#1#{} Chips when scored',
+			'{C:red}Very Brittle{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	unlocked = true,
+	discovered = false,
+	config = {
+		extra = {
+			chips = -5,
+			odds = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.chips,
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			return {
+				message = "Fuck you",
+				message_card = card
+			}
+		end
+		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
+			if pseudorandom('nyx_dry') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				return {
+					message = "Neglected",
+					message_card = card,
+					remove = true
+				}
+			end
+    	end
 	end
 }
 -- 
