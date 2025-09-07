@@ -1117,7 +1117,8 @@ SMODS.Joker{
         },
     },
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["DPGJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 1,
