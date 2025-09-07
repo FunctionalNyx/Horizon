@@ -1111,7 +1111,7 @@ SMODS.Joker{
     loc_txt = {
         name = 'Moist',
         text = {
-          '{C:green}#1# in #2#{} Chance to',
+          '{C:green}#2# in #1#{} Chance to',
 		  '{C:blue}Moisturize{} scoring cards',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
