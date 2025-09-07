@@ -1106,6 +1106,55 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'Moist',
+    loc_txt = {
+        name = 'Moist',
+        text = {
+          '{C:green}#1# in #2#{} Chance to',
+		  '{C:blue}Moisturize{} scoring cards',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 3},
+	config = { 
+		extra = {
+			odds = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				other_card:set_ability(G.P_CENTERS.m_nyx_wet)
+				return {
+					message = "Moisturized!",
+					message_card = card,
+					colour = G.C.BLUE,
+					card = card
+				}
+			end
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'Dopi',
@@ -4340,7 +4389,7 @@ SMODS.Joker{
 				if (other_joker.config.center.key == 'j_fibionacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
 				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
-				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_av') then
+				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
@@ -4353,9 +4402,9 @@ SMODS.Joker{
 }
 -- Legendary --
 SMODS.Joker{
-	key = 'av',
+	key = 'lasting_adventure',
     loc_txt = {
-        name = '',
+        name = 'Lasting Adventure',
         text = {
           'All {C:attention}Non-face{} cards',
 		  'Give {X:mult,C:white}X#1#{} Mult when scored'
@@ -5836,7 +5885,7 @@ SMODS.Enhancement{
 		text = {
 			'All cards to the {C:attention}left{}',
 			'will be {C:green}Moisturized{}',
-			'Increases hand size by {C:attention}#3#{}',
+			'',
 			'{C:green}#2# in #1#{} chance to {C:red}Dry{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
@@ -5845,25 +5894,17 @@ SMODS.Enhancement{
 	discovered = false,
 	config = {
 		extra = {
-			odds = 5,
-			hand_size = 1
+			odds = 5
 		}
 	},
 	loc_vars = function(self,info_queue,center)
 		return{
 			vars = {
 				center.ability.extra.odds,
-				(G.GAME and G.GAME.probabilities.normal or 1),
-				center.ability.extra.hand_size
+				(G.GAME and G.GAME.probabilities.normal or 1)
 			}
 		}
 	end,
-	add_to_deck = function(self, card, from_debuff)
-        G.hand:change_size(card.ability.extra.hand_size)
-    end,
-    remove_from_deck = function(self, card, from_debuff)
-        G.hand:change_size(-card.ability.extra.hand_size)
-    end,
 	calculate = function(self,card,context)
 		if context.main_scoring and context.cardarea == G.play then
 			local index
@@ -5895,19 +5936,6 @@ SMODS.Enhancement{
 				}
 			end
     	end
-		if context.playing_card_added then
-			if context.other_card == card then
-				G.hand:change_size(card.ability.extra.hand_size)
-			end
-		end
-		if context.remove_playing_cards then
-			for k, v in ipairs(context.removed_cards) do
-				if v == card then
-					G.hand:change_size(-card.ability.extra.hand_size)
-					break
-				end
-			end
-		end
 	end
 }
 SMODS.Enhancement{
