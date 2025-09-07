@@ -2917,66 +2917,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'nerd',
-    loc_txt = {
-        name = 'Nerd',
-        text = {
-          'All {C:attention}8s{} give {C:mult}#1#{} Mult',
-		  '{C:chips}#2#{} Chips, and {C:attention}retrigger #3#{} times',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
-	pools = {
-		["ModJonklers"] = true,
-		["Horizonjokers"] = true,
-		["DPGJokers"] = true
-	}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-    atlas = 'Jokers',
-    rarity = 3,
-    cost = 10,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 8, y = 2},
-	config = { 
-		extra = {
-			mult = 8,
-			chips = 4,
-			retrigger = 2
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.mult,
-				center.ability.extra.chips,
-				center.ability.extra.retrigger
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-			if context.other_card:get_id() == 8 then
-				return {
-					mult = card.ability.extra.mult,
-					chips = card.ability.extra.chips,
-					card = card
-				}
-			end
-		end
-		if context.repetition and context.cardarea == G.play then
-			if context.other_card:get_id() == 8 then
-				return {
-					repetitions = card.ability.extra.retrigger,
-					card = card
-				}
-			end
-		end
-	end
-}
-SMODS.Joker{
 	key = 't',
     loc_txt = {
         name = 't',
@@ -3375,6 +3315,7 @@ SMODS.Joker{
 		end
 	end
 }
+-- LOST SOULS --
 SMODS.Joker{
 	key = 'fate',
     loc_txt = {
@@ -3389,7 +3330,7 @@ SMODS.Joker{
 		["ModJonklers"] = true
 	},
     atlas = 'Jokers',
-    rarity = 4,
+    rarity = 'nyx_LostSoul',
     soul_pos = {x = 3, y = 1},
     cost = 20,
     unlocked = true,
@@ -3429,7 +3370,6 @@ SMODS.Joker{
 		-- return SMODS.merge_effects(effects)
     end
 }
--- LOST SOULS --
 SMODS.Joker{
 	key = 'pestilence',
     loc_txt = {
@@ -3595,6 +3535,60 @@ SMODS.Joker{
 				message = jimboLines[math.random(1, #jimboLines)],
 				message_card = card
 			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'nerd',
+    loc_txt = {
+        name = 'Nerd',
+        text = {
+          'All {C:attention}8s{} {C:attention}retrigger #1#{} times',
+		  "All {C:attention}scoring{} cards that aren't {C:attention}8s{} are {C:red}destroyed{}",
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["ModJonklers"] = true
+	},
+    atlas = 'Jokers',
+    rarity = "nyx_LostSoul",
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 8, y = 2},
+	config = { 
+		extra = {
+			retrigger = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+			if context.other_card:get_id() == 8 then
+				return {
+					repetitions = card.ability.extra.retrigger,
+					card = card
+				}
+			end
+		end
+		if context.destroy_card and not context.blueprint then
+			for i = 1, #context.scoring_hand do
+				if context.destroy_card == context.scoring_hand[i] and context.scoring_hand[i]:get_id() ~= 8 then
+					return {
+						remove = true
+					}
+				end
+			end
 		end
 	end
 }
@@ -5755,8 +5749,7 @@ SMODS.Enhancement{
 	loc_txt = {
 		name = 'Diseased Card',
 		text = {
-			'All cards to the {C:attention}right{}',
-			'will be {C:green}Infected{}',
+			'{C:green}Infects{} the card to the {C:attention}right{}',
 			'{C:green}#2# in #1#{} chance to {C:red}Decay{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
@@ -5847,7 +5840,7 @@ SMODS.Enhancement{
 		name = 'Frozen Card',
 		text = {
 			'{C:green}#2# in #1#{} chance',
-			'to {C:attention}Freeze{}',
+			'to {C:blue}Freeze{}',
 			'{C:attention}retriggering #3#{} times',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
@@ -6289,6 +6282,3 @@ SMODS.Joker{
 				end
             })) 
 ]]
-
-
-
