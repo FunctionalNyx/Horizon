@@ -1145,7 +1145,7 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.individual and context.cardarea == G.play then
 			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				other_card:set_ability(G.P_CENTERS.m_nyx_wet)
+				context.other_card:set_ability(G.P_CENTERS.m_nyx_wet)
 				return {
 					message = "Moisturized!",
 					message_card = card,
