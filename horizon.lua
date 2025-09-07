@@ -1129,6 +1129,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 3, y = 3},
+	in_pool = function(self)
+		return false 
+	end,
 	config = { 
 		extra = {
 			odds = 4
@@ -5996,6 +5999,9 @@ SMODS.Enhancement{
 	},
 	unlocked = true,
 	discovered = false,
+	in_pool = function(self)
+		return false 
+	end,
 	config = {
 		extra = {
 			odds = 5
@@ -6063,6 +6069,9 @@ SMODS.Enhancement{
 	},
 	unlocked = true,
 	discovered = false,
+	in_pool = function(self)
+		return false 
+	end,
 	config = {
 		extra = {
 			chips = -10,
