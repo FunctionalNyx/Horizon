@@ -622,7 +622,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.setting_blind then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.75, func = function()
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1, func = function()
 				G.GAME.round_resets.hands = card.ability.extra.hands
 				G.GAME.current_round.hands_left = card.ability.extra.hands
 				G.GAME.round_resets.discards = card.ability.extra.discards
@@ -1135,6 +1135,7 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_wet']
 		return{
 			vars = {
 				center.ability.extra.odds,
@@ -1145,13 +1146,16 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.individual and context.cardarea == G.play then
 			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				context.other_card:set_ability(G.P_CENTERS.m_nyx_wet)
-				return {
-					message = "Moisturized!",
-					message_card = card,
-					colour = G.C.BLUE,
-					card = card
-				}
+				local funnycard = context.other_card
+				if not SMODS.has_enhancement(funnycard, 'm_nyx_wet') then
+					funnycard:set_ability(G.P_CENTERS.m_nyx_wet)
+					return {
+						message = "Moisturized!",
+						message_card = card,
+						colour = G.C.BLUE,
+						card = card
+					}
+				end
 			end
 		end
 	end
@@ -4341,7 +4345,7 @@ SMODS.Joker{
 						end
 					})) 
 					SMODS.add_card{
-						key = 'j_nyx_av'
+						key = 'j_nyx_lasting_adventure'
 					}
 					return {
 						message = "Combined!",
@@ -4674,6 +4678,102 @@ SMODS.Consumable {
     end,
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+    end
+}
+SMODS.Consumable {
+    key = 'Transmission',
+    set = 'Tarot',
+	atlas = 'Placeholder',
+    pos = { x = 0, y = 0 },
+	loc_txt = {
+		name = 'Transmission',
+		text = {
+			'Tranfer {C:attention}everything{} but rank and suit',
+			'From the {C:attention}right{} card to the {C:attention}left{} card',
+			'{C:red}Destroys the right card{}'
+		}
+	},
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 2, min_highlighted = 2 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+		local left = G.hand.highlighted[1]
+		local right = G.hand.highlighted[2]
+
+		-- Make it position based
+		if right.T.x < left.T.x then
+			local swap = left
+			left = right
+			right = swap
+		end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        for i = 1, #G.hand.highlighted do
+            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('card1', percent)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        delay(0.2)
+        for i = 1, #G.hand.highlighted do
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
+                    local rank = left.base.value
+					local suit = left.base.suit
+
+					copy_card(right, left)
+					assert(SMODS.change_base(left, suit, rank))
+					SMODS.destroy_cards { right }
+                    return true
+                end
+            }))
+        end
+        for i = 1, #G.hand.highlighted do
+            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('tarot2', percent, 0.6)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+                G.hand:unhighlight_all()
+                return true
+            end
+        }))
+        delay(0.5)
+    end,
+    can_use = function(self, card)
+        return G.hand and #G.hand.highlighted >= card.ability.min_highlighted and
+            #G.hand.highlighted <= card.ability.max_highlighted
     end
 }
 --
@@ -5686,7 +5786,14 @@ SMODS.Enhancement{
 				local right_card = context.scoring_hand[index + 1]
 				if right_card then
 					if not SMODS.has_enhancement(right_card, 'm_nyx_diseased') then
-						right_card:set_ability(G.P_CENTERS.m_nyx_diseased)
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								right_card:set_ability(G.P_CENTERS.m_nyx_diseased)
+								return true
+							end
+						}))
 						return {
 							juice_card = right_card
 						}
@@ -5882,7 +5989,7 @@ SMODS.Enhancement{
 	atlas = 'enhancements',
 	pos = { x = 4, y = 0 },
 	loc_txt = {
-		name = 'Wet card',
+		name = 'Wet Card',
 		text = {
 			'All cards to the {C:attention}left{}',
 			'will be {C:green}Moisturized{}',
@@ -5899,6 +6006,7 @@ SMODS.Enhancement{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_dry']
 		return{
 			vars = {
 				center.ability.extra.odds,
@@ -5927,9 +6035,16 @@ SMODS.Enhancement{
 				end
 			end
 		end
-		if context.after and context.cardarea == G.play then
+		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
 			if pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				card:set_ability(G.P_CENTERS.m_nyx_dry)
+				G.E_MANAGER:add_event(Event({
+                	trigger = 'after',
+                	delay = 0.1,
+                	func = function()
+                    	card:set_ability(G.P_CENTERS.m_nyx_dry)
+                   		return true
+                	end
+            	}))
 				return {
 					message = "Dried",
 					message_card = card
@@ -5943,7 +6058,7 @@ SMODS.Enhancement{
 	atlas = 'enhancements',
 	pos = { x = 5, y = 0 },
 	loc_txt = {
-		name = 'Dry card',
+		name = 'Dry Card',
 		text = {
 			'{C:chips}#1#{} Chips when scored',
 			'{C:red}Very Brittle{}',
@@ -5968,11 +6083,33 @@ SMODS.Enhancement{
 		}
 	end,
 	calculate = function(self,card,context)
+		local moister = false
 		if context.main_scoring and context.cardarea == G.play then
-			return {
-				message = "Fuck you",
-				message_card = card
-			}
+			for i, v in ipairs(G.jokers.cards) do
+				if v.config.center.key == 'j_nyx_moist' then
+					moister = true
+					break
+				end
+			end
+			if moister == true then
+				G.E_MANAGER:add_event(Event({
+                	trigger = 'after',
+                	delay = 0.1,
+                	func = function()
+                    	card:set_ability(G.P_CENTERS.m_nyx_wet)
+                   		return true
+                	end
+            	}))
+				return {
+					juice_card = card
+				}
+			else
+				return {
+					chips = card.ability.extra.chips,
+					message = "Fuck you",
+					message_card = card
+				}
+			end
 		end
 		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
 			if pseudorandom('nyx_dry') < G.GAME.probabilities.normal / card.ability.extra.odds then
