@@ -3763,7 +3763,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Overkill',
         text = {
-          'Earn {C:money}$4{} if the score is on fire',
+          'Earn {C:money}$4{} if the',
+		  'score is on {C:red}fire{}',
         },
     },
 	pools = {
