@@ -4606,7 +4606,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Plague',
 		text = {
-			'Convert {C:attention}1{} card into',
+			'Enhances {C:attention}#1#{} card into',
 			'a {C:attention}Diseased{} card',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
@@ -5079,7 +5079,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Glacier',
 		text = {
-			'Convert {C:attention}#1#{} cards into',
+			'Enhances {C:attention}#1#{} cards into',
 			'{C:attention}Frozen{} cards',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
@@ -5165,7 +5165,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Divinity',
 		text = {
-			'Convert {C:attention}#1#{} card into',
+			'Enhances {C:attention}#1#{} card into',
 			'a {C:attention}True Lucky{} card'
 		}
 	},
