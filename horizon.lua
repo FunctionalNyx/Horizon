@@ -2674,7 +2674,7 @@ SMODS.Joker{
     pos = {x = 0, y = 0}, --position in atlas, starts at 0, scales by the atlas' card size (px and py): {x = 1, y = 0} would mean the sprite is 71 pixels to the right
 	config = { 
 		extra = {
-			Xmult = 1.25,
+			Xmult = 1.5,
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -3757,6 +3757,47 @@ SMODS.Joker{
 		count = 0
         return false
     end
+}
+SMODS.Joker{
+	key = 'overkill',
+    loc_txt = {
+        name = 'Overkill',
+        text = {
+          'Earn {C:money}$4{} if the score is on fire',
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			money = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				money = center.ability.extra.money
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if SMODS.calculate_round_score() > G.GAME.blind.chips then
+			return {
+				dollars = card.ability.extra.money,
+				card = card
+			}
+		end
+	end
 }
 -- Uncommon --
 SMODS.Joker{
