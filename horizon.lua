@@ -5158,12 +5158,12 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = 'divine',
+    key = 'divinity',
     set = 'Spectral',
 	atlas = 'Placeholder',
     pos = { x = 1, y = 0 },
 	loc_txt = {
-		name = 'Divine',
+		name = 'Divinity',
 		text = {
 			'Convert {C:attention}#1#{} card into',
 			'a {C:attention}True Lucky{} card'
