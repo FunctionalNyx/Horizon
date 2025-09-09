@@ -3778,6 +3778,9 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
+	in_pool = function(self)
+		return false
+	end,
     pos = {x = 2, y = 0},
 	config = { 
 		extra = {
@@ -3792,11 +3795,13 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		if SMODS.calculate_round_score() > G.GAME.blind.chips then
-			return {
-				dollars = card.ability.extra.money,
-				card = card
-			}
+		if context.end_of_round and context.cardarea == G.jokers then
+			if SMODS.calculate_round_score() > G.GAME.blind.chips then
+				return {
+					dollars = card.ability.extra.money,
+					card = card
+				}
+			end
 		end
 	end
 }
