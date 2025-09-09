@@ -6216,12 +6216,124 @@ SMODS.Enhancement{
 			end
 		end
 		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
-			if pseudorandom('nyx_dry') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if pseudorandom('nyx_dry') < G.GAME.probabilities.normal / card.ability.extra.odds and not moister then
 				return {
 					message = "Neglected",
 					message_card = card,
 					remove = true
 				}
+			end
+    	end
+	end
+}
+SMODS.Enhancement{
+	key = 'burning',
+	atlas = 'enhancements',
+	pos = { x = 5, y = 0 },
+	loc_txt = {
+		name = 'Burning Card',
+		text = {
+			'{C:mult}+#1#{} Mult but {C:red}Burns{} adjacent cards',
+			'Gains {C:mult}#2#{} Mult when {C:red}burning{} cards',
+			'{C:red}Burns{} if there are no {C:attention}burnable{} cards'
+		}
+	},
+	unlocked = true,
+	discovered = false,
+	in_pool = function(self)
+		return false 
+	end,
+	config = {
+		extra = {
+			mult = 5,
+			mult_gain = 5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.mult,
+				center.ability.extra.mult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local burned = false
+		local left = nil
+		local right = nil
+		local burnleft = false
+		local burnright = false
+		if context.main_scoring and context.cardarea == G.play then
+			local index
+			burned = false
+			for i, v in ipairs(context.scoring_hand) do
+        		if v == card then
+          			index = i
+         			break
+        		end
+      		end
+			if index then
+				local right_card = context.scoring_hand[index + 1]
+				if right_card then
+					card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+					burned = true
+					right = right_card
+					burnright = false
+					if next(SMODS.get_enhancements(right_card)) then
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								right_card:set_ability("c_base")
+								right = nil
+								return true
+							end
+						}))
+					else
+						burnright = true
+					end
+				end
+				local left_card = context.scoring_hand[index - 1]
+				if left_card then
+					card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+					burned = true
+					left = left_card
+					burnleft = false
+					if next(SMODS.get_enhancements(left_card)) then
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								left_card:set_ability("c_base")
+								left = nil
+								return true
+							end
+						}))
+					else
+						burnleft = true
+					end
+				end
+				if right and burnright then
+					SMODS.destroy_cards { right }
+				end
+				if left and burnleft then
+					SMODS.destroy_cards { left }
+				end
+			end
+			return {
+				mult = card.ability.extra.mult,
+				card = card
+			}
+		end
+		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
+			if #context.scoring_hand == 1 and context.destroy_card == context.scoring_hand[1] then
+				if not burned and not burnleft and not burnright then
+					return {
+						message = "Ashes!",
+						message_card = card,
+						remove = true
+					}
+				end
 			end
     	end
 	end
