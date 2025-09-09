@@ -3778,9 +3778,6 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-	in_pool = function(self)
-		return false
-	end,
     pos = {x = 2, y = 0},
 	config = { 
 		extra = {
