@@ -3796,7 +3796,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.end_of_round and context.cardarea == G.jokers then
-			if SMODS.calculate_round_score() > G.GAME.blind.chips then
+			if SMODS.last_hand_oneshot then
 				return {
 					dollars = card.ability.extra.money,
 					card = card
@@ -4450,6 +4450,61 @@ SMODS.Joker{
 			end
 		end
 		return SMODS.merge_effects(effects) -- Do
+	end
+}
+SMODS.Joker{
+	key = 'p2w',
+    loc_txt = {
+        name = '{C:money}Pay-2-Win{}',
+        text = {
+          'Gains {X:mult,C:white}X#3#{} Mult every {C:attention}Ante{}',
+		  'But every time this joker {C:attention}triggers{}',
+		  'You lose {C:red}$#2#{} {C:inactive}(Increases every ante){}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			mult = 2,
+			money = 2,
+			mult_gain = 2,
+			money_gain = 2,
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.mult,
+				center.ability.extra.money,
+				center.ability.extra.mult_gain,
+				center.ability.extra.money_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.mult,
+				dollars = -card.ability.extra.money,
+				card = card
+			}
+		end
+		if context.setting_blind then
+			card.ability.extra.mult = (card.ability.extra.mult_gain*G.GAME.round_resets.ante)
+			card.ability.extra.money = (card.ability.extra.money_gain*G.GAME.round_resets.ante)
+		end
 	end
 }
 -- Legendary --
