@@ -6229,7 +6229,7 @@ SMODS.Enhancement{
 SMODS.Enhancement{
 	key = 'burning',
 	atlas = 'enhancements',
-	pos = { x = 5, y = 0 },
+	pos = { x = 6, y = 0 },
 	loc_txt = {
 		name = 'Burning Card',
 		text = {
