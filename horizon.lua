@@ -4474,9 +4474,9 @@ SMODS.Joker{
     pos = {x = 4, y = 0},
 	config = { 
 		extra = {
-			mult = 2,
+			mult = 1.5,
 			money = 2,
-			mult_gain = 2,
+			mult_gain = 1.5,
 			money_gain = 2,
 		}
 	},
