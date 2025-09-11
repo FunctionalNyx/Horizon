@@ -1166,6 +1166,77 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'integer',
+    loc_txt = {
+        name = 'Integer',
+        text = {
+          'All {C:attention}Non-Face{} cards',
+		  'Give {C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}',
+		  '{C:inactive,s:0.5}Unnamed loser{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 10, y = 3},
+	config = { 
+		extra = {
+			mult = 6,
+			chips = 53
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.mult,
+				center.ability.extra.chips
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    mult = card.ability.extra.mult,
+					chips = card.ability.extra.chips,
+					card = card
+                }
+            end
+        end
+	end,
+	in_pool = function(self, args)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_odd_todd" then
+                count = count + 1
+				break
+            end
+        end
+		for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_even_steven" then
+                count = count + 1
+				break
+            end
+        end
+		if count >= 2 then
+			return true
+		end
+		count = 0
+        return false
+    end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'Dopi',
@@ -2657,6 +2728,55 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'journey',
+    loc_txt = {
+        name = 'The Journey',
+        text = {
+          'All {C:attention}Non-face{} cards',
+		  '{C:attention}retrigger #1#{} time when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 3,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 11, y = 3},
+	config = { 
+		extra = {
+			retrigger = 1
+		}
+	},
+	in_pool = function(self, args)
+		return false
+	end,
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    repetitions = card.ability.extra.retrigger
+                }
+            end
+        end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -3697,77 +3817,6 @@ SMODS.Joker{
   	end
 }
 SMODS.Joker{
-	key = 'integer',
-    loc_txt = {
-        name = 'Integer',
-        text = {
-          'All {C:attention}Non-Face{} cards',
-		  'Give {C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}',
-		  '{C:inactive,s:0.5}Unnamed loser{}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Jokers',
-    rarity = 1,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 10, y = 3},
-	config = { 
-		extra = {
-			mult = 6,
-			chips = 53
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.mult,
-				center.ability.extra.chips
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
-                return {
-                    mult = card.ability.extra.mult,
-					chips = card.ability.extra.chips,
-					card = card
-                }
-            end
-        end
-	end,
-	in_pool = function(self, args)
-		local count = 0
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_odd_todd" then
-                count = count + 1
-				break
-            end
-        end
-		for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_even_steven" then
-                count = count + 1
-				break
-            end
-        end
-		if count >= 2 then
-			return true
-		end
-		count = 0
-        return false
-    end
-}
-SMODS.Joker{
 	key = 'overkill',
     loc_txt = {
         name = 'Overkill',
@@ -4237,55 +4286,6 @@ SMODS.Joker{
                             }))
                         end
                     },
-                }
-            end
-        end
-	end
-}
-SMODS.Joker{
-	key = 'journey',
-    loc_txt = {
-        name = 'The Journey',
-        text = {
-          'All {C:attention}Non-face{} cards',
-		  '{C:attention}retrigger #1#{} time when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Jokers',
-    rarity = 2,
-    cost = 3,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 11, y = 3},
-	config = { 
-		extra = {
-			retrigger = 1
-		}
-	},
-	in_pool = function(self, args)
-		return false
-	end,
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.retrigger
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.repetition and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
-                return {
-                    repetitions = card.ability.extra.retrigger
                 }
             end
         end
