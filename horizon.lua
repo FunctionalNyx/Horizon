@@ -1129,9 +1129,6 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 3, y = 3},
-	in_pool = function(self)
-		return false 
-	end,
 	config = { 
 		extra = {
 			odds = 4
@@ -4504,6 +4501,73 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'sleep_schedule',
+    loc_txt = {
+        name = 'Sleep Schedule',
+        text = {
+          'This Joker gains {X:mult,C:white}X#1#{} Mult',
+		  'per {C:attention}consecutive{} hand playing',
+		  'your most played {C:red}hand{}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#2#{}{C:inactive,s:0.8} Mult){}',
+		  "{C:inactive,s:0.8}What Nyx doesn't have{}"
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			Xmult = 1,
+			Xmult_gain = 0.1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult_gain,
+				center.ability.extra.Xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.before and not context.blueprint then
+            local reset = true
+            local play_more_than = (G.GAME.hands[context.scoring_name].played or 0)
+            for handname, values in pairs(G.GAME.hands) do
+                if handname == context.scoring_name and values.played >= play_more_than and SMODS.is_poker_hand_visible(handname) then
+                    reset = false
+                    break
+                end
+            end
+            if reset then
+                if card.ability.extra.Xmult > 1 then
+                    card.ability.extra.Xmult = 1
+                    return {
+                        message = localize('k_reset')
+                    }
+                end
+            else
+                -- See note about SMODS Scaling Manipulation on the wiki
+                card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
+            end
+        end
+        if context.joker_main then
+            return {
+                Xmult = card.ability.extra.Xmult
+            }
+        end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'lasting_adventure',
@@ -5381,7 +5445,7 @@ SMODS.Consumable {
         return G.jokers and #G.jokers.cards < G.jokers.config.card_limit
     end
 }
-
+--
 
 -- Seals --
 local oldsmodsscorecard = SMODS.score_card
@@ -6091,19 +6155,17 @@ SMODS.Enhancement{
 		text = {
 			'All cards to the {C:attention}left{}',
 			'will be {C:green}Moisturized{}',
-			'',
+			'{X:mult,C:white}X#3#{} Mult',
 			'{C:green}#2# in #1#{} chance to {C:red}Dry{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	unlocked = true,
 	discovered = false,
-	in_pool = function(self)
-		return false 
-	end,
 	config = {
 		extra = {
-			odds = 5
+			odds = 5,
+			mult = 1.25
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -6111,7 +6173,8 @@ SMODS.Enhancement{
 		return{
 			vars = {
 				center.ability.extra.odds,
-				(G.GAME and G.GAME.probabilities.normal or 1)
+				(G.GAME and G.GAME.probabilities.normal or 1),
+				center.ability.extra.mult
 			}
 		}
 	end,
@@ -6129,12 +6192,14 @@ SMODS.Enhancement{
 				if right_card then
 					if not SMODS.has_enhancement(right_card, 'm_nyx_wet') then
 						right_card:set_ability(G.P_CENTERS.m_nyx_wet)
-						return {
-							juice_card = right_card
-						}
+						right_card:juice_up(0.3, 0.5)
 					end
 				end
 			end
+			return {
+				Xmult = card.ability.extra.mult,
+				card = card
+			}
 		end
 		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
 			if pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds then
@@ -6240,9 +6305,6 @@ SMODS.Enhancement{
 	},
 	unlocked = true,
 	discovered = false,
-	in_pool = function(self)
-		return false 
-	end,
 	config = {
 		extra = {
 			mult = 5,
