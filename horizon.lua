@@ -2777,6 +2777,68 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'Aurafarm',
+    loc_txt = {
+        name = 'Aura Farm',
+        text = {
+          '{C:green}#1# in #2#{} chance for each played {C:attention}Ace{}',
+		  'to create an {C:spectral}Aura{} card when scored',
+		  '{C:inactive,s:0.8}(Must have room){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 13, y = 3},
+	config = { 
+		extra = {
+			odds = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				(G.GAME and G.GAME.probabilities.normal or 1), 
+				center.ability.extra.odds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play and
+            #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+            if (context.other_card:get_id() == 14) and (pseudorandom('nyx_aurafarm') < G.GAME.probabilities.normal / card.ability.extra.odds) then
+                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+                return {
+                    extra = {
+                        message = localize('k_plus_spectral'),
+                        message_card = card,
+						colour = G.C.SECONDARY_SET.Spectral,
+                        func = function() -- This is for timing purposes, everything here runs after the message
+                            G.E_MANAGER:add_event(Event({
+                                func = (function()
+                                    SMODS.add_card {
+                                        key = 'c_aura'
+                                    }
+                                    G.GAME.consumeable_buffer = 0
+                                    return true
+                                end)
+                            }))
+                        end
+                    },
+                }
+            end
+        end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -4267,68 +4329,6 @@ SMODS.Joker{
 				}
 			end
 		end
-	end
-}
-SMODS.Joker{
-	key = 'Aurafarm',
-    loc_txt = {
-        name = 'Aura Farm',
-        text = {
-          '{C:green}#1# in #2#{} chance for each played {C:attention}Ace{}',
-		  'to create an {C:spectral}Aura{} card when scored',
-		  '{C:inactive,s:0.8}(Must have room){}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	config = { 
-		extra = {
-			odds = 4
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				(G.GAME and G.GAME.probabilities.normal or 1), 
-				center.ability.extra.odds
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play and
-            #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-            if (context.other_card:get_id() == 14) and (pseudorandom('nyx_aurafarm') < G.GAME.probabilities.normal / card.ability.extra.odds) then
-                G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-                return {
-                    extra = {
-                        message = localize('k_plus_spectral'),
-                        message_card = card,
-						colour = G.C.SECONDARY_SET.Spectral,
-                        func = function() -- This is for timing purposes, everything here runs after the message
-                            G.E_MANAGER:add_event(Event({
-                                func = (function()
-                                    SMODS.add_card {
-                                        key = 'c_aura'
-                                    }
-                                    G.GAME.consumeable_buffer = 0
-                                    return true
-                                end)
-                            }))
-                        end
-                    },
-                }
-            end
-        end
 	end
 }
 -- Rare --
