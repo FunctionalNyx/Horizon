@@ -376,7 +376,7 @@ SMODS.Joker{
     loc_txt = {
         name = 'Just Say No!',
         text = {
-          '{C:green}#1# in 3{} Chance to',
+          '{C:green}#1# in #2#{} Chance to',
 		  'refund a {C:attention}purchase{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
@@ -999,6 +999,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 8, y = 3},
+	in_pool = function(self)
+		return not SMODS.find_card('j_nyx_journey')
+	end,
 	config = { 
 		extra = {
 			retrigger = 1
@@ -1046,6 +1049,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 9, y = 3},
+	in_pool = function(self)
+		return not SMODS.find_card('j_nyx_journey')
+	end,
 	config = { 
 		extra = {
 			retrigger = 1
@@ -1847,10 +1853,10 @@ SMODS.Joker{
     loc_txt = { -- local text
         name = 'Best Friend', -- 
         text = {
-          'Gives {C:mult}#3#{} Mult,',
-		  'Gains {C:mult}+1{} Mult after every {C:attention}Blind{}',
-		  'As your friend, he has a {C:green}#1# in 3{} chance to give {C:money}$#4#{},', -- money
-		  'and {C:green}#1# in 6{} chance to create a {C:tarot}Tarot{} Card every hand played.',
+          'Gives {C:mult}#4#{} Mult,',
+		  'Gains {C:mult}+#5#{} Mult after every {C:attention}Blind{}',
+		  'As your friend, he has a {C:green}#1# in #2#{} chance to give {C:money}$#6#{},', -- money
+		  'and {C:green}#1# in #3#{} chance to create a {C:tarot}Tarot{} Card every hand played.',
 		  '{C:inactive,s:0.7}snuggle... -w-{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
         },
@@ -1868,8 +1874,10 @@ SMODS.Joker{
     pos = {x = 0, y = 2}, --position in atlas, starts at 0, scales by the atlas' card size (px and py): {x = 1, y = 0} would mean the sprite is 71 pixels to the right
 	config = { 
 		extra = {
-			odds = 1,
+			odds1 = 3,
+			odds2 = 6,
 			mult = 4,
+			mult_gain = 1,
 			money = 2
 		}
 	},
@@ -1877,24 +1885,26 @@ SMODS.Joker{
 		return{
 			vars = {
 				(G.GAME and G.GAME.probabilities.normal or 1), 
-				center.ability.extra.odds,
+				center.ability.extra.odds1,
+				center.ability.extra.odds2,
 				center.ability.extra.mult,
+				center.ability.extra.mult_gain,
 				center.ability.extra.money
 			}
 		}
 	end,
-	calculate = function(self,hand,context)
+	calculate = function(self,card,context)
 		local dollarAmnt = 0
 		if context.joker_main then
-			if pseudorandom('nyx_friend') < G.GAME.probabilities.normal / 3 then
-				dollarAmnt = hand.ability.extra.money
+			if pseudorandom('nyx_friend') < G.GAME.probabilities.normal / card.ability.extra.odds1 then
+				dollarAmnt = card.ability.extra.money
 			end
-			if pseudorandom('nyx_friend2') < G.GAME.probabilities.normal / 6 then
+			if pseudorandom('nyx_friend2') < G.GAME.probabilities.normal / card.ability.extra.odds2 then
 				return {
 					message = 'My gift to you <3',
 					colour = G.C.PURPLE,
-					mult = hand.ability.extra.mult,
-					card = hand
+					mult = card.ability.extra.mult,
+					card = card
 				},
 				G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.0, func = function()
 					play_sound('timpani')
@@ -1908,20 +1918,20 @@ SMODS.Joker{
 				return {
 					colour = G.C.GREEN,
 					dollars = dollarAmnt,
-					mult = hand.ability.extra.mult,
-					card = hand
+					mult = card.ability.extra.mult,
+					card = card
 				}
 			else
 				return {
-					mult = hand.ability.extra.mult,
-					card = hand,
+					mult = card.ability.extra.mult,
+					card = card,
 				}
 			end
 		end
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
-			hand.ability.extra.mult = hand.ability.extra.mult + 1
+			card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
 			return {
-				message = '+1 Mult',
+				message = '+'..card.ability.extra.mult_gain..' Mult',
 				colour = G.C.RED
 			}
 		end
@@ -3195,6 +3205,9 @@ SMODS.Joker{
 								G.jokers:remove_card(card)
 								card:remove()
 								card = nil
+								SMODS.add_card {
+									key = "j_nyx_pestilence"
+								}
 							return true; end})) 
 						return true
 					end
@@ -3202,9 +3215,6 @@ SMODS.Joker{
 				return {
 					message = "Evolved!",
 					colour = G.C.GREEN,
-					SMODS.add_card {
-						key = "j_nyx_pestilence"
-					}
 				}
 			end
 		end
@@ -3376,7 +3386,7 @@ SMODS.Joker{
         name = '{C:green,E:2,s:1.2}Pestilence{}',
         text = {
           'Scored {C:attention}Diseased{} cards give {X:mult,C:white}X#1#{} Mult',
-		  'All {C:attention}Diseased{} cards {C:attention}retrigger{}',
+		  'All {C:attention}Diseased{} cards {C:attention}retrigger #2#{} time',
 		  '{C:attention}Diseased{} cards no longer {C:red}decay{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
         },
@@ -3692,13 +3702,15 @@ SMODS.Joker{
         name = 'Integer',
         text = {
           'All {C:attention}Non-Face{} cards',
-		  'Give {C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips'
+		  'Give {C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}',
+		  '{C:inactive,s:0.5}Unnamed loser{}'
         },
     },
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 1,
     cost = 4,
     unlocked = true,
@@ -3706,7 +3718,7 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 2, y = 0},
+    pos = {x = 10, y = 3},
 	config = { 
 		extra = {
 			mult = 6,
@@ -4236,13 +4248,14 @@ SMODS.Joker{
         name = 'The Journey',
         text = {
           'All {C:attention}Non-face{} cards',
-		  '{C:attention}retrigger #1#{} time when scored'
+		  '{C:attention}retrigger #1#{} time when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 2,
     cost = 3,
     unlocked = true,
@@ -4250,7 +4263,7 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 3, y = 0},
+    pos = {x = 11, y = 3},
 	config = { 
 		extra = {
 			retrigger = 1
@@ -4300,6 +4313,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 4, y = 0},
+	in_pool = function(self)
+		return not SMODS.find_card('j_nyx_lasting_adventure')
+	end,
 	config = { 
 		extra = {
 			xmult = 1.5
@@ -4346,6 +4362,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 4, y = 0},
+	in_pool = function(self)
+		return not SMODS.find_card('j_nyx_lasting_adventure')
+	end,
 	config = { 
 		extra = {
 			xmult = 1.5
@@ -5323,13 +5342,14 @@ SMODS.Consumable {
 SMODS.Consumable {
     key = 'divinity',
     set = 'Spectral',
-	atlas = 'Placeholder',
-    pos = { x = 1, y = 0 },
+	atlas = 'Spectral',
+    pos = { x = 7, y = 0 },
 	loc_txt = {
 		name = 'Divinity',
 		text = {
 			'Enhances {C:attention}#1#{} card into',
-			'a {C:attention}True Lucky{} card'
+			'a {C:attention}True Lucky{} card',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	cost = 6,
