@@ -6276,7 +6276,7 @@ SMODS.Enhancement{
 		name = 'Wet Card',
 		text = {
 			'All cards to the {C:attention}left{}',
-			'will be {C:green}Moisturized{}',
+			'will be {C:blue}Moisturized{}',
 			'{X:mult,C:white}X#3#{} Mult',
 			'{C:green}#2# in #1#{} chance to {C:red}Dry{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
