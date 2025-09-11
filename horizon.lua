@@ -4986,7 +4986,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Arson',
 		text = {
-			'Enhances {C:attention}#1#{} card into',
+			'Enhances {C:attention}#1#{} cards into',
 			'a {C:attention}Burning{} card',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
