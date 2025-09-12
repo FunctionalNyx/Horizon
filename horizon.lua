@@ -3454,7 +3454,7 @@ SMODS.Joker{
 			if G.jokers.cards[i] ~= card then -- not itself
 				local other_joker = G.jokers.cards[i]
 				-- PREPARE THYSELF! NYX COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE! I did this at midnight leave me alone im tired and none of this makes sense
-				if (other_joker.config.center.key == 'j_fibionacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
+				if (other_joker.config.center.key == 'j_fibonacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
 				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
 				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') then
