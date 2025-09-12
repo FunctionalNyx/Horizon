@@ -1084,7 +1084,7 @@ SMODS.Joker{
                 }
             end
         end
-		if context.ending_shop then
+		if context.ending_shop and not context.blueprint then
 			for i = 1, #G.jokers.cards do
 				local other_joker = G.jokers.cards[i]
 				if other_joker.config.center.key == 'j_nyx_origin' then
@@ -4438,7 +4438,7 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		if context.ending_shop then
+		if context.ending_shop and not context.blueprint then
 			for i = 1, #G.jokers.cards do
 				local other_joker = G.jokers.cards[i]
 				if other_joker.config.center.key == 'j_nyx_fresh_start' then
