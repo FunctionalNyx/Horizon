@@ -2895,6 +2895,53 @@ SMODS.Joker{
         end
 	end
 }
+SMODS.Joker{
+	key = 'construction',
+    loc_txt = {
+        name = 'Under Construction',
+        text = {
+          'Gives {C:money}$#1#{} for each empty joker slot',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true
+	}, 
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 16, y = 3},
+	config = { 
+		extra = {
+			money = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.money,
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			local moneyGiven = G.jokers.config.card_limit * card.ability.extra.money
+
+			for i = 1, #G.jokers.cards do
+				moneyGiven = moneyGiven - card.ability.extra.money
+			end
+			return {
+				dollars = moneyGiven
+			}
+		end
+	end
+}
+
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -3990,6 +4037,7 @@ SMODS.Joker{
 	end
 }
 ]]
+--
 
 -- unfinished jokers below--
 -- unfinished jokers below--
