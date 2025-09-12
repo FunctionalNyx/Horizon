@@ -1296,6 +1296,51 @@ SMODS.Joker{
         return false
     end
 }
+SMODS.Joker{
+	key = 'overkill',
+    loc_txt = {
+        name = 'Overkill',
+        text = {
+          'Earn {C:money}$4{} if the',
+		  'score is on {C:red}fire{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 14, y = 3},
+	config = { 
+		extra = {
+			money = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				money = center.ability.extra.money
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			if SMODS.last_hand_oneshot then
+				return {
+					dollars = card.ability.extra.money,
+					card = card
+				}
+			end
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'Dopi',
@@ -2794,7 +2839,8 @@ SMODS.Joker{
         text = {
           '{C:green}#1# in #2#{} chance for each played {C:attention}Ace{}',
 		  'to create an {C:spectral}Aura{} card when scored',
-		  '{C:inactive,s:0.8}(Must have room){}'
+		  '{C:inactive,s:0.8}(Must have room){}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
@@ -3339,7 +3385,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Mathematician',
         text = {
-          '{C:attention}Copies{} all {E:2,C:dark_edition}Math{} Jokers'
+          '{C:attention}Copies{} all {E:2,C:dark_edition}Math{} Jokers',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
@@ -3372,6 +3419,74 @@ SMODS.Joker{
 			end
 		end
 		return SMODS.merge_effects(effects) -- Do
+	end
+}
+SMODS.Joker{
+	key = 'sleep_schedule',
+    loc_txt = {
+        name = 'Sleep Schedule',
+        text = {
+          'This Joker gains {X:mult,C:white}X#1#{} Mult',
+		  'per {C:attention}consecutive{} hand playing',
+		  'your most played {C:red}hand{}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#2#{}{C:inactive,s:0.8} Mult){}',
+		  "{C:inactive,s:0.8}What Nyx doesn't have{}",
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 15, y = 3},
+	config = { 
+		extra = {
+			Xmult = 1,
+			Xmult_gain = 0.1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult_gain,
+				center.ability.extra.Xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.before and not context.blueprint then
+            local reset = true
+            local play_more_than = (G.GAME.hands[context.scoring_name].played or 0)
+            for handname, values in pairs(G.GAME.hands) do
+                if handname == context.scoring_name and values.played >= play_more_than and SMODS.is_poker_hand_visible(handname) then
+                    reset = false
+                    break
+                end
+            end
+            if reset then
+                if card.ability.extra.Xmult > 1 then
+                    card.ability.extra.Xmult = 1
+                    return {
+                        message = localize('k_reset')
+                    }
+                end
+            else
+                -- See note about SMODS Scaling Manipulation on the wiki
+                card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
+            end
+        end
+        if context.joker_main then
+            return {
+                Xmult = card.ability.extra.Xmult
+            }
+        end
 	end
 }
 -- Legendary --
@@ -3927,50 +4042,6 @@ SMODS.Joker{
    		G.consumeables.config.card_limit = G.consumeables.config.card_limit + card.ability.extra.slots
 		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
   	end
-}
-SMODS.Joker{
-	key = 'overkill',
-    loc_txt = {
-        name = 'Overkill',
-        text = {
-          'Earn {C:money}$4{} if the',
-		  'score is on {C:red}fire{}',
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			money = 4
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				money = center.ability.extra.money
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.end_of_round and context.cardarea == G.jokers then
-			if SMODS.last_hand_oneshot then
-				return {
-					dollars = card.ability.extra.money,
-					card = card
-				}
-			end
-		end
-	end
 }
 -- Uncommon --
 SMODS.Joker{
@@ -4538,73 +4609,6 @@ SMODS.Joker{
 			card.ability.extra.mult = (card.ability.extra.mult_gain*G.GAME.round_resets.ante)
 			card.ability.extra.money = (card.ability.extra.money_gain*G.GAME.round_resets.ante)
 		end
-	end
-}
-SMODS.Joker{
-	key = 'sleep_schedule',
-    loc_txt = {
-        name = 'Sleep Schedule',
-        text = {
-          'This Joker gains {X:mult,C:white}X#1#{} Mult',
-		  'per {C:attention}consecutive{} hand playing',
-		  'your most played {C:red}hand{}',
-		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#2#{}{C:inactive,s:0.8} Mult){}',
-		  "{C:inactive,s:0.8}What Nyx doesn't have{}"
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-	config = { 
-		extra = {
-			Xmult = 1,
-			Xmult_gain = 0.1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult_gain,
-				center.ability.extra.Xmult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.before and not context.blueprint then
-            local reset = true
-            local play_more_than = (G.GAME.hands[context.scoring_name].played or 0)
-            for handname, values in pairs(G.GAME.hands) do
-                if handname == context.scoring_name and values.played >= play_more_than and SMODS.is_poker_hand_visible(handname) then
-                    reset = false
-                    break
-                end
-            end
-            if reset then
-                if card.ability.extra.Xmult > 1 then
-                    card.ability.extra.Xmult = 1
-                    return {
-                        message = localize('k_reset')
-                    }
-                end
-            else
-                -- See note about SMODS Scaling Manipulation on the wiki
-                card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
-            end
-        end
-        if context.joker_main then
-            return {
-                Xmult = card.ability.extra.Xmult
-            }
-        end
 	end
 }
 -- Legendary --
