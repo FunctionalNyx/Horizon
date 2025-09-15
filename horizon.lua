@@ -1301,7 +1301,7 @@ SMODS.Joker{
     loc_txt = {
         name = 'Overkill',
         text = {
-          'Earn {C:money}$4{} if the',
+          'Earn {C:money}$#1#{} if the',
 		  'score is on {C:red}fire{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
