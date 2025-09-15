@@ -3681,6 +3681,55 @@ SMODS.Joker{
         end
 	end
 }
+SMODS.Joker{
+	key = 'lasting_adventure',
+    loc_txt = {
+        name = 'Lasting Adventure',
+        text = {
+          'All {C:attention}Non-face{} cards',
+		  'Give {X:mult,C:white}X#1#{} Mult when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 19, y = 3},
+	in_pool = function(self)
+		return false 
+	end,
+	config = { 
+		extra = {
+			xmult = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    Xmult = card.ability.extra.xmult
+                }
+            end
+        end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
@@ -3862,55 +3911,6 @@ SMODS.Joker{
 				}
 			end
 		end
-	end
-}
-SMODS.Joker{
-	key = 'lasting_adventure',
-    loc_txt = {
-        name = 'Lasting Adventure',
-        text = {
-          'All {C:attention}Non-face{} cards',
-		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Jokers',
-    rarity = 4,
-    cost = 10,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 19, y = 3},
-	in_pool = function(self)
-		return false 
-	end,
-	config = { 
-		extra = {
-			xmult = 2
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.xmult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
-                return {
-                    Xmult = card.ability.extra.xmult
-                }
-            end
-        end
 	end
 }
 -- LOST SOULS --
