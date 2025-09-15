@@ -3536,6 +3536,151 @@ SMODS.Joker{
         end
 	end
 }
+SMODS.Joker{
+	key = 'fresh_start',
+    loc_txt = {
+        name = 'Fresh Start',
+        text = {
+          'All {C:attention}Odd{} cards',
+		  'Give {X:mult,C:white}X#1#{} Mult when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 17, y = 3},
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_lasting_adventure" then
+				return false
+            end
+        end
+        return true
+    end,
+	config = { 
+		extra = {
+			xmult = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 1) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    Xmult = card.ability.extra.xmult
+                }
+            end
+        end
+	end
+}
+SMODS.Joker{
+	key = 'familiar_end',
+    loc_txt = {
+        name = 'Familiar End',
+        text = {
+          'All {C:attention}Even{} cards',
+		  'Give {X:mult,C:white}X#1#{} Mult when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 18, y = 3},
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_lasting_adventure" then
+				return false
+            end
+        end
+        return true
+    end,
+	config = { 
+		extra = {
+			xmult = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.ending_shop and not context.blueprint then
+			for i = 1, #G.jokers.cards do
+				local other_joker = G.jokers.cards[i]
+				if other_joker.config.center.key == 'j_nyx_fresh_start' then
+					G.E_MANAGER:add_event(Event({
+						func = function()
+							other_joker.T.r = -0.2
+							other_joker:juice_up(0.3, 0.4)
+							other_joker.states.drag.is = true
+							other_joker.children.center.pinch.x = true
+							card.T.r = -0.2
+							card:juice_up(0.3, 0.4)
+							card.states.drag.is = true
+							card.children.center.pinch.x = true
+							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+								func = function()
+									G.jokers:remove_card(other_joker)
+									G.jokers:remove_card(card)
+									other_joker:remove()
+									card:remove()
+									other_joker = nil
+									card = nil
+								return true; end})) 
+							return true
+						end
+					})) 
+					SMODS.add_card{
+						key = 'j_nyx_lasting_adventure'
+					}
+					return {
+						message = "Combined!",
+						colour = G.C.RED
+					}
+				end
+			end
+		end
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0 and
+                    context.other_card:get_id() % 2 == 0) then
+                return {
+                    Xmult = card.ability.extra.xmult
+                }
+            end
+        end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
@@ -3717,6 +3862,55 @@ SMODS.Joker{
 				}
 			end
 		end
+	end
+}
+SMODS.Joker{
+	key = 'lasting_adventure',
+    loc_txt = {
+        name = 'Lasting Adventure',
+        text = {
+          'All {C:attention}Non-face{} cards',
+		  'Give {X:mult,C:white}X#1#{} Mult when scored',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 19, y = 3},
+	in_pool = function(self)
+		return false 
+	end,
+	config = { 
+		extra = {
+			xmult = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+            if (context.other_card:get_id() <= 10 and
+                    context.other_card:get_id() >= 0) or
+                (context.other_card:get_id() == 14) then
+                return {
+                    Xmult = card.ability.extra.xmult
+                }
+            end
+        end
 	end
 }
 -- LOST SOULS --
@@ -3993,6 +4187,62 @@ SMODS.Joker{
 					}
 				end
 			end
+		end
+	end
+}
+SMODS.Joker{
+	key = '@everyone',
+    loc_txt = {
+        name = '{X:chips,C:white}@everyone{}',
+        text = {
+          '{C:inactive,s:1.2,E:2}[11:43 PM]{} {C:green,s:1.2,E:2}Juic+e [131/150]{}{C:inactive,s:1.2,E:2}:{} {s:1.2,E:2}Oops{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Jokers',
+    rarity = 'nyx_LostSoul',
+    cost = 15,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 20, y = 3},
+	config = { 
+		extra = {
+			mult = 161156
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				mult = center.ability.extra.mult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				mult = card.ability.extra.mult,
+				card = card
+			}
+		end
+		if context.starting_shop and not card.ability.eternal then
+			G.E_MANAGER:add_event(Event({
+                func = function()
+                    card.T.r = -0.2
+                    card:juice_up(0.3, 0.4)
+                    card.states.drag.is = true
+                    card.children.center.pinch.x = true
+                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+                        func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+            })) 
 		end
 	end
 }
@@ -4462,149 +4712,6 @@ SMODS.Joker{
 }
 -- Rare --
 SMODS.Joker{
-	key = 'fresh_start',
-    loc_txt = {
-        name = 'Fresh Start',
-        text = {
-          'All {C:attention}Odd{} cards',
-		  'Give {X:mult,C:white}X#1#{} Mult when scored'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-	in_pool = function(self, args)
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_lasting_adventure" then
-				return false
-            end
-        end
-        return true
-    end,
-	config = { 
-		extra = {
-			xmult = 1.5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.xmult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0 and
-                    context.other_card:get_id() % 2 == 1) or
-                (context.other_card:get_id() == 14) then
-                return {
-                    Xmult = card.ability.extra.xmult
-                }
-            end
-        end
-	end
-}
-SMODS.Joker{
-	key = 'familiar_end',
-    loc_txt = {
-        name = 'Familiar End',
-        text = {
-          'All {C:attention}Even{} cards',
-		  'Give {X:mult,C:white}X#1#{} Mult when scored'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-	in_pool = function(self, args)
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_lasting_adventure" then
-				return false
-            end
-        end
-        return true
-    end,
-	config = { 
-		extra = {
-			xmult = 1.5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.xmult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.ending_shop and not context.blueprint then
-			for i = 1, #G.jokers.cards do
-				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_fresh_start' then
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							other_joker.T.r = -0.2
-							other_joker:juice_up(0.3, 0.4)
-							other_joker.states.drag.is = true
-							other_joker.children.center.pinch.x = true
-							card.T.r = -0.2
-							card:juice_up(0.3, 0.4)
-							card.states.drag.is = true
-							card.children.center.pinch.x = true
-							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-								func = function()
-									G.jokers:remove_card(other_joker)
-									G.jokers:remove_card(card)
-									other_joker:remove()
-									card:remove()
-									other_joker = nil
-									card = nil
-								return true; end})) 
-							return true
-						end
-					})) 
-					SMODS.add_card{
-						key = 'j_nyx_lasting_adventure'
-					}
-					return {
-						message = "Combined!",
-						colour = G.C.RED
-					}
-				end
-			end
-		end
-		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0 and
-                    context.other_card:get_id() % 2 == 0) then
-                return {
-                    Xmult = card.ability.extra.xmult
-                }
-            end
-        end
-	end
-}
-SMODS.Joker{
 	key = 'p2w',
     loc_txt = {
         name = '{C:money}Pay-2-Win{}',
@@ -4660,110 +4767,7 @@ SMODS.Joker{
 	end
 }
 -- Legendary --
-SMODS.Joker{
-	key = 'lasting_adventure',
-    loc_txt = {
-        name = 'Lasting Adventure',
-        text = {
-          'All {C:attention}Non-face{} cards',
-		  'Give {X:mult,C:white}X#1#{} Mult when scored'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 4,
-    cost = 10,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	in_pool = function(self)
-		return false 
-	end,
-	config = { 
-		extra = {
-			xmult = 2
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.xmult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
-                return {
-                    Xmult = card.ability.extra.xmult
-                }
-            end
-        end
-	end
-}
 -- LOST SOULS --
-SMODS.Joker{
-	key = '@everyone',
-    loc_txt = {
-        name = '{X:chips,C:white}@everyone{}',
-        text = {
-          '{C:inactive,s:1.2,E:2}[11:43 PM]{} {C:green,s:1.2,E:2}Juic+e [131/150]{}{C:inactive,s:1.2,E:2}:{} {s:1.2,E:2}Oops{}'
-        },
-    },
-    atlas = 'Placeholder',
-    rarity = 'nyx_LostSoul',
-    cost = 15,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	config = { 
-		extra = {
-			mult = 161156
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				mult = center.ability.extra.mult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			return {
-				mult = card.ability.extra.mult,
-				card = card
-			}
-		end
-		if context.starting_shop and not card.ability.eternal then
-			G.E_MANAGER:add_event(Event({
-                func = function()
-                    card.T.r = -0.2
-                    card:juice_up(0.3, 0.4)
-                    card.states.drag.is = true
-                    card.children.center.pinch.x = true
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                        func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
-					return true
-				end
-            })) 
-		end
-	end
-}
 --
 
 
