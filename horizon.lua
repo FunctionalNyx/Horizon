@@ -4766,6 +4766,67 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'joe_supreme',
+    loc_txt = {
+        name = 'Joe Supreme',
+        text = {
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 7,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_Joe" or joker.config.center.key == "j_nyx_joe2" then
+                return true
+            end
+        end
+        return false
+    end,
+	config = { 
+		extra = {
+			xmult = 1,
+			xmult_gain = 0.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.xmult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or joker.config.center.key == "j_nyx_joe_supreme" then
+                count = count + 1
+            end
+        end
+		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+	end
+}
 -- Legendary --
 -- LOST SOULS --
 --
