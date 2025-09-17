@@ -140,13 +140,18 @@ SMODS.Rarity {
 	key = 'LostSoul',
 	loc_txt = {
 		name = 'Lost Souls',
-		text = {
-			'Cards that have been lost to time',
-			'and space, only to be found again'
-		}
 	},
-	default_weight = 0.5,
 	badge_colour = HEX("87c1ff"),
+	{
+    	["Joker"] = true
+	}
+}
+SMODS.Rarity {
+	key = 'Misc',
+	loc_txt = {
+		name = 'Misc Shit',
+	},
+	badge_colour = HEX("808080"),
 	{
     	["Joker"] = true
 	}
@@ -1172,7 +1177,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'Moist',
+	key = 'moist',
     loc_txt = {
         name = 'Moist',
         text = {
@@ -1373,7 +1378,7 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self, info_queue, center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
 		return {
 			vars = {
@@ -1652,7 +1657,7 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
 		return{
 			vars = {
@@ -3096,7 +3101,7 @@ SMODS.Joker{
                             return true; end})) 
                         return true
                     end
-                 })) 
+                })) 
 				return {
 					message = "Sniped!",
                     colour = G.C.RED
@@ -4246,6 +4251,705 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'HAG',
+    loc_txt = {
+        name = 'Humanity Against Jokers',
+        text = {
+          'Creates a {V:1}Card{}',
+		  'At the start of each round',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Jokers',
+    rarity = "nyx_LostSoul",
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 14, y = 2},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				colours = { HEX('808080') }
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.setting_blind then
+			return {
+				message = 'Card Drawn!',
+				message_card = card,
+				SMODS.add_card {
+					set = 'Misc',
+					area = G.jokers
+				}
+			}
+		end
+	end
+}
+-- MISC SHIT --
+SMODS.Atlas{
+    key = 'Cards', --atlas key
+    path = 'Cards.png', --atlas' path in (yourMod)/assets/1x or (yourMod)/assets/2x
+    px = 71, --width of one card
+    py = 95 -- height of one card
+}
+--CARDS--
+SMODS.Joker{
+	key = 'card_Balatro',
+    loc_txt = {
+        name = 'Balatro',
+        text = {
+          'Does nothing',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 0},
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Bad',
+    loc_txt = {
+        name = 'Bad',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 1, y = 0},
+	config = { 
+		extra = {
+			xmult = 0.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult
+			}
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Alright',
+    loc_txt = {
+        name = 'Alright',
+        text = {
+          '{C:chips}+#1#{} Chips',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			chips = 50
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.chips
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				chips = card.ability.extra.chips
+			}
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_FA',
+    loc_txt = {
+        name = 'Fucking Awesome',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 0},
+	config = { 
+		extra = {
+			xmult = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult
+			}
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Stupid',
+    loc_txt = {
+        name = 'Stupid',
+        text = {
+          'Calls you a mean name',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	calculate = function(self,card,context)
+		if context.joker_main then
+			local names = {'Stupid','Moron','Nerd','Asshole','Retard','Fuck Face',
+						  'Shithead','Motherfucker','Dick','Dickwad','Dickhead','Cunt',
+						  'Joe','Sogger','Logger','Ourpler','Liptard','Eurotard'}
+			return {
+				message = 'You are a '..names[math.random(1, #names)],
+				message_card = card
+			}
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Rich',
+    loc_txt = {
+        name = 'Rich',
+        text = {
+          '{C:money}$#1#{}',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	config = { 
+		extra = {
+			money = 10
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.money
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				dollars = card.ability.extra.money
+			}
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Cheap',
+    loc_txt = {
+        name = 'Cheap',
+        text = {
+          '{C:money}$#1#{}',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 1},
+	config = { 
+		extra = {
+			money = -5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.money
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				dollars = card.ability.extra.money
+			}
+		end
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_notfun',
+    loc_txt = {
+        name = 'Not Fun',
+        text = {
+          '{C:red}Disables{} a random {C:attention}Joker{}',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 1},
+	add_to_deck = function(self, card, from_debuff)
+        local index = math.random(1,#G.jokers.cards)
+
+		-- Debuff joker
+		local jokerToDebuff = G.jokers.cards[index]
+
+		-- You cannot beat ERROR.
+		if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
+			SMODS.debuff_card(jokerToDebuff, true, "notfun")
+		end
+    end,
+	remove_from_deck = function(self, card, from_debuff)
+		for i = 1, #G.jokers.cards do
+			local joker = G.jokers.cards[i]
+			local canUndebuff = true
+
+			-- Check if joker is chosen by crimson heart or has perished
+			if joker.ability.perishable then
+				if joker.ability.perish_tally <= 0 then
+					canUndebuff = false
+				end
+			end
+
+			if joker.ability.crimson_heart_chosen then
+				canUndebuff = false
+			end
+
+			if canUndebuff then
+				SMODS.debuff_card(joker, false, "notfun")
+			end
+		end
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Moist',
+    loc_txt = {
+        name = 'Moist',
+        text = {
+          '{C:attention}Summons{} {C:blue}Moist{}',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 1, y = 1},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_moist
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		SMODS.add_card {
+			key = 'j_nyx_moist'
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Milky',
+    loc_txt = {
+        name = 'Milky',
+        text = {
+          '{C:attention}Summons{} the {C:blue}Milk Mann{}',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 1},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_milkmann
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		SMODS.add_card {
+			key = 'j_nyx_milkmann'
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Joement',
+    loc_txt = {
+        name = 'A Joement',
+        text = {
+          '{C:attention}Summons{} 3 {C:blue}Joe{}s',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 1},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3,
+			func = function()
+				SMODS.add_card {
+					key = 'j_nyx_joe',
+					stickers = {"eternal"},
+				}
+				SMODS.add_card {
+					key = 'j_nyx_joe',
+					stickers = {"eternal"},
+				}
+				SMODS.add_card {
+					key = 'j_nyx_joe',
+					stickers = {"eternal"},
+				}
+				return true
+			end,
+		}))
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'card_Nerdy',
+    loc_txt = {
+        name = 'White and Nerdy',
+        text = {
+          '{C:attention}Summons{} a {C:blue}Nerd{}',
+		  '{C:red}Self destructs after 1 round{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Cards',
+    rarity = "nyx_Misc",
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 1},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_nerd
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		SMODS.add_card {
+			key = 'j_nyx_nerd'
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.cardarea == G.jokers then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.T.r = -0.2
+					card:juice_up(0.3, 0.4)
+					card.states.drag.is = true
+					card.children.center.pinch.x = true
+					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+						func = function()
+							G.jokers:remove_card(card)
+							card:remove()
+							card = nil
+						return true; end})) 
+					return true
+				end
+			}))
+		end
+	end
+}
 --
 --[[
 SMODS.Joker{
@@ -4803,7 +5507,7 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
 		return{
 			vars = {
@@ -4908,7 +5612,7 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
 		return{
 			vars = {
@@ -5012,7 +5716,7 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
 		return{
 			vars = {
@@ -6856,7 +7560,7 @@ SMODS.Joker{
     atlas = 'Jokers',
     unlocked = true,
     discovered = true,
-	no_collection =  true,
+	no_collection = true,
     pos = {x = 8, y = 1},
 	in_pool = function(self) 
 		return false 
