@@ -2486,7 +2486,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 
 		if G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck" then
 			if not card.ability.eternal then
-				SMODS.Stickers.eternal:apply(card, false)
+				SMODS.Stickers.eternal:apply(card, true)
 			end
 		end
 
@@ -2521,7 +2521,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 		if context.before then
 			-- Do a random effect
 			local choiceCount = 9 -- Just an easy variable I can change on the fly with each chaos effect I add
-			local rareChoices = 12
+			local rareChoices = 15
 			local random = pseudorandom('nyx_error')
 
 			-- 15% chance to do a rare effect, 60% on invalid deck
@@ -2621,7 +2621,9 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 					local card = copy_card(context.scoring_hand[randomCard], nil)
 					card:start_materialize()
 					card:add_to_deck()
+					card:set_edition({ negative = true })
 					G.jokers:emplace(card)
+					G.jokers.config.card_limit = G.jokers.config.card_limit + 1
 				elseif random < 1 / rareChoices*2 then -- Destroy all played cards
 					for i = 1, #context.scoring_hand do
 						local card = context.scoring_hand[i]
@@ -2639,7 +2641,8 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 					local card = copy_card(context.scoring_hand[randomCard], nil)
 					card:start_materialize()
 					card:add_to_deck()
-				elseif random < 1 / rareChoices*5 then -- Delete a random joker that ISN'T ERROR
+				elseif random < 1 / rareChoices*5 and not (G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck") then -- Delete a random joker that ISN'T ERROR
+					-- Don't delete jokers on invalid deck
 					if #G.jokers.cards > 1 then
 						local which = math.floor(pseudorandom('rerollJoker')*(#G.jokers.cards-1))+1
 					
@@ -2768,6 +2771,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 								local card = copy_card(other_joker, nil)
 								card:start_materialize()
 								card:add_to_deck()
+								SMODS.Stickers["nyx_nulled"]:apply(card, true)
 								G.consumeables:emplace(card)
 							end
 						end
@@ -2785,17 +2789,64 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 				elseif random < 1 / rareChoices*12 and not (G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck") then
 					-- Win blind instantly (produces glitchy results but i love it)
 					-- Do nothing on the corrupted deck
-					print("Attempting to win...")	
 					G.GAME.chips = G.GAME.blind.chips
 					G.STATE = G.STATES.HAND_PLAYED
 					G.STATE_COMPLETE = true
 					end_round()
 					return nil
-				elseif random < 1 / rareChoices*13 then -- Set money to 0
+				elseif random < 1 / rareChoices*13 and not (G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck") then -- Set money to 0
 					return {
 						ease_dollars(-G.GAME.dollars, true),
 						card = card
 					}
+				elseif random < 1 / rareChoices*14 then -- Give scored cards random enhancements
+					for i=1, #context.scoring_hand do
+						local percent = 1.15 - (i-0.999)/(#context.scoring_hand-0.998)*0.3
+						G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() play_sound('card1', percent);context.scoring_hand[i]:juice_up(0.3, 0.3);return true end }))
+					end
+					local enhancements = {
+						'm_bonus',
+						'm_mult',
+						'm_wild',
+						'm_glass',
+						'm_steel',
+						'm_stone',
+						'm_gold',
+						'm_lucky',
+						'm_nyx_diseased',
+						'm_nyx_frozen'
+					}
+					for i=1, #context.scoring_hand do
+						if not SMODS.has_enhancement(context.scoring_hand[i]) then
+							context.scoring_hand[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
+						end
+					end
+					for i=1, #context.scoring_hand do
+						local percent = 0.85 + (i-0.999)/(#context.scoring_hand-0.998)*0.3
+					end
+					delay(0.5)
+				elseif random < 1 / rareChoices*15 then -- Make scored cards negative
+					for i = 1, #context.scoring_hand do
+						context.scoring_hand[i]:set_edition({ negative = true })
+					end
+				elseif random < 1 / rareChoices*15 then -- Give or take a joker slot
+					if pseudorandom('nyx_error') < 1 / 2 then
+						G.jokers.config.card_limit = G.jokers.config.card_limit + 1
+					else
+						G.jokers.config.card_limit = G.jokers.config.card_limit - 1
+					end
+				elseif random < 1 / rareChoices*16 then -- Give or take a consumable slot
+					if pseudorandom('nyx_error') < 1 / 2 then
+						G.consumeables.config.card_limit = G.consumeables.config.card_limit + 1
+					else
+						G.consumeables.config.card_limit = G.consumeables.config.card_limit - 1
+					end
+				elseif random < 1 / rareChoices*17 then -- Increase or decrease hand size
+					if pseudorandom('nyx_error') < 1 / 2 then
+						G.hand:change_size(1)
+					else
+						G.hand:change_size(-1)
+					end
 				end
 				
 				return {
@@ -2803,50 +2854,6 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 					colour = G.C.RED
 				}
 			end
-		end
-
-		if context.joker_main then
-			-- -- Chance to replace jokers
-			-- for i=1, #G.jokers.cards do -- for all jokers
-			-- 	if G.jokers.cards[i] ~= card then -- not itself
-			-- 		local other_joker = G.jokers.cards[i]
-
-			-- 		-- Don't replace joker if it is another ERROR or is oops all 6s
-			-- 		if other_joker.config.center.key ~= "j_nyx_err" and other_joker.config.center.key ~= "j_oops" then
-			-- 			-- Retain edtion, don't replace eternals
-			-- 			if pseudorandom('nyx_error3') < G.GAME.probabilities.normal / 15 then
-			-- 				local jokerEditions = other_joker.edition
-			-- 				local jokerRarity = other_joker.config.center.rarity
-			-- 				local jokerStickers = {}
-
-			-- 				if other_joker.ability.eternal then
-			-- 					table.insert(jokerStickers, 'eternal')
-			-- 				end
-			-- 				if other_joker.ability.perishable then
-			-- 					table.insert(jokerStickers, 'perishable')
-			-- 				end
-			-- 				if other_joker.ability.rental then
-			-- 					table.insert(jokerStickers, 'rental')
-			-- 				end
-
-			-- 				other_joker:remove()
-			-- 				SMODS.add_card{
-			-- 					set = 'Joker',
-			-- 					area = G.jokers,
-			-- 					edition = jokerEditions,
-			-- 					stickers = jokerStickers,
-			-- 					rarity = rarities[jokerRarity]
-			-- 				}
-			-- 			end
-			-- 		end
-			-- 	end
-			-- end
-
-			-- return {
-			-- 	mult = math.random(-6, 10),
-			-- 	chips = math.random(-12, 20),
-			-- 	Xmult = math.random(70, 124)/100
-			-- }
 		end
 
 		if context.end_of_round and context.cardarea == G.jokers then
@@ -7851,6 +7858,61 @@ SMODS.Enhancement{
 	end
 }
 -- 
+
+-- SMODS.Sticker {
+--     key = 'flipped',
+--     rate = 1.0,
+--     needs_enable_flag = false,
+--     apply = function(self, card, val)
+--         print(card.facing)
+--         if card.facing == 'front' and val then
+--             card:flip()
+--         end
+--         card.ability[self.key] = val
+--     end
+-- }
+
+SMODS.Sticker {
+    key = 'nulled',
+    loc_txt = {
+        name = '404',
+        text = {
+          'null'
+        },
+    },
+	atlas = 'Jokers',
+	pos = {x = -1, y = -1},
+    rate = 0.0,
+    needs_enable_flag = false,
+	config = {
+		extra = {extraHands = 1}
+	},
+	default_compat = false,
+	compat_exceptions = 
+	{
+		Joker = true,
+	},
+    apply = function(self, card, val)
+        card.ability[self.key] = val
+
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			G.consumeables.config.card_limit = G.consumeables.config.card_limit + 1
+			return true
+		end
+		}))
+    end,
+	calculate = function(self, card, context)
+		if context.selling_card and context.card == card then
+			G.E_MANAGER:add_event(Event({
+			func = function()
+				G.consumeables.config.card_limit = G.consumeables.config.card_limit - 1
+				return true
+			end
+			}))
+		end
+	end
+}
 
 -- Nyx bullshit --
 SMODS.Joker{
