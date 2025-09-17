@@ -529,9 +529,9 @@ SMODS.Joker{
     loc_txt = {
         name = 'Joe 2 - Electric Boogaloo',
         text = {
-        	'{C:green}#1# in 2{} Chance of giving {X:mult,C:white}X5{} Mult!',
-			'{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}',
-			'#2#',
+        	'{C:green}#1# in 2{} Chance of',
+			'giving {X:mult,C:white}X5{} Mult!',
+			'{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}#2#',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}astololofo{}'
         },
     },
@@ -568,9 +568,9 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.joker_main then
 			card.ability.extra.count = card.ability.extra.count + 1
-			if card.ability.extra.count == 10 then
+			if card.ability.extra.count >= 10 then
 				card.ability.extra.lie = 0
-				card.ability.extra.lie2 = 'Did you actually expect him to do something?'
+				card.ability.extra.lie2 = '\nDid you actually expect him to do something?'
 				return {
 					message = "Revealed!",
 					card = card
@@ -4772,6 +4772,7 @@ SMODS.Joker{
         name = 'Joe Supreme',
         text = {
           'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Ultimate){}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
         },
     },
@@ -4825,10 +4826,216 @@ SMODS.Joker{
 				card = card
 			}
 		end
+		if context.after and not context.blueprint then
+			if count >= 7 then
+				for _, joker in ipairs(G.jokers.cards or {}) do
+					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
+						local card_ = joker
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								card_.T.r = -0.2
+								card_:juice_up(0.3, 0.4)
+								card_.states.drag.is = true
+								card_.children.center.pinch.x = true
+								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+									func = function()
+										G.jokers:remove_card(card_)
+										card_:remove()
+										card_ = nil
+									return true; end})) 
+								return true
+							end
+						}))
+					end
+				end
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+								SMODS.add_card {
+									key = "j_nyx_joe_ultimate",
+								}
+							return true; end})) 
+						return true
+					end
+				}))
+				return {
+					message = 'Evolved!'
+				}
+			end
+		end
 	end
 }
 -- Legendary --
+SMODS.Joker{
+	key = 'joe_ultimate',
+    loc_txt = {
+        name = 'Joe Ultimate',
+        text = {
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Almighty){}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 4,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	in_pool = function(self, args)
+        return false
+    end,
+	config = { 
+		extra = {
+			xmult = 1,
+			xmult_gain = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.xmult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" then
+                count = count + 1
+            end
+        end
+		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+		if context.after and not context.blueprint then
+			if count >= 12 then
+				for _, joker in ipairs(G.jokers.cards or {}) do
+					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
+					or joker.config.center.key == "j_nyx_joe_supreme" then
+						local card_ = joker
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								card_.T.r = -0.2
+								card_:juice_up(0.3, 0.4)
+								card_.states.drag.is = true
+								card_.children.center.pinch.x = true
+								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+									func = function()
+										G.jokers:remove_card(card_)
+										card_:remove()
+										card_ = nil
+									return true; end})) 
+								return true
+							end
+						}))
+					end
+				end
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+								SMODS.add_card {
+									key = "j_nyx_joe_almighty",
+								}
+							return true; end})) 
+						return true
+					end
+				}))
+				return {
+					message = 'Evolved!'
+				}
+			end
+		end
+	end
+}
 -- LOST SOULS --
+SMODS.Joker{
+	key = 'joe_almighty',
+    loc_txt = {
+        name = 'Joe Almighty',
+        text = {
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = "nyx_LostSoul",
+    cost = 16,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	in_pool = function(self, args)
+        return false
+    end,
+	config = { 
+		extra = {
+			xmult = 1,
+			xmult_gain = 2.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_Joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.xmult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
+			or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" 
+			or joker.config.center.key == "j_nyx_joe_almighty" then
+                count = count + 1
+            end
+        end
+		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+	end
+}
 --
 
 
