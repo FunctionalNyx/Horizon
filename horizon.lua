@@ -2946,7 +2946,6 @@ SMODS.Joker{
 		end
 	end
 }
-
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -4282,7 +4281,7 @@ SMODS.Joker{
 			return {
 				message = 'Card Drawn!',
 				message_card = card,
-				SMODS.add_card({ set = 'Joker', rarity = "nyx_Misc" })
+				SMODS.add_card({ set = 'Joker', rarity = "nyx_Misc", stickers = {"eternal"} })
 			}
 		end
 	end
