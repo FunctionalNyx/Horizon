@@ -2512,14 +2512,14 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
-		if context.before then -- Context.before isn't working for some reason
+		if context.before then
 			-- Do a random effect
-			local choiceCount = 7 -- Just an easy variable I can change on the fly with each chaos effect I add
-			local rareChoices = 8
+			local choiceCount = 9 -- Just an easy variable I can change on the fly with each chaos effect I add
+			local rareChoices = 12
 			local random = pseudorandom('nyx_error')
 
-			-- 10% chance to do a rare effect
-			if pseudorandom('rareeffect') < 0.9 then
+			-- 15% chance to do a rare effect
+			if pseudorandom('rareeffect') < 0.85 then
 				if random < 1 / choiceCount then -- Do literally nothing
 				elseif random < 1 / choiceCount*2 then -- Randomize rank of a random card
 					local randomCard = math.floor(pseudorandom('randomCard')*#context.scoring_hand)+1
@@ -2559,27 +2559,46 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 							end
 						}))
 					end
-				elseif random < 1 / choiceCount*4 then -- Give 3 dollars
-					return {
-						dollars = 3
-					}
-				elseif random < 1 / choiceCount*5 then -- Take 3 dollars
-					return {
-						dollars = -3
-					}
-				elseif random < 1 / choiceCount*6 then -- Duplicate a random card
+				elseif random < 1 / choiceCount*4 then -- Give or take 3 dollars
+					if pseudorandom('nyx_error2') < 1 / 2 then
+						return {
+							dollars = 3
+						}
+					else
+						return {
+							dollars = -3
+						}
+					end
+				elseif random < 1 / choiceCount*5 then -- Duplicate a random card
 					local randomCard = math.floor(pseudorandom('randomCard')*#context.scoring_hand)+1
 
 					local card = copy_card(context.scoring_hand[randomCard], nil)
 					card:start_materialize()
 					card:add_to_deck()
 					G.hand:emplace(card)
-				elseif random < 1 / choiceCount*7 then -- Destroys a random card
+				elseif random < 1 / choiceCount*6 then -- Destroys a random card
 					local randomCard = math.floor(pseudorandom('randomCard')*#context.scoring_hand)+1
 					local card = context.scoring_hand[randomCard]
 
 					SMODS.destroy_cards(card)
 					card:start_dissolve()
+				elseif random < 1 / choiceCount*7 then -- Give or take a hand
+					if pseudorandom('nyx_error2') < 1 / 2 then
+						G.GAME.round_resets.hands = G.GAME.round_resets.hands + 1
+					else
+						G.GAME.round_resets.hands = G.GAME.round_resets.hands - 1
+					end
+				elseif random < 1 / choiceCount*8 then -- Give or take a discard
+					if pseudorandom('nyx_error2') < 1 / 2 then
+						G.GAME.round_resets.discards = G.GAME.round_resets.discards + 1
+					else
+						G.GAME.round_resets.discards = G.GAME.round_resets.discards - 1
+					end		
+				elseif random < 1 / choiceCount*9 then -- Multiply various values by a random float between 0.5 - 1.5
+					G.GAME.round_resets.hands = G.GAME.round_resets.hands * (pseudorandom("error") + 0.5)
+					G.GAME.round_resets.discards = G.GAME.round_resets.discards * (pseudorandom("error") + 0.5)
+					G.GAME.dollars = G.GAME.dollars * (pseudorandom("error") + 0.5)
+					G.GAME.blind.chips = G.GAME.blind.chips * (pseudorandom("error") + 0.5)
 				end
 
 				return {
@@ -2727,6 +2746,48 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 							message = "err"
 						}
 					end
+				elseif random < 1 / rareChoices*9 then -- Set hands to 0
+					G.GAME.round_resets.hands = 0
+				elseif random < 1 / rareChoices*10 then -- Duplicate joker to consumable slots
+					if #G.jokers.cards > 1 then
+						local which = math.floor(pseudorandom('rerollJoker')*(#G.jokers.cards-1))+1
+					
+						for i=1, #G.jokers.cards do -- for all jokers
+							if G.jokers.cards[i] == card and i == which then -- not itself
+								which = which + 1
+							end
+
+							if i == which then
+								local other_joker = G.jokers.cards[i]
+								local card = copy_card(other_joker, nil)
+								card:start_materialize()
+								card:add_to_deck()
+								G.consumeables:emplace(card)
+							end
+						end
+					else
+						return {
+							message = "err"
+						}
+					end
+				elseif random < 1 / rareChoices*11 then -- Create an eternal negative joement
+					SMODS.add_card {
+						key = 'j_nyx_joe',
+						edition = "e_negative",
+						stickers = {"eternal"}
+					}
+				elseif random < 1 / rareChoices*12 then -- Win blind instantly (produces glitchy results but i love it)
+					print("Attempting to win...")	
+					G.GAME.chips = G.GAME.blind.chips
+					G.STATE = G.STATES.HAND_PLAYED
+					G.STATE_COMPLETE = true
+					end_round()
+					return nil
+				elseif random < 1 / rareChoices*13 then -- Set money to 0
+					return {
+						ease_dollars(-G.GAME.dollars, true),
+						card = card
+					}
 				end
 				
 				return {
@@ -2734,31 +2795,6 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 					colour = G.C.RED
 				}
 			end
-
-			-- Old code
-			-- for i=1, #context.scoring_hand do
-			-- 	-- Randomize rank
-			-- 	if pseudorandom('nyx_error') < G.GAME.probabilities.normal / 20 then
-			-- 		G.E_MANAGER:add_event(Event({
-			-- 			func = function()
-			-- 				assert(SMODS.change_base(context.scoring_hand[i], nil, ranks[math.random(1, #ranks)]))
-			-- 				return true
-			-- 			end
-			-- 		}))
-			-- 	end
-
-			-- 	-- Randomize suit
-			-- 	if pseudorandom('nyx_error2') < G.GAME.probabilities.normal / 20 then
-			-- 		G.E_MANAGER:add_event(Event({
-			-- 			func = function()
-			-- 				assert(SMODS.change_base(context.scoring_hand[i], suits[math.random(1, #suits)], nil))
-			-- 				return true
-			-- 			end
-			-- 		}))
-			-- 	end
-			-- end
-
-
 		end
 
 		if context.joker_main then
@@ -3681,12 +3717,13 @@ SMODS.Joker{
 		local effects = {}
 		for i=1, #G.jokers.cards do -- for all jokers
 			if G.jokers.cards[i] ~= card then -- not itself
-				local other_joker = G.jokers.cards[i]
+				local other_joker = G.jokers.cards[i] -- somehow this idiot forgot scholar
 				-- PREPARE THYSELF! NYX COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE! I did this at midnight leave me alone im tired and none of this makes sense
 				if (other_joker.config.center.key == 'j_fibonacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
 				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
-				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') then
+				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') or
+				other_joker.config.center.key == 'j_scholar' then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
