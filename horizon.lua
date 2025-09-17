@@ -155,7 +155,7 @@ SMODS.Rarity {
 
 -- Common --
 SMODS.Joker{
-    key = 'Joe',
+    key = 'joe',
     loc_txt = {
         name = 'Joement',
         text = {
@@ -1389,7 +1389,7 @@ SMODS.Joker{
 				card = card
 			}
 		end
-		if context.selling_card and (context.card.config.center.key == "j_nyx_Joe" or context.card.config.center.key == "j_nyx_joe2") then
+		if context.selling_card and (context.card.config.center.key == "j_nyx_joe" or context.card.config.center.key == "j_nyx_joe2") then
 			card.ability.extra.xMult = card.ability.extra.xMult + card.ability.extra.xMult_gain
 			return {
 				message = "Fuck you Joe",
@@ -1668,7 +1668,7 @@ SMODS.Joker{
 					message = 'Rage Baiter!',
 					message_card = card,
 					SMODS.add_card {
-						key = 'j_nyx_Joe',
+						key = "j_nyx_joe",
 						edition = 'e_negative'
 					}
 				}
@@ -4790,7 +4790,7 @@ SMODS.Joker{
     pos = {x = 4, y = 0},
 	in_pool = function(self, args)
         for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_Joe" or joker.config.center.key == "j_nyx_joe2" then
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
                 return true
             end
         end
@@ -4815,7 +4815,8 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		local count = 0
         for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or joker.config.center.key == "j_nyx_joe_supreme" then
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
+			or joker.config.center.key == "j_nyx_joe_supreme" then
                 count = count + 1
             end
         end
@@ -4827,6 +4828,7 @@ SMODS.Joker{
 			}
 		end
 		if context.after and not context.blueprint then
+			print(count)
 			if count >= 7 then
 				for _, joker in ipairs(G.jokers.cards or {}) do
 					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
@@ -4918,7 +4920,8 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		local count = 0
         for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" then
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or 
+			joker.config.center.key == "j_nyx_joe_supreme" then
                 count = count + 1
             end
         end
@@ -5022,8 +5025,7 @@ SMODS.Joker{
 		local count = 0
         for _, joker in ipairs(G.jokers.cards or {}) do
             if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
-			or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" 
-			or joker.config.center.key == "j_nyx_joe_almighty" then
+			or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" then
                 count = count + 1
             end
         end
