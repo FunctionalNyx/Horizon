@@ -4542,6 +4542,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 0, y = 0},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	calculate = function(self,card,context)
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
@@ -4582,6 +4585,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 1, y = 0},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	config = { 
 		extra = {
 			xmult = 0.5
@@ -4639,6 +4645,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 2, y = 0},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	config = { 
 		extra = {
 			chips = 50
@@ -4696,6 +4705,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 3, y = 0},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	config = { 
 		extra = {
 			xmult = 2
@@ -4753,6 +4765,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 4, y = 0},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
 			local names = {'Stupid','Moron','Nerd','Asshole','Retard','Fuck Face',
@@ -4802,6 +4817,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 5, y = 0},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	config = { 
 		extra = {
 			money = 10
@@ -4859,6 +4877,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 5, y = 1},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	config = { 
 		extra = {
 			money = -5
@@ -4916,6 +4937,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 0, y = 1},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	add_to_deck = function(self, card, from_debuff)
         local index = math.random(1,#G.jokers.cards)
 
@@ -4988,6 +5012,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 1, y = 1},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	loc_vars = function(self,info_queue,center)
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_moist
 	end,
@@ -5036,6 +5063,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 2, y = 1},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	loc_vars = function(self,info_queue,center)
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_milkmann
 	end,
@@ -5079,11 +5109,14 @@ SMODS.Joker{
     cost = 0,
     unlocked = true,
     discovered = false,
-	no_collection = true,
+	no_collection = false,
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 3, y = 1},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	loc_vars = function(self,info_queue,center)
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
 	end,
@@ -5146,6 +5179,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 4, y = 1},
+	set_ability = function(self, card, initial, delay_sprites)
+		card:set_eternal(true)
+	end,
 	loc_vars = function(self,info_queue,center)
 		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_nerd
 	end,
@@ -7208,6 +7244,14 @@ SMODS.Back {
 					}
 					return true
 				end
+				for i = 1, 4 do
+						SMODS.add_card {
+							key = 'j_oops',
+							stickers = { "eternal"},
+							edition = "e_negative"
+						}
+				end
+				return true
 			end,
 		}))
 	end,
