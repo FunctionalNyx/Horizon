@@ -23,6 +23,9 @@ Have fun
 ## About the Nerds
 
 Nyx - Main Coder
+
 bozo! - Sometimes codes
+
 Milk - Does basically all the art
+
 Asto - who?
