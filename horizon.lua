@@ -2484,6 +2484,12 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
+		if G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck" then
+			if not card.ability.eternal then
+				SMODS.Stickers.eternal:apply(card, false)
+			end
+		end
+
 		if context.cardarea == G.jokers then
 			-- Debuff stop sign if it is in front of ERROR
 			local stopIndex = 0
@@ -2518,8 +2524,8 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			local rareChoices = 12
 			local random = pseudorandom('nyx_error')
 
-			-- 15% chance to do a rare effect
-			if pseudorandom('rareeffect') < 0.85 then
+			-- 15% chance to do a rare effect, 60% on invalid deck
+			if pseudorandom('rareeffect') < 0.85 and not (G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck" and pseudorandom('rareeffect') > 0.4) then
 				if random < 1 / choiceCount then -- Do literally nothing
 				elseif random < 1 / choiceCount*2 then -- Randomize rank of a random card
 					local randomCard = math.floor(pseudorandom('randomCard')*#context.scoring_hand)+1
@@ -2776,7 +2782,9 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 						edition = "e_negative",
 						stickers = {"eternal"}
 					}
-				elseif random < 1 / rareChoices*12 then -- Win blind instantly (produces glitchy results but i love it)
+				elseif random < 1 / rareChoices*12 and not (G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck") then
+					-- Win blind instantly (produces glitchy results but i love it)
+					-- Do nothing on the corrupted deck
 					print("Attempting to win...")	
 					G.GAME.chips = G.GAME.blind.chips
 					G.STATE = G.STATES.HAND_PLAYED
