@@ -6528,7 +6528,7 @@ SMODS.Consumable {
 		end
     end,
 	can_use = function(self, card)
-        return #G.jokers.highlighted and #G.jokers.highlighted >= 1 and #G.jokers.highlighted <= card.ability.max_highlighted
+        return #G.jokers.highlighted
     end
 }
 SMODS.Consumable {
