@@ -6835,7 +6835,7 @@ SMODS.Tag {
 		name = "Horizon Tag",
 		text = {
 			'Immediately open a free',
-			'{C:attention}Mega Horizon Pack.{}',
+			'{C:attention,T:p_nyx_horizonboost_mega}Mega Horizon Pack.{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
@@ -6873,7 +6873,7 @@ SMODS.Tag {
 		name = "DPG Tag",
 		text = {
 			'Immediately open a free',
-			'{C:attention}DPG Pack.{}',
+			'{C:attention,T:p_nyx_dpgbooster}DPG Pack.{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
@@ -6915,8 +6915,8 @@ SMODS.Back {
 	loc_txt = {
 		name = "The Milk Deck",
 		text = {
-			'Start the game with a {C:attention}Milk Mann{}',
-			'And an {C:green}Oops all 6s{}',
+			'Start the game with a {C:attention,T:j_nyx_milkmann}Milk Mann{}',
+			'And an {C:green,T:j_oops}Oops all 6s{}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},

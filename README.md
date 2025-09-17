@@ -19,3 +19,10 @@ Go to [Releases](https://github.com/FunctionalNyx/Horizon/releases) for a probab
 Otherwise just download the code directly for the most "up-to-date" version thats probably VEEERY broken (Proceed at your own risk)
 
 Have fun
+
+## About the Nerds
+
+Nyx - Main Coder
+bozo! - Sometimes codes
+Milk - Does basically all the art
+Asto - who?
