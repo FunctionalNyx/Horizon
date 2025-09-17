@@ -4282,10 +4282,7 @@ SMODS.Joker{
 			return {
 				message = 'Card Drawn!',
 				message_card = card,
-				SMODS.add_card {
-					set = 'Misc',
-					area = G.jokers
-				}
+				SMODS.add_card({ set = 'Joker', rarity = "nyx_Misc" })
 			}
 		end
 	end
