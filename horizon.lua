@@ -3513,14 +3513,13 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.before and not context.blueprint then
-            local reset = true
-            local play_more_than = (G.GAME.hands[context.scoring_name].played or 0)
-            for handname, values in pairs(G.GAME.hands) do
-                if handname == context.scoring_name and values.played >= play_more_than and SMODS.is_poker_hand_visible(handname) then
-                    reset = false
-                    break
-                end
-            end
+            local reset = false
+			local play_more_than = (G.GAME.hands[context.scoring_name].played or 0)
+			for k, v in pairs(G.GAME.hands) do
+				if k ~= context.scoring_name and v.played >= play_more_than and v.visible then
+					reset = true
+				end
+			end
             if reset then
                 if card.ability.extra.Xmult > 1 then
                     card.ability.extra.Xmult = 1
@@ -3529,13 +3528,12 @@ SMODS.Joker{
                     }
                 end
             else
-                -- See note about SMODS Scaling Manipulation on the wiki
                 card.ability.extra.Xmult = card.ability.extra.Xmult + card.ability.extra.Xmult_gain
             end
         end
         if context.joker_main then
             return {
-                Xmult = card.ability.extra.Xmult
+                xmult = card.ability.extra.Xmult
             }
         end
 	end
@@ -4281,7 +4279,12 @@ SMODS.Joker{
 			return {
 				message = 'Card Drawn!',
 				message_card = card,
-				SMODS.add_card({ set = 'Joker', rarity = "nyx_Misc", stickers = {"eternal"} })
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						SMODS.add_card({set = "Joker", rarity = 'nyx_Misc', stickers = {"eternal"}})
+						return true
+					end
+				}))
 			}
 		end
 	end
