@@ -7281,14 +7281,6 @@ SMODS.Back {
 					}
 					return true
 				end
-				for i = 1, 4 do
-						SMODS.add_card {
-							key = 'j_oops',
-							stickers = { "eternal"},
-							edition = "e_negative"
-						}
-				end
-				return true
 			end,
 		}))
 	end,
