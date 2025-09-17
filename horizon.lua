@@ -198,7 +198,7 @@ SMODS.Joker{
 				mult = card.ability.extra.mult,
 				colour = G.C.MULT,
 				chip_mod = card.ability.extra.chips,
-				message = '-'..card.ability.extra.chips..' Chips',
+				message = card.ability.extra.chips..' Chips',
 				colour = G.C.CHIP,
 				card = card
 			}
