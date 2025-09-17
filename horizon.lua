@@ -529,9 +529,9 @@ SMODS.Joker{
     loc_txt = {
         name = 'Joe 2 - Electric Boogaloo',
         text = {
-        	'{C:green}#1# in 2{} Chance of',
-			'giving {X:mult,C:white}X5{} Mult!',
-			'{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}#2#',
+        	'{C:green}#1# in 2{} Chance of giving {X:mult,C:white}X5{} Mult!',
+			'{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}',
+			'#2#',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}astololofo{}'
         },
     },
@@ -568,9 +568,9 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.joker_main then
 			card.ability.extra.count = card.ability.extra.count + 1
-			if card.ability.extra.count >= 10 then
+			if card.ability.extra.count == 10 then
 				card.ability.extra.lie = 0
-				card.ability.extra.lie2 = '\nDid you actually expect him to do something?'
+				card.ability.extra.lie2 = 'Did you actually expect him to do something?'
 				return {
 					message = "Revealed!",
 					card = card
