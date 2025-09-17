@@ -1331,7 +1331,7 @@ SMODS.Joker{
 	loc_vars = function(self,info_queue,center)
 		return{
 			vars = {
-				money = center.ability.extra.money
+				center.ability.extra.money
 			}
 		}
 	end,
