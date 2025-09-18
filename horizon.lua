@@ -211,7 +211,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Eeffoc', --joker key
+    key = 'eeffoc', --joker key
     loc_txt = { -- local text
         name = 'Coffee backwards is Eeffoc',
         text = {
@@ -260,7 +260,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Asto', --joker key
+    key = 'asto', --joker key
     loc_txt = { -- local text
         name = 'Asto',
         text = {
@@ -1348,7 +1348,7 @@ SMODS.Joker{
 }
 -- Uncommon --
 SMODS.Joker{
-	key = 'Dopi',
+	key = 'dopi',
     loc_txt = {
         name = 'Dopi',
         text = {
@@ -1404,7 +1404,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Neo', --joker key
+    key = 'neo', --joker key
     loc_txt = { -- local text
         name = '{C:purple,E:2}Ourpler{}',
         text = {
@@ -1441,7 +1441,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Kirb', --joker key
+    key = 'kirb', --joker key
     loc_txt = { -- local text
         name = 'Kirbos',
         text = {
@@ -1547,7 +1547,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'Bozo',
+	key = 'bozo',
     loc_txt = {
         name = 'bozo!',
         text = {
@@ -3272,7 +3272,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Nicky', --joker key
+    key = 'nicky', --joker key
     loc_txt = { -- local text
         name = 'The Nickle Monster',
         text = {
@@ -6108,7 +6108,7 @@ SMODS.Atlas{
     py = 95 -- height of one card
 }
 SMODS.Consumable{
-    key = 'Weakness', --key
+    key = 'weakness', --key
     set = 'Tarot', --the set of the card: corresponds to a consumable type
     atlas = 'Tarot', 
     pos = {x = 0, y = 0},
@@ -6349,7 +6349,7 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = 'Transmission',
+    key = 'transmission',
     set = 'Tarot',
 	atlas = 'Placeholder',
     pos = { x = 0, y = 0 },
