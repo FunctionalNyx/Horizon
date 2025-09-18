@@ -8,7 +8,7 @@
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
 	G.C.COLORSS = HEX("be93d4")
-	G.C.COLORSSTHESECOND = HEX("ffffff")
+	G.C.COLORSSTHESECOND = HEX("ffffff") -- Cum
 	G.C.mid_flash = 0
 	G.C.vort_time = 7
 	G.C.vort_speed = 0.4
@@ -3312,7 +3312,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Straz', --joker key
+    key = 'straz', --joker key
     loc_txt = { -- local text
         name = '{C:red}Beastmode{}',
         text = {
@@ -3353,7 +3353,7 @@ SMODS.Joker{
 		local hasDeleted = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_Straz' and other_joker ~= card then
+			if other_joker.config.center.key == 'j_nyx_straz' and other_joker ~= card then
 				G.jokers:remove_card(other_joker)
 				other_joker:remove()
 				hasDeleted = true
@@ -4093,7 +4093,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Sybyrr', --joker key
+    key = 'sybyrr', --joker key
     loc_txt = { -- local text
         name = 'Sybyrrrrrr',
         text = {
@@ -4149,7 +4149,7 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-    key = 'Pyro',
+    key = 'pyro',
     loc_txt = {
         name = 'Owner of DPG.tf',
         text = {
@@ -6059,8 +6059,45 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'gourment',
+    loc_txt = {
+        name = 'The Gourment',
+        text = {
+          '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers'
+        },
+    },
+    atlas = 'Placeholder',
+    rarity = "nyx_LostSoul",
+    cost = 14,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	calculate = function(self,card,context)
+		local effects = {}
+		for i=1, #G.jokers.cards do -- for all jokers
+			if G.jokers.cards[i] ~= card then -- not itself
+				-- if G.jokers.cards[i].ability.set == 'FoodJokers' then -- Doesn't work for some reason bozo please fix
+				local other_joker = G.jokers.cards[i]
+				-- NYX COOOOOOOOOOODE!
+				if (other_joker.config.center.key == 'j_gros_michel' or other_joker.config.center.key == 'j_egg' or other_joker.config.center.key == 'j_ice_cream') or
+				(other_joker.config.center.key == 'j_cavendish' or other_joker.config.center.key == 'j_turtle_bean' or other_joker.config.center.key == 'j_popcorn') or
+				(other_joker.config.center.key == 'j_popcorn' or other_joker.config.center.key == 'j_ramen' or other_joker.config.center.key == 'j_nyx_sybyrr') or
+				(other_joker.config.center.key == 'j_nyx_gummies' or other_joker.config.center.key == 'j_nyx_milk' or other_joker.config.center.key == 'j_nyx_vending') then
+					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
+					if effect then
+						table.insert(effects, effect) -- add to array
+					end
+				end
+			end
+		end
+		return SMODS.merge_effects(effects)
+	end
+}
 --
-
 
 --- Other Stuff ---
 -- Tarot --
@@ -7863,19 +7900,20 @@ SMODS.Enhancement{
 	end
 }
 -- 
-
--- SMODS.Sticker {
---     key = 'flipped',
---     rate = 1.0,
---     needs_enable_flag = false,
---     apply = function(self, card, val)
---         print(card.facing)
---         if card.facing == 'front' and val then
---             card:flip()
---         end
---         card.ability[self.key] = val
---     end
--- }
+--[[
+ SMODS.Sticker {
+     key = 'flipped',
+     rate = 1.0,
+     needs_enable_flag = false,
+     apply = function(self, card, val)
+         print(card.facing)
+         if card.facing == 'front' and val then
+             card:flip()
+         end
+         card.ability[self.key] = val
+     end
+ }
+]]
 
 SMODS.Sticker {
     key = 'nulled',
