@@ -6060,9 +6060,9 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'gourment',
+	key = 'gourmet',
     loc_txt = {
-        name = 'The Gourment',
+        name = 'The Gourmet',
         text = {
           '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers'
         },
