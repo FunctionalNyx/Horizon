@@ -7381,7 +7381,10 @@ SMODS.Back {
 					'm_gold',
 					'm_lucky',
 					'm_nyx_diseased',
-					'm_nyx_frozen'
+					'm_nyx_frozen',
+					'm_nyx_truelucky',
+					'm_nyx_burning',
+					'm_nyx_wet'
 				}
 				for i=1, #G.playing_cards do
 					if not SMODS.has_enhancement(G.playing_cards[i]) then
