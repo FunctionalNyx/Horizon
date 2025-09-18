@@ -7931,6 +7931,7 @@ SMODS.Sticker {
 		extra = {extraHands = 1}
 	},
 	default_compat = false,
+	no_collection = true,
 	compat_exceptions = 
 	{
 		Joker = true,
@@ -7973,6 +7974,7 @@ SMODS.Sticker {
 		extra = {extraHands = 1}
 	},
 	default_compat = false,
+	no_collection = true,
 	compat_exceptions = 
 	{
 		Joker = true,
