@@ -6987,6 +6987,60 @@ SMODS.Seal {
 		}
 	}
 }
+SMODS.Seal {
+	name = "Turquoise",
+	key = "greenblue",
+	badge_colour = HEX('40E0D0'),
+	atlas = "Sealss",
+	discovered = false,
+	pos = { x = 1, y = 0 },
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				colours = { HEX('40E0D0') }
+			}
+		}
+	end,
+	loc_txt = {
+		label = 'Turquoise Seal',
+		name = 'Turquoise Seal',
+		text = {
+			'If all {C:attention}scored{} cards have a {V:1}Turquoise{} seal',
+			'Create a {C:spectral}Spectral{} card'
+		}
+	},
+	calculate = function(self, card, context)
+		if context.after and context.cardarea == G.play then
+			if context.scoring_hand[1] == card then
+				local create = true
+				for i=1, #context.scoring_hand do
+					if context.scoring_hand[i].seal ~= "nyx_greenblue" then
+						create = false
+					end
+				end
+				if create then
+					if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+						G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+						G.E_MANAGER:add_event(Event({
+							func = (function()
+								SMODS.add_card {
+									set = 'Spectral',
+									key_append = 'nyx_turquoise'
+								}
+								G.GAME.consumeable_buffer = 0
+								return true
+							end)
+						}))
+						return {
+							message = localize('k_plus_spectral'),
+							colour = G.C.SECONDARY_SET.Spectral
+						}
+					end
+				end
+			end
+		end
+	end
+}
 --
 
 -- Booster Pack --
