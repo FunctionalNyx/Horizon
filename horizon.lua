@@ -1325,7 +1325,7 @@ SMODS.Joker{
     pos = {x = 14, y = 3},
 	config = { 
 		extra = {
-			money = 4
+			money = 3
 		}
 	},
 	loc_vars = function(self,info_queue,center)
