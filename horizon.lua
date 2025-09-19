@@ -1339,7 +1339,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			if SMODS.last_hand_oneshot then
 				return {
-					dollars = card.ability.extra.money,
+					dollars = card.ability.extra.money,		
 					card = card
 				}
 			end
@@ -2761,7 +2761,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 						}
 					end
 				elseif random < 1 / rareChoices*9 then -- Set hands to 0
-					G.GAME.round_resets.hands = 0
+					G.GAME.current_round.hands_left = 0
 				elseif random < 1 / rareChoices*10 then -- Duplicate joker to consumable slots
 					if #G.jokers.cards > 1 then
 						local which = math.floor(pseudorandom('rerollJoker')*(#G.jokers.cards-1))+1
