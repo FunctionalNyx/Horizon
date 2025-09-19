@@ -1325,7 +1325,7 @@ SMODS.Joker{
     pos = {x = 14, y = 3},
 	config = { 
 		extra = {
-			money = 4
+			money = 3
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -6987,6 +6987,60 @@ SMODS.Seal {
 		}
 	}
 }
+SMODS.Seal {
+	name = "Turquoise",
+	key = "greenblue",
+	badge_colour = HEX('40E0D0'),
+	atlas = "Sealss",
+	discovered = false,
+	pos = { x = 1, y = 0 },
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				colours = { HEX('40E0D0') }
+			}
+		}
+	end,
+	loc_txt = {
+		label = 'Turquoise Seal',
+		name = 'Turquoise Seal',
+		text = {
+			'If all {C:attention}scored{} cards have a {V:1}Turquoise{} seal',
+			'Create a {C:spectral}Spectral{} card'
+		}
+	},
+	calculate = function(self, card, context)
+		if context.after and context.cardarea == G.play then
+			if context.scoring_hand[1] == card then
+				local create = true
+				for i=1, #context.scoring_hand do
+					if context.scoring_hand[i].seal ~= "nyx_greenblue" then
+						create = false
+					end
+				end
+				if create then
+					if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+						G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+						G.E_MANAGER:add_event(Event({
+							func = (function()
+								SMODS.add_card {
+									set = 'Spectral',
+									key_append = 'nyx_turquoise'
+								}
+								G.GAME.consumeable_buffer = 0
+								return true
+							end)
+						}))
+						return {
+							message = localize('k_plus_spectral'),
+							colour = G.C.SECONDARY_SET.Spectral
+						}
+					end
+				end
+			end
+		end
+	end
+}
 --
 
 -- Booster Pack --
@@ -7903,6 +7957,8 @@ SMODS.Enhancement{
 	end
 }
 -- 
+
+-- STICKERS
 --[[
  SMODS.Sticker {
      key = 'flipped',
@@ -7917,7 +7973,6 @@ SMODS.Enhancement{
      end
  }
 ]]
-
 SMODS.Sticker {
     key = 'nulled',
     loc_txt = {
@@ -7960,7 +8015,6 @@ SMODS.Sticker {
 		end
 	end
 }
-
 SMODS.Sticker {
     key = 'corrupted',
     loc_txt = {
@@ -8003,6 +8057,35 @@ SMODS.Sticker {
 		end
 	end
 }
+--
+
+-- BOSS BLINDS --
+--[[
+SMODS.Blind {
+	key = 'cross',
+    loc_txt = {
+        name = 'The Cross',
+        text = {
+          'All {C:attention}Scored{} cards',
+		  'Lose all {C:attention}Card Modifiers{}',
+		  '{C:inactive,s:0.8}(Includes Seals, Enhancements, Editions){}'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 0},
+	boss = { min = 1, max = 10 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('56789A'),
+	press_play = function(self,context)
+		for i=1, #context.scoring_hand do
+			context.scoring_hand[i]:set_ability("c_base")
+		end
+	end
+}
+]]
+--
+
 
 -- Nyx bullshit --
 SMODS.Joker{
