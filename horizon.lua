@@ -7957,6 +7957,8 @@ SMODS.Enhancement{
 	end
 }
 -- 
+
+-- STICKERS
 --[[
  SMODS.Sticker {
      key = 'flipped',
@@ -7971,7 +7973,6 @@ SMODS.Enhancement{
      end
  }
 ]]
-
 SMODS.Sticker {
     key = 'nulled',
     loc_txt = {
@@ -8014,7 +8015,6 @@ SMODS.Sticker {
 		end
 	end
 }
-
 SMODS.Sticker {
     key = 'corrupted',
     loc_txt = {
@@ -8057,6 +8057,35 @@ SMODS.Sticker {
 		end
 	end
 }
+--
+
+-- BOSS BLINDS --
+--[[
+SMODS.Blind {
+	key = 'cross',
+    loc_txt = {
+        name = 'The Cross',
+        text = {
+          'All {C:attention}Scored{} cards',
+		  'Lose all {C:attention}Card Modifiers{}',
+		  '{C:inactive,s:0.8}(Includes Seals, Enhancements, Editions){}'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 0},
+	boss = { min = 1, max = 10 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('56789A'),
+	press_play = function(self,context)
+		for i=1, #context.scoring_hand do
+			context.scoring_hand[i]:set_ability("c_base")
+		end
+	end
+}
+]]
+--
+
 
 -- Nyx bullshit --
 SMODS.Joker{
