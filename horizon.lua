@@ -6994,6 +6994,9 @@ SMODS.Seal {
 	atlas = "Sealss",
 	discovered = false,
 	pos = { x = 1, y = 0 },
+	in_pool = function(self)
+		return false
+	end,
 	loc_vars = function(self,info_queue,center)
 		return{
 			vars = {
@@ -8060,30 +8063,75 @@ SMODS.Sticker {
 --
 
 -- BOSS BLINDS --
---[[
+SMODS.Atlas{
+	key = 'Blinds',
+	path = 'Blinds.png',
+	atlas_table = 'ANIMATION_ATLAS',
+	frames = 1,
+	px = 32,
+	py = 32
+}
 SMODS.Blind {
 	key = 'cross',
     loc_txt = {
         name = 'The Cross',
         text = {
-          'All {C:attention}Scored{} cards',
-		  'Lose all {C:attention}Card Modifiers{}',
-		  '{C:inactive,s:0.8}(Includes Seals, Enhancements, Editions){}'
+          'All {C:attention}Played{} cards',
+		  'Lose all {C:attention}Card Modifiers{}'
         },
     },
 	atlas = 'Blinds',
 	pos = {x = 0, y = 0},
-	boss = { min = 1, max = 10 },
+	boss = { min = 3 },
 	dollars = 5,
 	mult = 2,
-	boss_colour = HEX('56789A'),
-	press_play = function(self,context)
-		for i=1, #context.scoring_hand do
-			context.scoring_hand[i]:set_ability("c_base")
-		end
+	boss_colour = HEX('7e6752'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        for i = 1, #G.play.cards do
+                            G.E_MANAGER:add_event(Event({
+                                func = function()
+                                    G.play.cards[i]:juice_up()
+									G.play.cards[i]:set_ability('c_base')
+									G.play.cards[i]:set_edition(nil, nil, true, true)
+									G.play.cards[i]:set_seal(nil, nil, true)
+                                    return true
+                                end,
+                            }))
+                            delay(0.23)
+                        end
+                        return true
+                    end
+                }))
+                blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
 	end
 }
-]]
 --
 
 
