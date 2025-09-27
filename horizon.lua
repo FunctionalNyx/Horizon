@@ -5740,6 +5740,64 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'salestar',
+    loc_txt = {
+        name = 'Sale Star',
+        text = {
+          'The {C:attention}Shop{} has {C:attention}#1#{}',
+		  'extra slots when {C:attention}entering{}',
+		  '{C:attention,s:0.8}Rerolling{}{C:inactive,s:0.8} the shop will {}{C:red,s:0.8}remove{}{C:inactive,s:0.8} this bonus{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 2,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 0},
+	config = { 
+		extra = {
+			slots = 2,
+			reroll = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.slots,
+				center.ability.extra.reroll
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			change_shop_size(card.ability.extra.slots)
+			return true
+		end
+		}))
+  	end,
+  	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
+  	end,
+	calculate = function(self, card, context)
+		if context.reroll_shop and not card.ability.extra.reroll then
+			change_shop_size(-card.ability.extra.slots)
+			card.ability.extra.reroll = true
+		end
+		if context.ending_shop then
+			change_shop_size(card.ability.extra.slots)
+			card.ability.extra.reroll = false
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -8146,64 +8204,7 @@ SMODS.Blind {
 
 -- Nyx bullshit --
 
-SMODS.Joker{
-	key = 'salestar',
-    loc_txt = {
-        name = 'Sale Star',
-        text = {
-          'The {C:attention}Shop{} has {C:attention}#1#{}',
-		  'extra slots when {C:attention}entering{}',
-		  '{C:attention,s:0.8}Rerolling{}{C:inactive,s:0.8} the shop will {}{C:red,s:0.8}remove{}{C:inactive,s:0.8} this bonus{}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	config = { 
-		extra = {
-			slots = 2,
-			reroll = false
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.slots,
-				center.ability.extra.reroll
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			change_shop_size(card.ability.extra.slots)
-			return true
-		end
-		}))
-  	end,
-  	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
-  	end,
-	calculate = function(self, card, context)
-		if context.reroll_shop and not card.ability.extra.reroll then
-			change_shop_size(-card.ability.extra.slots)
-			card.ability.extra.reroll = true
-		end
-		if context.ending_shop then
-			change_shop_size(card.ability.extra.slots)
-			card.ability.extra.reroll = false
-		end
-	end
-}
+
 
 SMODS.Joker{
 	key = 'frontcard',
