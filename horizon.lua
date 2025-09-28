@@ -476,6 +476,10 @@ SMODS.Joker{
 				}
             return true end }))
 			delay(0.6)
+			return {
+				message = "Another!",
+				message_card = card
+			}
 		end
 	end
 }
