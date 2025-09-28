@@ -8252,7 +8252,7 @@ SMODS.Blind {
         },
     },
 	atlas = 'Blinds',
-	pos = {x = 1, y = 0},
+	pos = {x = 0, y = 1},
 	boss = { min = 3 },
 	dollars = 5,
 	mult = 2,
