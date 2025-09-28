@@ -8178,8 +8178,8 @@ SMODS.Atlas{
 	path = 'Blinds.png',
 	atlas_table = 'ANIMATION_ATLAS',
 	frames = 1,
-	px = 32,
-	py = 32
+	px = 34,
+	py = 34
 }
 SMODS.Blind {
 	key = 'cross',
