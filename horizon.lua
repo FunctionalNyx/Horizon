@@ -3236,6 +3236,65 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'salestar',
+    loc_txt = {
+        name = 'Sale Star',
+        text = {
+          'The {C:attention}Shop{} has {C:attention}#1#{}',
+		  'extra slots when {C:attention}entering{}',
+		  '{C:attention,s:0.8}Rerolling{}{C:inactive,s:0.8} the shop will {}{C:red,s:0.8}remove{}{C:inactive,s:0.8} this bonus{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 22, y = 3},
+	config = { 
+		extra = {
+			slots = 2,
+			reroll = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.slots,
+				center.ability.extra.reroll
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			change_shop_size(card.ability.extra.slots)
+			return true
+		end
+		}))
+  	end,
+  	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
+  	end,
+	calculate = function(self, card, context)
+		if context.reroll_shop and not card.ability.extra.reroll then
+			change_shop_size(-card.ability.extra.slots)
+			card.ability.extra.reroll = true
+		end
+		if context.ending_shop then
+			change_shop_size(card.ability.extra.slots)
+			card.ability.extra.reroll = false
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -4021,6 +4080,116 @@ SMODS.Joker{
                 }
             end
         end
+	end
+}
+SMODS.Joker{
+	key = 'joe_supreme',
+    loc_txt = {
+        name = 'Joe Supreme',
+        text = {
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Ultimate){}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 7,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 21, y = 3},
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
+                return true
+            end
+        end
+        return false
+    end,
+	config = { 
+		extra = {
+			xmult = 1,
+			xmult_gain = 0.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.xmult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
+			or joker.config.center.key == "j_nyx_joe_supreme" then
+                count = count + 1
+            end
+        end
+		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+		if context.after and not context.blueprint then
+			print(count)
+			if count >= 7 then
+				for _, joker in ipairs(G.jokers.cards or {}) do
+					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
+						local card_ = joker
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								card_.T.r = -0.2
+								card_:juice_up(0.3, 0.4)
+								card_.states.drag.is = true
+								card_.children.center.pinch.x = true
+								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+									func = function()
+										G.jokers:remove_card(card_)
+										card_:remove()
+										card_ = nil
+									return true; end})) 
+								return true
+							end
+						}))
+					end
+				end
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+								SMODS.add_card {
+									key = "j_nyx_joe_ultimate",
+								}
+							return true; end})) 
+						return true
+					end
+				}))
+				return {
+					message = 'Evolved!'
+				}
+			end
+		end
 	end
 }
 -- Legendary --
@@ -5740,64 +5909,6 @@ SMODS.Joker{
 		end
 	end
 }
-SMODS.Joker{
-	key = 'salestar',
-    loc_txt = {
-        name = 'Sale Star',
-        text = {
-          'The {C:attention}Shop{} has {C:attention}#1#{}',
-		  'extra slots when {C:attention}entering{}',
-		  '{C:attention,s:0.8}Rerolling{}{C:inactive,s:0.8} the shop will {}{C:red,s:0.8}remove{}{C:inactive,s:0.8} this bonus{}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	config = { 
-		extra = {
-			slots = 2,
-			reroll = false
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.slots,
-				center.ability.extra.reroll
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			change_shop_size(card.ability.extra.slots)
-			return true
-		end
-		}))
-  	end,
-  	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
-  	end,
-	calculate = function(self, card, context)
-		if context.reroll_shop and not card.ability.extra.reroll then
-			change_shop_size(-card.ability.extra.slots)
-			card.ability.extra.reroll = true
-		end
-		if context.ending_shop then
-			change_shop_size(card.ability.extra.slots)
-			card.ability.extra.reroll = false
-		end
-	end
-}
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -5851,115 +5962,6 @@ SMODS.Joker{
 		if context.setting_blind then
 			card.ability.extra.mult = (card.ability.extra.mult_gain*G.GAME.round_resets.ante)
 			card.ability.extra.money = (card.ability.extra.money_gain*G.GAME.round_resets.ante)
-		end
-	end
-}
-SMODS.Joker{
-	key = 'joe_supreme',
-    loc_txt = {
-        name = 'Joe Supreme',
-        text = {
-          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
-		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Ultimate){}',
-		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 7,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-	in_pool = function(self, args)
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
-                return true
-            end
-        end
-        return false
-    end,
-	config = { 
-		extra = {
-			xmult = 1,
-			xmult_gain = 0.5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
-		return{
-			vars = {
-				center.ability.extra.xmult,
-				center.ability.extra.xmult_gain
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		local count = 0
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
-			or joker.config.center.key == "j_nyx_joe_supreme" then
-                count = count + 1
-            end
-        end
-		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.xmult,
-				card = card
-			}
-		end
-		if context.after and not context.blueprint then
-			print(count)
-			if count >= 7 then
-				for _, joker in ipairs(G.jokers.cards or {}) do
-					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
-						local card_ = joker
-						G.E_MANAGER:add_event(Event({
-							func = function()
-								card_.T.r = -0.2
-								card_:juice_up(0.3, 0.4)
-								card_.states.drag.is = true
-								card_.children.center.pinch.x = true
-								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-									func = function()
-										G.jokers:remove_card(card_)
-										card_:remove()
-										card_ = nil
-									return true; end})) 
-								return true
-							end
-						}))
-					end
-				end
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-								SMODS.add_card {
-									key = "j_nyx_joe_ultimate",
-								}
-							return true; end})) 
-						return true
-					end
-				}))
-				return {
-					message = 'Evolved!'
-				}
-			end
 		end
 	end
 }
