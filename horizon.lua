@@ -8195,7 +8195,7 @@ SMODS.Blind {
 	boss = { min = 3 },
 	dollars = 5,
 	mult = 2,
-	boss_colour = HEX('7e6752'),
+	boss_colour = HEX('ffffff'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
             if context.press_play then
@@ -8216,6 +8216,66 @@ SMODS.Blind {
                             delay(0.23)
                         end
                         return true
+                    end
+                }))
+                blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
+	end
+}
+SMODS.Blind {
+	key = 'hammer',
+    loc_txt = {
+        name = 'The Hammer',
+        text = {
+          '#1# in #2# chance to',
+		  '{C:red}Destroy{} {C:attention}Played{} cards',
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 1, y = 0},
+	boss = { min = 3 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('7e6752'),
+	loc_vars = function(self)
+        local numerator, denominator = SMODS.get_probability_vars(self, 1, 7, 'nyx_hammer')
+        return { vars = { numerator, denominator } }
+    end,
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.destroy_card and context.cardarea == G.play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                       for i = 1, #G.play.cards do
+							if context.destroy_card == G.play.cards[i] and SMODS.pseudorandom_probability(blind, 'nyx_hammer', 1, 7) then
+								return {
+									remove = true
+								}
+							end
+							delay(0.23)
+						end
                     end
                 }))
                 blind.triggered = true
