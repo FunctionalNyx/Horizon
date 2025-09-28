@@ -470,10 +470,10 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.using_consumeable and pseudorandom('nyx_dupe') < G.GAME.probabilities.normal / card.ability.extra.odds then
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
-                play_sound('timpani')
-                local card = create_card('Tarot_Planet', G.consumeables, nil, nil, nil, nil, G.GAME.current_tarot_planet)
-                card:add_to_deck()
-                G.consumeables:emplace(card)
+                SMODS.add_card {
+					set = context.consumeable.ability_UIBox_table.card_type,
+					key_append = 'nyx_dupe'
+				}
             return true end }))
 			delay(0.6)
 		end
