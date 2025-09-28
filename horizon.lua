@@ -5959,10 +5959,10 @@ SMODS.Joker{
 				card = card
 			}
 		end
-		if context.setting_blind then
-			card.ability.extra.mult = (card.ability.extra.mult_gain*G.GAME.round_resets.ante)
-			card.ability.extra.money = (card.ability.extra.money_gain*G.GAME.round_resets.ante)
-		end
+		if context.round_eval and G.GAME.last_blind and G.GAME.last_blind.boss then
+            card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+			card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_gain
+        end
 	end
 }
 -- Legendary --
@@ -7525,6 +7525,47 @@ SMODS.Back {
 				return true
 			end
 		}))
+	end
+}
+SMODS.Back {
+	key = 'snowballdeck',
+	atlas = 'Decks',
+	pos = { x = 2, y = 0 },
+	loc_txt = {
+		name = "Snowball Deck",
+		text = {
+			'{C:red}#1#{} Hand Size',
+			'Gains {C:attention}+#2#{} Hand Size each ante',
+		}
+	},
+	config = { 
+		extra = {
+			hand_size = -3,
+			h_size_increase = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				self.config.extra.hand_size,
+				self.config.extra.h_size_increase
+			}
+		}
+	end,
+	unlocked = true,
+    discovered = false,
+	calculate = function(self, back, context)
+        if context.round_eval and G.GAME.last_blind and G.GAME.last_blind.boss then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.hand:change_size(self.config.extra.h_size_increase)
+                    return true
+                end
+            }))
+        end
+    end,
+	apply = function(self, back)
+		G.GAME.starting_params.hand_size = G.GAME.starting_params.hand_size + self.config.extra.hand_size
 	end
 }
 --
