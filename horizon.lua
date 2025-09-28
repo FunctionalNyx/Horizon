@@ -468,10 +468,41 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		local count = 0
 		if context.using_consumeable and pseudorandom('nyx_dupe') < G.GAME.probabilities.normal / card.ability.extra.odds then
+
+			if context.consumeable.config.center.key == 'c_nyx_blessing' then 
+				count = count + 1
+			else
+				if count > 0 then
+					count = count - 1
+				end
+			end
+			if count > 2 then -- Prevents people from abusing Blessing creating itself to infinitely duplicate
+				G.E_MANAGER:add_event(Event({
+                    func = function()
+                        card.T.r = -0.2
+                        card:juice_up(0.3, 0.4)
+                        card.states.drag.is = true
+                        card.children.center.pinch.x = true
+                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+                            func = function()
+                                G.jokers:remove_card(card)
+                                card:remove()
+                                card = nil
+                            return true; end})) 
+                        return true
+                    end
+                })) 
+				return {
+					message = "Abuser!",
+                    colour = G.C.RED
+				}
+			end
+
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                 SMODS.add_card {
-					set = context.consumeable.ability_UIBox_table.card_type,
+					set = context.consumeable.ability_UIBox_table.card_type, -- Yes this looks really weird, but it works so suck it
 					key_append = 'nyx_dupe'
 				}
             return true end }))
