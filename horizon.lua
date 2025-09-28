@@ -8244,10 +8244,14 @@ SMODS.Blind {
 }
 SMODS.Blind {
 	key = 'hammer',
+	loc_vars = function(self)
+        local numerator, denominator = SMODS.get_probability_vars(self, 1, 7, 'nyx_hammer')
+        return { vars = { numerator, denominator } }
+    end,
     loc_txt = {
         name = 'The Hammer',
         text = {
-          '#1# in #2# chance to',
+          numerator..' in '..denominator..' chance to',
 		  '{C:red}Destroy{} {C:attention}Played{} cards',
         },
     },
@@ -8257,10 +8261,6 @@ SMODS.Blind {
 	dollars = 5,
 	mult = 2,
 	boss_colour = HEX('7e6752'),
-	loc_vars = function(self)
-        local numerator, denominator = SMODS.get_probability_vars(self, 1, 7, 'nyx_hammer')
-        return { vars = { numerator, denominator } }
-    end,
 	calculate = function(self, blind, context)
         if not blind.disabled then
             if context.destroy_card and context.cardarea == G.play then
@@ -8271,6 +8271,8 @@ SMODS.Blind {
                        for i = 1, #G.play.cards do
 							if context.destroy_card == G.play.cards[i] and SMODS.pseudorandom_probability(blind, 'nyx_hammer', 1, 7) then
 								return {
+									message = "Smashed!",
+									message_card = G.play.cards[i],
 									remove = true
 								}
 							end
