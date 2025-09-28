@@ -437,7 +437,8 @@ SMODS.Joker{
         text = {
           '{C:green}#1# in 4{} Chance to Generate a {C:attention}Consumable{}',
 		  'when using a {C:attention}Consumable{}',
-		  '{C:inactive,s:0.8}Does {}{C:red,s:0.8}NOT{}{C:inactive,s:0.8} need room{}'
+		  '{C:inactive,s:0.8}Does {}{C:red,s:0.8}NOT{}{C:inactive,s:0.8} need room{}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
 	pools = {
