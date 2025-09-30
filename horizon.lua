@@ -8228,7 +8228,7 @@ SMODS.Blind {
     },
 	atlas = 'Blinds',
 	pos = {x = 0, y = 0},
-	boss = { min = 3 },
+	boss = { min = 5 },
 	dollars = 5,
 	mult = 2,
 	boss_colour = HEX('ffffff'),
@@ -8293,29 +8293,18 @@ SMODS.Blind {
 	dollars = 5,
 	mult = 2,
 	boss_colour = HEX('7e6752'),
-	loc_vars = function(self)
-        local numerator, denominator = SMODS.get_probability_vars(self, 1, 10, 'nyx_hammer')
-        return { vars = { numerator, denominator } }
-    end,
 	calculate = function(self, blind, context)
         if not blind.disabled then
             if context.destroy_card and context.cardarea == G.play then
-                G.E_MANAGER:add_event(Event({
-                    trigger = 'after',
-                    delay = 0.2,
-                    func = function()
-                       for i = 1, #G.play.cards do
-							if context.destroy_card == G.play.cards[i] and SMODS.pseudorandom_probability(blind, 'nyx_hammer', 1, 10) then
-								return {
-									message = "Smashed!",
-									message_card = G.play.cards[i],
-									remove = true
-								}
-							end
-							delay(0.23)
-						end
-                    end
-                }))
+				for i = 1, #G.play.cards do
+					if context.destroy_card == G.play.cards[i] and pseudorandom('nyx_diseased') < G.GAME.probabilities.normal / 10 then
+						return {
+							message = "Smashed!",
+							message_card = G.play.cards[i],
+							remove = true
+						}
+					end
+				end
                 blind.triggered = true
                 G.E_MANAGER:add_event(Event({
                     trigger = 'immediate',
