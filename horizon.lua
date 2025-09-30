@@ -4425,7 +4425,7 @@ SMODS.Joker{
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 4,
     cost = 10,
     unlocked = true,
@@ -4903,7 +4903,7 @@ SMODS.Joker{
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 16,
     unlocked = true,
@@ -4957,7 +4957,7 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 14,
     unlocked = true,
