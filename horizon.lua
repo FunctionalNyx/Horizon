@@ -4411,6 +4411,111 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'joe_ultimate',
+    loc_txt = {
+        name = 'Joe Ultimate',
+        text = {
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Almighty){}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 4,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 1, y = 4},
+	in_pool = function(self, args)
+        return false
+    end,
+	config = { 
+		extra = {
+			xmult = 1,
+			xmult_gain = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.xmult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or 
+			joker.config.center.key == "j_nyx_joe_supreme" then
+                count = count + 1
+            end
+        end
+		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+		if context.after and not context.blueprint then
+			if count >= 12 then
+				for _, joker in ipairs(G.jokers.cards or {}) do
+					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
+					or joker.config.center.key == "j_nyx_joe_supreme" then
+						local card_ = joker
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								card_.T.r = -0.2
+								card_:juice_up(0.3, 0.4)
+								card_.states.drag.is = true
+								card_.children.center.pinch.x = true
+								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+									func = function()
+										G.jokers:remove_card(card_)
+										card_:remove()
+										card_ = nil
+									return true; end})) 
+								return true
+							end
+						}))
+					end
+				end
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+								SMODS.add_card {
+									key = "j_nyx_joe_almighty",
+								}
+							return true; end})) 
+						return true
+					end
+				}))
+				return {
+					message = 'Evolved!'
+				}
+			end
+		end
+	end
+}
 -- LOST SOULS --
 SMODS.Joker{
 	key = 'fate',
@@ -4783,6 +4888,104 @@ SMODS.Joker{
 				}))
 			}
 		end
+	end
+}
+SMODS.Joker{
+	key = 'joe_almighty',
+    loc_txt = {
+        name = 'Joe Almighty',
+        text = {
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = "nyx_LostSoul",
+    cost = 16,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 4},
+	in_pool = function(self, args)
+        return false
+    end,
+	config = { 
+		extra = {
+			xmult = 1,
+			xmult_gain = 2.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
+		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.xmult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local count = 0
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
+			or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" then
+                count = count + 1
+            end
+        end
+		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'gourmet',
+    loc_txt = {
+        name = 'The Gourmet',
+        text = {
+          '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+    atlas = 'Placeholder',
+    rarity = "nyx_LostSoul",
+    cost = 14,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+	soul_pos = {x = 2, y = 1},
+    pos = {x = 0, y = 4},
+	calculate = function(self,card,context)
+		local effects = {}
+		for i=1, #G.jokers.cards do -- for all jokers
+			if G.jokers.cards[i] ~= card then -- not itself
+				-- if G.jokers.cards[i].ability.set == 'FoodJokers' then -- Doesn't work for some reason bozo please fix
+				local other_joker = G.jokers.cards[i]
+				-- NYX COOOOOOOOOOODE!
+				if (other_joker.config.center.key == 'j_gros_michel' or other_joker.config.center.key == 'j_egg' or other_joker.config.center.key == 'j_ice_cream') or
+				(other_joker.config.center.key == 'j_cavendish' or other_joker.config.center.key == 'j_turtle_bean' or other_joker.config.center.key == 'j_popcorn') or
+				(other_joker.config.center.key == 'j_popcorn' or other_joker.config.center.key == 'j_ramen' or other_joker.config.center.key == 'j_nyx_sybyrr') or
+				(other_joker.config.center.key == 'j_nyx_gummies' or other_joker.config.center.key == 'j_nyx_milk' or other_joker.config.center.key == 'j_nyx_vending') then
+					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
+					if effect then
+						table.insert(effects, effect) -- add to array
+					end
+				end
+			end
+		end
+		return SMODS.merge_effects(effects)
 	end
 }
 -- MISC SHIT --
@@ -6002,206 +6205,7 @@ SMODS.Joker{
 	end
 }
 -- Legendary --
-SMODS.Joker{
-	key = 'joe_ultimate',
-    loc_txt = {
-        name = 'Joe Ultimate',
-        text = {
-          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
-		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Almighty){}',
-		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 4,
-    cost = 10,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	in_pool = function(self, args)
-        return false
-    end,
-	config = { 
-		extra = {
-			xmult = 1,
-			xmult_gain = 1.5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
-		return{
-			vars = {
-				center.ability.extra.xmult,
-				center.ability.extra.xmult_gain
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		local count = 0
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" or 
-			joker.config.center.key == "j_nyx_joe_supreme" then
-                count = count + 1
-            end
-        end
-		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.xmult,
-				card = card
-			}
-		end
-		if context.after and not context.blueprint then
-			if count >= 12 then
-				for _, joker in ipairs(G.jokers.cards or {}) do
-					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
-					or joker.config.center.key == "j_nyx_joe_supreme" then
-						local card_ = joker
-						G.E_MANAGER:add_event(Event({
-							func = function()
-								card_.T.r = -0.2
-								card_:juice_up(0.3, 0.4)
-								card_.states.drag.is = true
-								card_.children.center.pinch.x = true
-								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-									func = function()
-										G.jokers:remove_card(card_)
-										card_:remove()
-										card_ = nil
-									return true; end})) 
-								return true
-							end
-						}))
-					end
-				end
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-								SMODS.add_card {
-									key = "j_nyx_joe_almighty",
-								}
-							return true; end})) 
-						return true
-					end
-				}))
-				return {
-					message = 'Evolved!'
-				}
-			end
-		end
-	end
-}
 -- LOST SOULS --
-SMODS.Joker{
-	key = 'joe_almighty',
-    loc_txt = {
-        name = 'Joe Almighty',
-        text = {
-          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
-		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = "nyx_LostSoul",
-    cost = 16,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	in_pool = function(self, args)
-        return false
-    end,
-	config = { 
-		extra = {
-			xmult = 1,
-			xmult_gain = 2.5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe
-		info_queue[#info_queue + 1] = G.P_CENTERS.j_nyx_joe2
-		return{
-			vars = {
-				center.ability.extra.xmult,
-				center.ability.extra.xmult_gain
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		local count = 0
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
-			or joker.config.center.key == "j_nyx_joe_supreme" or joker.config.center.key == "j_nyx_joe_ultimate" then
-                count = count + 1
-            end
-        end
-		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.xmult,
-				card = card
-			}
-		end
-	end
-}
-SMODS.Joker{
-	key = 'gourmet',
-    loc_txt = {
-        name = 'The Gourmet',
-        text = {
-          '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers'
-        },
-    },
-    atlas = 'Placeholder',
-    rarity = "nyx_LostSoul",
-    cost = 14,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	calculate = function(self,card,context)
-		local effects = {}
-		for i=1, #G.jokers.cards do -- for all jokers
-			if G.jokers.cards[i] ~= card then -- not itself
-				-- if G.jokers.cards[i].ability.set == 'FoodJokers' then -- Doesn't work for some reason bozo please fix
-				local other_joker = G.jokers.cards[i]
-				-- NYX COOOOOOOOOOODE!
-				if (other_joker.config.center.key == 'j_gros_michel' or other_joker.config.center.key == 'j_egg' or other_joker.config.center.key == 'j_ice_cream') or
-				(other_joker.config.center.key == 'j_cavendish' or other_joker.config.center.key == 'j_turtle_bean' or other_joker.config.center.key == 'j_popcorn') or
-				(other_joker.config.center.key == 'j_popcorn' or other_joker.config.center.key == 'j_ramen' or other_joker.config.center.key == 'j_nyx_sybyrr') or
-				(other_joker.config.center.key == 'j_nyx_gummies' or other_joker.config.center.key == 'j_nyx_milk' or other_joker.config.center.key == 'j_nyx_vending') then
-					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
-					if effect then
-						table.insert(effects, effect) -- add to array
-					end
-				end
-			end
-		end
-		return SMODS.merge_effects(effects)
-	end
-}
 --
 
 --- Other Stuff ---
@@ -7572,6 +7576,7 @@ SMODS.Back {
 		text = {
 			'{C:red}#1#{} Hand Size',
 			'Gains {C:attention}+#2#{} Hand Size each ante',
+			'Starts with 2 random {C:blue}Common{} {C:attention}Jokers{}'
 		}
 	},
 	config = { 
