@@ -4433,7 +4433,7 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 1, y = 4},
+    pos = {x = 1, y = 3},
 	in_pool = function(self, args)
         return false
     end,
@@ -4911,7 +4911,7 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 2, y = 4},
+    pos = {x = 2, y = 3},
 	in_pool = function(self, args)
         return false
     end,
@@ -4966,7 +4966,7 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
 	soul_pos = {x = 2, y = 1},
-    pos = {x = 0, y = 4},
+    pos = {x = 0, y = 3},
 	calculate = function(self,card,context)
 		local effects = {}
 		for i=1, #G.jokers.cards do -- for all jokers
