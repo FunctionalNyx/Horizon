@@ -8384,6 +8384,38 @@ SMODS.Blind {
 					enhancement = "m_nyx_mirage",
 					area = G.hand
 				}
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.2,
+					func = function()
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								G.hand:shuffle('aajk')
+								play_sound('cardSlide1', 0.85)
+								return true
+							end,
+						}))
+						delay(0.15)
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								G.hand:shuffle('aajk')
+								play_sound('cardSlide1', 1.15)
+								return true
+							end
+						}))
+						delay(0.15)
+						G.E_MANAGER:add_event(Event({
+							func = function()
+								G.hand:shuffle('aajk')
+								play_sound('cardSlide1', 1)
+								return true
+							end
+						}))
+						delay(0.5)
+						return true
+					end
+				}))
+
             end
 			if context.round_eval and G.GAME.last_blind and G.GAME.last_blind.boss then
 				for i=1, #G.playing_cards do
