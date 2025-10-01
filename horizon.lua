@@ -8584,6 +8584,7 @@ SMODS.Blind {
                     delay = 0.2,
                     func = function()
                         G.GAME.blind.chips = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
+						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
                         return true
                     end
                 }))
@@ -8685,6 +8686,7 @@ SMODS.Blind {
                     delay = 0.2,
                     func = function()
                         G.GAME.blind.chips = G.GAME.blind.chips * 1.5
+						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
                         return true
                     end
                 }))
