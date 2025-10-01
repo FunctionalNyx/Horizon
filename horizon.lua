@@ -8557,6 +8557,208 @@ SMODS.Blind {
         end
 	end
 }
+SMODS.Blind {
+	key = 'sum',
+    loc_txt = {
+        name = 'The Sum',
+        text = {
+          'Adds {C:attention}100{} to required',
+		  'score every {C:blue}Hand{}',
+		  '{C:inactive,s:0.8}Scales with Ante{}'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 3},
+	boss = { min = 3 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('4c56af'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        G.GAME.blind.chips = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante + 1)
+                        return true
+                    end
+                }))
+                blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
+	end
+}
+SMODS.Blind {
+	key = 'difference',
+    loc_txt = {
+        name = 'The Difference',
+        text = {
+          'Removes {C:attention}100{} from',
+		  'score every {C:blue}Hand{}',
+		  '{C:inactive,s:0.8}Scales with Ante{}'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 4},
+	boss = { min = 3 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('a03b3b'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        G.GAME.chips = G.GAME.chips - 100 * (G.GAME.round_resets.ante + 1)
+                        return true
+                    end
+                }))
+                blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
+	end
+}
+SMODS.Blind {
+	key = 'product',
+    loc_txt = {
+        name = 'The Product',
+        text = {
+          'Multiplies {C:attention}required score{}',
+		  'by {X:mult,C:white}X1.5{} every {C:blue}Hand{}'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 5},
+	boss = { min = 6 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('7a7a7a'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        G.GAME.blind.chips = G.GAME.blind.chips * 1.5
+                        return true
+                    end
+                }))
+                blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
+	end
+}
+SMODS.Blind {
+	key = 'quotient',
+    loc_txt = {
+        name = 'The Quotient',
+        text = {
+          'Divides {C:attention}your score{}',
+		  'by {X:mult,C:white}1.5{} every {C:blue}Hand{}'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 6},
+	boss = { min = 6 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('161616'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        G.GAME.chips = G.GAME.chips / 1.5
+                        return true
+                    end
+                }))
+                blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
+	end
+}
 --
 
 
