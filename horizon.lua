@@ -4850,9 +4850,9 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'HAG',
+	key = 'JAH',
     loc_txt = {
-        name = 'Humanity Against Jokers',
+        name = 'Jokers Against Humanity',
         text = {
           'Creates a {V:1}Card{}',
 		  'At the start of each round',
