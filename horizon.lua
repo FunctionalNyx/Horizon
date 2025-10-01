@@ -7570,7 +7570,7 @@ SMODS.Back {
 SMODS.Back {
 	key = 'snowballdeck',
 	atlas = 'Decks',
-	pos = { x = 2, y = 0 },
+	pos = { x = 3, y = 0 },
 	loc_txt = {
 		name = "Snowball Deck",
 		text = {
@@ -8110,6 +8110,23 @@ SMODS.Enhancement{
     	end
 	end
 }
+SMODS.Enhancement{
+	key = 'mirage',
+	atlas = 'enhancements',
+	pos = { x = 7, y = 0 },
+	unlocked = true,
+	discovered = false,
+	no_collection = true,
+	calculate = function(self,card,context)
+		if context.before and context.cardarea == G.play then
+			SMODS.destroy_cards { card }
+			return {
+				message = "Mirage",
+				message_card = card
+			}
+		end
+	end
+}
 -- 
 
 -- STICKERS
@@ -8331,6 +8348,50 @@ SMODS.Blind {
                 }))
                 delay(0.4)
             end
+        end
+	end
+}
+SMODS.Blind {
+	key = 'mirage_boss',
+    loc_txt = {
+        name = 'The Mirage',
+        text = {
+          'Creates 3 {C:attention}Mirage{} cards',
+		  'When you draw a hand'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 2},
+	boss = { min = 4 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('7031ac'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.hand_drawn then
+				SMODS.add_card {
+					set = 'Base',
+					enhancement = "m_nyx_mirage",
+					area = G.hand
+				}
+				SMODS.add_card {
+					set = 'Base',
+					enhancement = "m_nyx_mirage",
+					area = G.hand
+				}
+				SMODS.add_card {
+					set = 'Base',
+					enhancement = "m_nyx_mirage",
+					area = G.hand
+				}
+            end
+			if context.round_eval and G.GAME.last_blind and G.GAME.last_blind.boss then
+				for i=1, #G.playing_cards do
+					if SMODS.has_enhancement(G.playing_cards[i], 'm_nyx_mirage') then
+						SMODS.destroy_cards { G.playing_cards[i] }
+					end
+				end
+			end
         end
 	end
 }
