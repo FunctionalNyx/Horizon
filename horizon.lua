@@ -8565,7 +8565,7 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Sum',
         text = {
-          'Adds {C:attention}'..(100 * (G.GAME.round_resets.ante - 2))..'{} to required',
+          'Adds {C:attention}100{} to required',
 		  'score every {C:blue}Hand{}',
 		  '{C:inactive,s:0.8}Scales with Ante{}'
         },
@@ -8616,7 +8616,7 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Difference',
         text = {
-          'Removes {C:attention}'..(100 * (G.GAME.round_resets.ante - 2))..'{} from',
+          'Removes {C:attention}100{} from',
 		  'score every {C:blue}Hand{}',
 		  '{C:inactive,s:0.8}Scales with Ante{}'
         },
