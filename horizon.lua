@@ -1213,7 +1213,7 @@ SMODS.Joker{
                 }
             end
         end
-		if context.ending_shop and not context.blueprint then
+		if context.setting_blind and not context.blueprint then
 			local origin = false
 			local _end = false
 			local or_card = nil
@@ -5701,18 +5701,22 @@ SMODS.Joker{
 	add_to_deck = function(self, card, from_debuff)
 		G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3,
 			func = function()
-				SMODS.add_card {
+				local temp = nil
+				temp = SMODS.add_card {
 					key = 'j_nyx_joe',
 					stickers = {"eternal"},
 				}
-				SMODS.add_card {
+				temp:add_sticker("eternal",true)
+				temp = SMODS.add_card {
 					key = 'j_nyx_joe',
 					stickers = {"eternal"},
 				}
-				SMODS.add_card {
+				temp:add_sticker("eternal",true)
+				temp = SMODS.add_card {
 					key = 'j_nyx_joe',
 					stickers = {"eternal"},
 				}
+				temp:add_sticker("eternal",true)
 				return true
 			end,
 		}))
@@ -8231,23 +8235,6 @@ SMODS.Enhancement{
     	end
 	end
 }
-SMODS.Enhancement{
-	key = 'mirage',
-	atlas = 'enhancements',
-	pos = { x = 7, y = 0 },
-	unlocked = true,
-	discovered = false,
-	no_collection = true,
-	calculate = function(self,card,context)
-		if context.before and context.cardarea == G.play then
-			SMODS.destroy_cards { card }
-			return {
-				message = "Mirage",
-				message_card = card
-			}
-		end
-	end
-}
 -- 
 
 -- STICKERS
@@ -8346,6 +8333,25 @@ SMODS.Sticker {
 				return true
 			end
 			}))
+		end
+	end
+}
+SMODS.Sticker {
+    key = 'mirage',
+	atlas = 'Jokers',
+	pos = {x = -1, y = -1},
+    rate = 0.0,
+    needs_enable_flag = false,
+	hide_badge = true,
+	default_compat = false,
+	no_collection = true,
+	calculate = function(self,card,context)
+		if context.before and context.cardarea == G.play then
+			SMODS.destroy_cards { card }
+			return {
+				message = "Mirage",
+				message_card = card
+			}
 		end
 	end
 }
@@ -8490,21 +8496,25 @@ SMODS.Blind {
 	calculate = function(self, blind, context)
         if not blind.disabled then
             if context.hand_drawn then
-				SMODS.add_card {
+				local temp = nil
+				temp = SMODS.add_card {
 					set = 'Base',
-					enhancement = "m_nyx_mirage",
+					stickers = { "nyx_mirage" },
 					area = G.hand
 				}
-				SMODS.add_card {
+				temp:add_sticker("nyx_mirage",true)
+				temp = SMODS.add_card {
 					set = 'Base',
-					enhancement = "m_nyx_mirage",
+					stickers = { "nyx_mirage" },
 					area = G.hand
 				}
-				SMODS.add_card {
+				temp:add_sticker("nyx_mirage",true)
+				temp = SMODS.add_card {
 					set = 'Base',
-					enhancement = "m_nyx_mirage",
+					stickers = { "nyx_mirage" },
 					area = G.hand
 				}
+				temp:add_sticker("nyx_mirage",true)
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
 					delay = 0.2,
@@ -8536,11 +8546,10 @@ SMODS.Blind {
 						return true
 					end
 				}))
-
             end
 			if context.round_eval and G.GAME.last_blind and G.GAME.last_blind.boss then
 				for i=1, #G.playing_cards do
-					if SMODS.has_enhancement(G.playing_cards[i], 'm_nyx_mirage') then
+					if G.playing_cards[i].ability.nyx_mirage then
 						SMODS.destroy_cards { G.playing_cards[i] }
 					end
 				end
