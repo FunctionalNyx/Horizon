@@ -8372,6 +8372,7 @@ SMODS.Blind {
         name = 'The Cross',
         text = {
           'All {C:attention}Played{} cards',
+		  'Have a {C:green}1 in 3{} chance to',
 		  'Lose all {C:attention}Card Modifiers{}'
         },
     },
@@ -8389,16 +8390,18 @@ SMODS.Blind {
                     delay = 0.2,
                     func = function()
                         for i = 1, #G.play.cards do
-                            G.E_MANAGER:add_event(Event({
-                                func = function()
-                                    G.play.cards[i]:juice_up()
-									G.play.cards[i]:set_ability('c_base')
-									G.play.cards[i]:set_edition(nil, nil, true, true)
-									G.play.cards[i]:set_seal(nil, nil, true)
-                                    return true
-                                end,
-                            }))
-                            delay(0.23)
+							if pseudorandom('nyx_hammer') < G.GAME.probabilities.normal / 3 then
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.play.cards[i]:juice_up()
+										G.play.cards[i]:set_ability('c_base')
+										G.play.cards[i]:set_edition(nil, nil, true, true)
+										G.play.cards[i]:set_seal(nil, nil, true)
+										return true
+									end,
+								}))
+								delay(0.23)
+							end
                         end
                         return true
                     end
@@ -8446,7 +8449,7 @@ SMODS.Blind {
         if not blind.disabled then
             if context.destroy_card and context.cardarea == G.play then
 				for i = 1, #G.play.cards do
-					if context.destroy_card == G.play.cards[i] and pseudorandom('nyx_diseased') < G.GAME.probabilities.normal / 10 then
+					if context.destroy_card == G.play.cards[i] and pseudorandom('nyx_hammer') < G.GAME.probabilities.normal / 10 then
 						return {
 							message = "Smashed!",
 							message_card = G.play.cards[i],
