@@ -474,7 +474,7 @@ SMODS.Joker{
 			if context.consumeable.config.center.key == 'c_nyx_blessing' then 
 				print_count = print_count + 2
 			else
-				if count > 0 then
+				if print_count > 0 then
 					print_count = print_count - 1
 				end
 			end
