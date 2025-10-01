@@ -7607,6 +7607,23 @@ SMODS.Back {
     end,
 	apply = function(self, back)
 		G.GAME.starting_params.hand_size = G.GAME.starting_params.hand_size + self.config.extra.hand_size
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				if G.jokers then
+					SMODS.add_card {
+						set = 'Joker',
+						rarity = 'Common',
+						key_append = 'nyx_snowball'
+					},
+					SMODS.add_card {
+						set = 'Joker',
+						rarity = 'Common',
+						key_append = 'nyx_snowball'
+					}
+					return true
+				end
+			end,
+		}))
 	end
 }
 --
