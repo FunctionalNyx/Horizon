@@ -8587,7 +8587,7 @@ SMODS.Blind {
                         	G.GAME.blind.chips = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
 							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						elseif G.GAME.round_resets.ante >= 5 then
-							G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips/5)
+							G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips/10)
 							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						end
                         return true
@@ -8643,7 +8643,7 @@ SMODS.Blind {
 						if G.GAME.round_resets.ante < 5 then
                         	G.GAME.chips = G.GAME.chips - (100 * (G.GAME.round_resets.ante - 2))
 						elseif G.GAME.round_resets.ante >= 5 then
-							G.GAME.chips = G.GAME.chips - (G.GAME.blind.chips/5)
+							G.GAME.chips = G.GAME.chips - (G.GAME.blind.chips/10)
 						end
                         return true
                     end
