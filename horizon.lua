@@ -8583,8 +8583,13 @@ SMODS.Blind {
                     trigger = 'after',
                     delay = 0.2,
                     func = function()
-                        G.GAME.blind.chips = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
-						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+						if G.GAME.round_resets.ante < 5 then
+                        	G.GAME.blind.chips = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
+							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+						elseif G.GAME.round_resets.ante >= 5 then
+							G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips/5)
+							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+						end
                         return true
                     end
                 }))
@@ -8635,7 +8640,11 @@ SMODS.Blind {
                     trigger = 'after',
                     delay = 0.2,
                     func = function()
-                        G.GAME.chips = G.GAME.chips - 100 * (G.GAME.round_resets.ante - 2)
+						if G.GAME.round_resets.ante < 5 then
+                        	G.GAME.chips = G.GAME.chips - (100 * (G.GAME.round_resets.ante - 2))
+						elseif G.GAME.round_resets.ante >= 5 then
+							G.GAME.chips = G.GAME.chips - (G.GAME.blind.chips/5)
+						end
                         return true
                     end
                 }))
