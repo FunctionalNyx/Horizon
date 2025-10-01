@@ -430,6 +430,7 @@ SMODS.Joker{
         end
 	end
 }
+local print_count = 0
 SMODS.Joker{
 	key = 'printer',
     loc_txt = {
@@ -468,17 +469,16 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		local count = 0
 		if context.using_consumeable and pseudorandom('nyx_dupe') < G.GAME.probabilities.normal / card.ability.extra.odds then
 
 			if context.consumeable.config.center.key == 'c_nyx_blessing' then 
-				count = count + 1
+				print_count = print_count + 2
 			else
 				if count > 0 then
-					count = count - 1
+					print_count = print_count - 1
 				end
 			end
-			if count > 2 then -- Prevents people from abusing Blessing creating itself to infinitely duplicate
+			if print_count > 5 then -- Prevents people from abusing Blessing creating itself to infinitely duplicate
 				G.E_MANAGER:add_event(Event({
                     func = function()
                         card.T.r = -0.2
@@ -499,7 +499,7 @@ SMODS.Joker{
                     colour = G.C.RED
 				}
 			end
-
+			
 			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.4, func = function()
                 SMODS.add_card {
 					set = context.consumeable.ability_UIBox_table.card_type, -- Yes this looks really weird, but it works so suck it
