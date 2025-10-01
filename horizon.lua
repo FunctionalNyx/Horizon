@@ -8675,7 +8675,7 @@ SMODS.Blind {
 	pos = {x = 0, y = 5},
 	boss = { min = 6 },
 	dollars = 5,
-	mult = 2,
+	mult = 1.5,
 	boss_colour = HEX('7a7a7a'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
@@ -8725,7 +8725,7 @@ SMODS.Blind {
 	pos = {x = 0, y = 6},
 	boss = { min = 6 },
 	dollars = 5,
-	mult = 2,
+	mult = 1.5,
 	boss_colour = HEX('161616'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
