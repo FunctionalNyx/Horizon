@@ -8371,9 +8371,9 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Cross',
         text = {
-          'All {C:attention}Played{} cards',
-		  'Have a {C:green}1 in 3{} chance to',
-		  'Lose all {C:attention}Card Modifiers{}'
+          'All Played cards have',
+		  'a 1 in 3 chance to',
+		  'Lose all Card Modifiers'
         },
     },
 	atlas = 'Blinds',
@@ -8384,6 +8384,7 @@ SMODS.Blind {
 	boss_colour = HEX('ffffff'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
+			G.GAME.blind.loc_debuff_lines[2] = 'a '..G.GAME.probabilities.normal..' in 3 chance to'
             if context.press_play then
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
@@ -8436,7 +8437,7 @@ SMODS.Blind {
         name = 'The Hammer',
         text = {
           '1 in 10 chance to',
-		  '{C:red}Destroy{} {C:attention}Played{} cards',
+		  'Destroy Played cards',
         },
     },
 	atlas = 'Blinds',
@@ -8447,6 +8448,7 @@ SMODS.Blind {
 	boss_colour = HEX('7e6752'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
+			G.GAME.blind.loc_debuff_lines[1] = G.GAME.probabilities.normal..' in 10 chance to'
             if context.destroy_card and context.cardarea == G.play then
 				for i = 1, #G.play.cards do
 					if context.destroy_card == G.play.cards[i] and pseudorandom('nyx_hammer') < G.GAME.probabilities.normal / 10 then
@@ -8486,7 +8488,7 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Mirage',
         text = {
-          'Creates 3 {C:attention}Mirage{} cards',
+          'Creates 3 Mirages',
 		  'When you draw a hand'
         },
     },
@@ -8565,9 +8567,9 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Sum',
         text = {
-          'Adds {C:attention}100{} to required',
-		  'score every {C:blue}Hand{}',
-		  '{C:inactive,s:0.8}Scales with Ante{}'
+          'Adds 100 to required',
+		  'score every Hand',
+		  'Scales with Ante'
         },
     },
 	atlas = 'Blinds',
@@ -8578,6 +8580,13 @@ SMODS.Blind {
 	boss_colour = HEX('4c56af'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
+			if G.GAME.round_resets.ante < 5 then
+				local sum_amt = 100 * (G.GAME.round_resets.ante - 2)
+				G.GAME.blind.loc_debuff_lines[1] = 'Adds '..sum_amt..' to required'
+			elseif G.GAME.round_resets.ante >= 5 then
+				local sum_amt = G.GAME.blind.chips/10
+				G.GAME.blind.loc_debuff_lines[1] = 'Adds '..sum_amt..' to required'
+			end
             if context.press_play then
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
@@ -8622,9 +8631,9 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Difference',
         text = {
-          'Removes {C:attention}100{} from',
-		  'score every {C:blue}Hand{}',
-		  '{C:inactive,s:0.8}Scales with Ante{}'
+          'Removes 100 from',
+		  'score every Hand',
+		  'Scales with Ante'
         },
     },
 	atlas = 'Blinds',
@@ -8635,6 +8644,13 @@ SMODS.Blind {
 	boss_colour = HEX('a03b3b'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
+			if G.GAME.round_resets.ante < 5 then
+				local diff_amt = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
+				G.GAME.blind.loc_debuff_lines[1] = 'Removes '..diff_amt..' from'
+			elseif G.GAME.round_resets.ante >= 5 then
+				local diff_amt = G.GAME.blind.chips + (G.GAME.blind.chips/10)
+				G.GAME.blind.loc_debuff_lines[1] = 'Removes '..diff_amt..' from'
+			end
             if context.press_play then
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
@@ -8677,8 +8693,8 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Product',
         text = {
-          'Multiplies {C:attention}required score{}',
-		  'by {X:mult,C:white}X1.5{} every {C:blue}Hand{}'
+          'Multiplies required score',
+		  'by X1.5 every Hand'
         },
     },
 	atlas = 'Blinds',
@@ -8728,8 +8744,8 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Quotient',
         text = {
-          'Divides {C:attention}your score{}',
-		  'by {X:mult,C:white}1.5{} every {C:blue}Hand{}'
+          'Divides your score',
+		  'by 1.5 every Hand'
         },
     },
 	atlas = 'Blinds',
