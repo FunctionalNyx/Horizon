@@ -7614,7 +7614,7 @@ SMODS.Back {
 						set = 'Joker',
 						rarity = 'Common',
 						key_append = 'nyx_snowball'
-					},
+					}
 					SMODS.add_card {
 						set = 'Joker',
 						rarity = 'Common',
