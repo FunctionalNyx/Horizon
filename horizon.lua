@@ -6004,6 +6004,7 @@ SMODS.Joker{
         name = '{C:red,E:1}All In{}',
         text = {
           '{X:mult,C:white}X#1#{} Mult',
+		  'Generates random perishable {C:attention}Jokers{}',
 		  'Never see a {C:attention}shop{} again'
         },
     },
@@ -6022,7 +6023,7 @@ SMODS.Joker{
 	end,
 	config = { 
 		extra = {
-			Xmult = 5,
+			Xmult = 8,
 			count = 1
 		}
 	},
@@ -6036,6 +6037,20 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
+			if #G.jokers.cards < G.jokers.config.card_limit then
+				local temp = nil
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.4,
+					func = function()
+						play_sound('timpani')
+						temp = SMODS.add_card({ set = 'Joker' })
+						temp:add_sticker("perishable",true)
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			end
 			card.ability.extra.count = 1
 			return {
 				Xmult = card.ability.extra.Xmult,
@@ -6079,6 +6094,7 @@ SMODS.Joker{
         name = '{C:black,E:1}All In{}',
         text = {
           '{X:mult,C:white}X#1#{} Mult',
+		  '{C:blue}+3{} Hands and Discards',
 		  'Hand {C:attention}size{} is set to 1'
         },
     },
@@ -6097,15 +6113,17 @@ SMODS.Joker{
 	end,
 	config = { 
 		extra = {
-			Xmult = 4, -- Logger
-			hand_size = 1
+			Xmult = 6, -- Logger
+			hand_size = 1,
+			hands = 3
 		}
 	},
 	loc_vars = function(self,info_queue,center)
 		return{
 			vars = {
 				center.ability.extra.Xmult,
-				center.ability.extra.hand_size
+				center.ability.extra.hand_size,
+				center.ability.extra.hands
 			}
 		}
 	end,
@@ -6123,6 +6141,19 @@ SMODS.Joker{
 				card = card
 			}
 		end
+		if context.setting_blind then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+					ease_discard(card.ability.extra.hands)
+                    ease_hands_played(card.ability.extra.hands)
+                    SMODS.calculate_effect(
+                        { message = localize { type = 'variable', key = 'a_hands', vars = { card.ability.extra.hands } } },
+                        context.blueprint_card or card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
+        end
 	end
 }
 SMODS.Joker{
@@ -6131,6 +6162,7 @@ SMODS.Joker{
         name = '{C:green,E:1}All In{}',
         text = {
           '{X:mult,C:white}X#1#{} Mult',
+		  'Ante scaling is halved',
 		  'Joker {C:attention}slots{} are set to 1'
         },
     },
@@ -6149,7 +6181,7 @@ SMODS.Joker{
 	end,
 	config = { 
 		extra = {
-			Xmult = 7,
+			Xmult = 10,
 			joker_slots = 1
 		}
 	},
@@ -6164,9 +6196,11 @@ SMODS.Joker{
 	add_to_deck = function(self, card, from_debuff)
 		card.ability.extra.joker_slots = G.jokers.config.card_limit
 		G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.joker_slots + 1
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
 	end,
 	remove_from_deck = function(self, card, from_debuff)
 		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
@@ -6183,6 +6217,7 @@ SMODS.Joker{
         name = '{C:edition,s:1.2,E:2}All in{}',
         text = {
           '{X:mult,C:white}X#1#{} Mult',
+		  'Contains all the previous effects',
 		  '{C:red}There is no shop{}',
 		  '{C:red}There is only one hand{}',
 		  '{C:red}Only one card{}',
@@ -6207,6 +6242,7 @@ SMODS.Joker{
 			Xmult = 30,
 			hand_size = 1,
 			joker_slots = 1,
+			hands = 5,
 			count = 1
 		}
 	},
@@ -6216,11 +6252,13 @@ SMODS.Joker{
 				center.ability.extra.Xmult,
 				center.ability.extra.hand_size,
 				center.ability.extra.joker_slots,
+				center.ability.extra.hands,
 				center.ability.extra.count
 			}
 		}
 	end,
 	add_to_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
 		card.ability.extra.hand_size = G.hand.config.card_limit
 		G.hand:change_size(-card.ability.extra.hand_size + 1)
 		card.ability.extra.joker_slots = G.jokers.config.card_limit
@@ -6251,17 +6289,43 @@ SMODS.Joker{
 		}))
 	end,
 	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
 		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
 		G.hand:change_size(card.ability.extra.hand_size - 1)
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
+			local temp = nil
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					play_sound('timpani')
+					temp = SMODS.add_card({ set = 'Joker', edition = 'e_negative' })
+					temp:set_edition('e_negative',true)
+					temp:add_sticker("perishable",true)
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
 			card.ability.extra.count = 1
 			return {
 				Xmult = card.ability.extra.Xmult,
 				card = card
 			}
 		end
+		if context.setting_blind then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+					ease_discard(card.ability.extra.hands)
+                    SMODS.calculate_effect(
+                        { message = localize { type = 'variable', key = 'a_hands', vars = { card.ability.extra.hands } } },
+                        context.blueprint_card or card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
+        end
 		if G.shop and card.ability.extra.count == 1 then
 			card.ability.extra.count = card.ability.extra.count + 1
 			for i = 1, #G.jokers.cards do
