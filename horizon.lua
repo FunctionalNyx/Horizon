@@ -7899,10 +7899,12 @@ SMODS.Back {
 		G.E_MANAGER:add_event(Event({
 			func = function()
 				if G.jokers then
-					SMODS.add_card {
+					local temp = nil
+					temp = SMODS.add_card {
 						key = 'j_nyx_milkmann',
-						stickers = { "eternal" }
+						stickers = {"eternal"},
 					}
+					temp:add_sticker("eternal",true)
 					SMODS.add_card {
 						key = 'j_oops'
 					}
