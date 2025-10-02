@@ -3951,7 +3951,7 @@ SMODS.Joker{
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
 				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
 				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') or
-				other_joker.config.center.key == 'j_scholar' then
+				(other_joker.config.center.key == 'j_scholar' or other_joker.config.center.key == 'j_to_the_moon') then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
@@ -6360,6 +6360,97 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'discordmod',
+    loc_txt = {
+        name = 'Discord Mod',
+        text = {
+          'Gives {C:money}$5{} every {C:blue}hand{}',
+		  'but debuffs {C:attention}adjacent{} Jokers'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 0},
+	config = { 
+		extra = {
+			money = 5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.money
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				dollars = card.ability.extra.money,
+				card = card
+			}
+		end
+		local stopIndex = 0
+		for i = 1, #G.jokers.cards do
+			if G.jokers.cards[i] == card then
+				stopIndex = i
+				break
+			end
+		end
+
+		-- Debuff joker to left
+		if stopIndex > 1 then
+			local jokerToDebuff = G.jokers.cards[stopIndex - 1]
+
+			-- You cannot beat ERROR.
+			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
+				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
+			end
+		end
+
+		if G.jokers.cards[stopIndex + 1] then
+			local jokerToDebuff = G.jokers.cards[stopIndex + 1]
+
+			-- You cannot beat ERROR.
+			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
+				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
+			end
+		end
+
+		-- Undebuff other jokers
+		for i = 1, #G.jokers.cards do
+			if i ~= stopIndex and i ~= stopIndex - 1 and i ~= stopIndex + 1 then
+				local joker = G.jokers.cards[i]
+				local canUndebuff = true
+
+				-- Check if joker is chosen by crimson heart or has perished
+				if joker.ability.perishable then
+					if joker.ability.perish_tally <= 0 then
+						canUndebuff = false
+					end
+				end
+
+				if joker.ability.crimson_heart_chosen then
+					canUndebuff = false
+				end
+
+				if canUndebuff then
+					SMODS.debuff_card(joker, false, "discordmod")
+				end
+			end
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -6414,6 +6505,153 @@ SMODS.Joker{
             card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
 			card.ability.extra.money = card.ability.extra.money + card.ability.extra.money_gain
         end
+	end
+}
+SMODS.Joker{
+	key = 'sleightofhand',
+    loc_txt = {
+        name = 'Sleight of Hand',
+        text = {
+          'Gives {X:mult,C:white}X#1#{} Mult but has a',
+		  '{C:green}#3# in #2#{} chance to flip cards in hand'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			xmult = 7,
+			odds = 7
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+		if context.stay_flipped and context.to_area == G.hand and
+			SMODS.pseudorandom_probability(blind, 'nyx_soh', 1, 7) then
+			return {
+				stay_flipped = true
+			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'cupnball',
+    loc_txt = {
+        name = 'Cup & Ball',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult but {C:attention}flips{} and',
+		  '{C:attention}shuffles{} all Joker cards',
+		  'every other hand'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			xmult = 10,
+			hand = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.hand
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.first_hand_drawn then
+			card.ability.extra.hand = false
+		end
+		if card.ability.extra.hand == false then
+			local eval = function() return card.ability.extra.hand and not G.RESET_JIGGLES end
+            juice_card_until(card, eval, true)
+		end
+		if context.joker_main then
+			if card.ability.extra.hand == true then
+				card.ability.extra.hand = false
+				if #G.jokers.cards > 0 then
+					G.jokers:unhighlight_all()
+					for _, joker in ipairs(G.jokers.cards) do
+						joker:flip()
+					end
+					if #G.jokers.cards > 1 then
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.2,
+							func = function()
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.jokers:shuffle('aajk')
+										play_sound('cardSlide1', 0.85)
+										return true
+									end,
+								}))
+								delay(0.15)
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.jokers:shuffle('aajk')
+										play_sound('cardSlide1', 1.15)
+										return true
+									end
+								}))
+								delay(0.15)
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.jokers:shuffle('aajk')
+										play_sound('cardSlide1', 1)
+										return true
+									end
+								}))
+								delay(0.5)
+								return true
+							end
+						}))
+					end
+				end
+			else
+				card.ability.extra.hand = true
+			end
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
 	end
 }
 -- Legendary --
@@ -8897,7 +9135,6 @@ SMODS.Blind {
 
 
 -- Nyx bullshit --
-
 
 
 SMODS.Joker{
