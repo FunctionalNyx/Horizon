@@ -7164,6 +7164,72 @@ SMODS.Consumable {
     use = function(self, card, area, copier)
 		if G.jokers.highlighted[1] then
 			local chosen_joker = G.jokers.highlighted[1]
+			if chosen_joker.config.center.key == 'j_nyx_allin' then
+				local temp = nil
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.2,
+					func = function()
+						temp = G.SETTINGS.GAMESPEED
+						G.SETTINGS.GAMESPEED = 0.5
+						attention_text({
+							text = "DID YOU REALLY THINK",
+							scale = 1.4,
+							hold = 1.4,
+							major = card,
+							backdrop_colour = G.C.SECONDARY_SET.Tarot,
+							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+								'tm' or 'cm',
+							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+							silent = true
+						})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.06 * G.SETTINGS.GAMESPEED,
+							blockable = false,
+							blocking = false,
+							func = function()
+								play_sound('tarot2', 0.76, 0.4)
+								return true
+							end
+						}))
+						play_sound('tarot2', 1, 0.4)
+						card:juice_up(0.3, 0.5)
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.5,
+							blockable = false,
+							blocking = false,
+							func = function()
+								attention_text({
+									text = "IT WOULD BE THAT EASY?",
+									scale = 1.4,
+									hold = 1.4,
+									major = card,
+									backdrop_colour = G.C.SECONDARY_SET.Tarot,
+									align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+										'tm' or 'cm',
+									offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+									silent = true
+								})
+								return true
+							end
+						}))
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 1.5,
+							blockable = false,
+							blocking = false,
+							func = function()
+								G.SETTINGS.GAMESPEED = temp
+								return true
+							end
+						}))
+						return true
+					end
+				}))
+				return
+			end
 			if chosen_joker.ability.eternal or chosen_joker.ability.perishable or chosen_joker.ability.rental then
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
