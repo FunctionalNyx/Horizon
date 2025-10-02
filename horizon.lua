@@ -6773,9 +6773,6 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}(Hopefully){}'
         },
     },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
     atlas = 'Placeholder',
     rarity = 4,
     cost = 12,
