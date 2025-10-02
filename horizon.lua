@@ -6219,7 +6219,6 @@ SMODS.Joker{
           '{X:mult,C:white}X#1#{} Mult',
 		  'Contains all the previous effects',
 		  '{C:red}There is no shop{}',
-		  '{C:red}There is only one hand{}',
 		  '{C:red}Only one card{}',
 		  '{C:red}Only one Joker{}'
         },
@@ -6242,7 +6241,7 @@ SMODS.Joker{
 			Xmult = 30,
 			hand_size = 1,
 			joker_slots = 1,
-			hands = 5,
+			discards = 5,
 			count = 1
 		}
 	},
@@ -6252,7 +6251,7 @@ SMODS.Joker{
 				center.ability.extra.Xmult,
 				center.ability.extra.hand_size,
 				center.ability.extra.joker_slots,
-				center.ability.extra.hands,
+				center.ability.extra.discards,
 				center.ability.extra.count
 			}
 		}
@@ -6317,9 +6316,9 @@ SMODS.Joker{
 		if context.setting_blind then
             G.E_MANAGER:add_event(Event({
                 func = function()
-					ease_discard(card.ability.extra.hands)
+					ease_discard(card.ability.extra.discards)
                     SMODS.calculate_effect(
-                        { message = localize { type = 'variable', key = 'a_hands', vars = { card.ability.extra.hands } } },
+                        { message = localize { type = 'variable', key = 'a_discards', vars = { card.ability.extra.discards } } },
                         context.blueprint_card or card)
                     return true
                 end
@@ -6724,7 +6723,79 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'ouroboros',
+    loc_txt = {
+        name = 'Ouroboros',
+        text = {
+          'Always draw {C:attention}#1# cards{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+	config = { 
+		extra = {
+			cards = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.cards
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.drawing_cards and (G.GAME.current_round.hands_played ~= 0 or G.GAME.current_round.discards_used ~= 0) then
+			return {
+				cards_to_draw = card.ability.extra.cards
+			}
+		end
+	end
+}
 -- Legendary --
+SMODS.Joker{
+	key = 'loadeddice',
+    loc_txt = {
+        name = 'Loaded Dice',
+        text = {
+          'All {C:attention}probabilities{} are {C:green}Guaranteed{}',
+		  '{C:inactive,s:0.8}(Hopefully){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 4,
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	add_to_deck = function(self, card, from_debuff)
+		for k, v in pairs(G.GAME.probabilities) do 
+			G.GAME.probabilities[k] = v*1000
+		end
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		for k, v in pairs(G.GAME.probabilities) do 
+			G.GAME.probabilities[k] = v/1000
+		end
+	end,
+}
 -- LOST SOULS --
 --
 
@@ -7171,16 +7242,27 @@ SMODS.Consumable {
 					delay = 0.2,
 					func = function()
 						temp = G.SETTINGS.GAMESPEED
-						G.SETTINGS.GAMESPEED = 0.5
+						G.SETTINGS.GAMESPEED = 1
 						attention_text({
 							text = "DID YOU REALLY THINK",
 							scale = 1.4,
 							hold = 1.4,
 							major = card,
-							backdrop_colour = G.C.SECONDARY_SET.Tarot,
+							backdrop_colour = G.C.RED,
 							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
 								'tm' or 'cm',
 							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+							silent = true
+						})
+						attention_text({
+							text = "IT WOULD BE THAT EASY?",
+							scale = 1.4,
+							hold = 1.4,
+							major = card,
+							backdrop_colour = G.C.RED,
+							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+								'tm' or 'cm',
+							offset = { x = 0, y = 1.2 },
 							silent = true
 						})
 						G.E_MANAGER:add_event(Event({
@@ -7197,27 +7279,7 @@ SMODS.Consumable {
 						card:juice_up(0.3, 0.5)
 						G.E_MANAGER:add_event(Event({
 							trigger = 'after',
-							delay = 0.5,
-							blockable = false,
-							blocking = false,
-							func = function()
-								attention_text({
-									text = "IT WOULD BE THAT EASY?",
-									scale = 1.4,
-									hold = 1.4,
-									major = card,
-									backdrop_colour = G.C.SECONDARY_SET.Tarot,
-									align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
-										'tm' or 'cm',
-									offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-									silent = true
-								})
-								return true
-							end
-						}))
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 1.5,
+							delay = 1,
 							blockable = false,
 							blocking = false,
 							func = function()
