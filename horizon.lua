@@ -4127,9 +4127,15 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.ending_shop and not context.blueprint then
+			local combine = true
+			for _, joker in ipairs(G.jokers.cards or {}) do
+				if joker.config.center.key == "j_nyx_lasting_adventure" then
+					combine = false
+				end
+			end
 			for i = 1, #G.jokers.cards do
 				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_fresh_start' then
+				if other_joker.config.center.key == 'j_nyx_fresh_start' and combine then
 					G.E_MANAGER:add_event(Event({
 						func = function()
 							other_joker.T.r = -0.2
