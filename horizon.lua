@@ -4223,49 +4223,49 @@ SMODS.Joker{
 		if context.setting_blind and not context.blueprint then
 			local origin = false
 			local _end = false
-			local or_card = nil
-			local end_card = nil
+			local odd_card = nil
+			local even_card = nil
 			for i = 1, #G.jokers.cards do
 				local other_joker = G.jokers.cards[i]
 				if other_joker.config.center.key == 'j_nyx_fresh_start' then
 					origin = true
-					or_card = other_joker
+					odd_card = other_joker
 				elseif other_joker.config.center.key == 'j_nyx_familiar_end' then
 					_end = true
-					end_card = other_joker
+					even_card = other_joker
 				end
 				if origin and _end then
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							or_card.T.r = -0.2
-							or_card:juice_up(0.3, 0.4)
-							or_card.states.drag.is = true
-							or_card.children.center.pinch.x = true
-							end_card.T.r = -0.2
-							end_card:juice_up(0.3, 0.4)
-							end_card.states.drag.is = true
-							end_card.children.center.pinch.x = true
+							odd_card.T.r = -0.2
+							odd_card:juice_up(0.3, 0.4)
+							odd_card.states.drag.is = true
+							odd_card.children.center.pinch.x = true
+							even_card.T.r = -0.2
+							even_card:juice_up(0.3, 0.4)
+							even_card.states.drag.is = true
+							even_card.children.center.pinch.x = true
 							card.T.r = -0.2
 							card:juice_up(0.3, 0.4)
 							card.states.drag.is = true
 							card.children.center.pinch.x = true
 							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
 								func = function()
-									G.jokers:remove_card(or_card)
-									G.jokers:remove_card(end_card)
+									G.jokers:remove_card(odd_card)
+									G.jokers:remove_card(even_card)
 									G.jokers:remove_card(card)
-									or_card:remove()
-									end_card:remove()
+									odd_card:remove()
+									even_card:remove()
 									card:remove()
-									or_card = nil
-									end_card = nil
+									odd_card = nil
+									even_card = nil
 									card = nil
 								return true; end})) 
 							return true
 						end
 					})) 
 					SMODS.add_card{
-						key = 'j_nyx_true_tragedy'
+						key = 'j_nyx_tragedy'
 					}
 					return {
 						message = "Combined!",
