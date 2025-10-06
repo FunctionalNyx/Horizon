@@ -5064,9 +5064,6 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 16,
@@ -5162,9 +5159,6 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         },
     },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 20,
@@ -6011,7 +6005,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Placeholder',
     rarity = 1,
-    cost = 0,
+    cost = 5,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -6033,14 +6027,48 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.discard and not context.blueprint then
-			if context.cardarea == G.hand and 
-			   (context.other_card:get_id() == 11 or
+			if  (context.other_card:get_id() == 11 or
 				context.other_card:get_id() == 12 or
 				context.other_card:get_id() == 13) then
 				if math.random(1, G.GAME.probabilities.normal) <= card.ability.extra.odds then
+					local beheadedcard = context.other_card
+					local suit = beheadedcard.base.suit
+					print(rank)
+					if context.other_card:get_id() == 13 then
+						local ran = math.random(3, 10)
+						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
+						local card2 = SMODS.add_card({set = 'Base', area = G.deck})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								copy_card(beheadedcard, card1)
+								SMODS.change_base(card1, suit, ""..ran.."")
+								copy_card(beheadedcard, card2)
+								SMODS.change_base(card2, suit, ""..(context.other_card:get_id()-ran).."")
+								SMODS.destroy_cards{ beheadedcard }
+								return true
+							end
+						}))
+					else
+						local ran = math.random(2, 10)
+						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
+						local card2 = SMODS.add_card({set = 'Base', area = G.deck})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								copy_card(beheadedcard, card1)
+								SMODS.change_base(card1, suit, ""..ran.."")
+								copy_card(beheadedcard, card2)
+								SMODS.change_base(card2, suit, ""..(context.other_card:get_id()-ran).."")
+								SMODS.destroy_cards{ beheadedcard }
+								return true
+							end
+						}))
+					end
 					return {
-						behead = true,
-						message = localize { type = 'variable', key = 'anarchist', vars = { context.other_card:get_name() } },
+						message = "Beheaded!",
 						message_card = card
 					}
 				end
