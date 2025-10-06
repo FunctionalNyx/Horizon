@@ -5997,6 +5997,57 @@ SMODS.Joker{
 		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
   	end
 }
+SMODS.Joker{
+	key = 'anarchist',
+    loc_txt = {
+        name = 'Anarchist',
+        text = {
+        	'When discarding {C:attention}Face{} cards',
+			'{C:green}#2# in #1#{} chance to {C:red}Behead{} it instead',
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = {
+		extra = {
+			odds = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.discard and not context.blueprint then
+			if context.cardarea == G.hand and 
+			   (context.other_card:get_id() == 11 or
+				context.other_card:get_id() == 12 or
+				context.other_card:get_id() == 13) then
+				if math.random(1, G.GAME.probabilities.normal) <= card.ability.extra.odds then
+					return {
+						behead = true,
+						message = localize { type = 'variable', key = 'anarchist', vars = { context.other_card:get_name() } },
+						message_card = card
+					}
+				end
+			end
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'allinred',
@@ -8433,11 +8484,11 @@ SMODS.Enhancement{
 	discovered = false,
 	config = {
 		extra = {
-			odds1 = 2,
-			odds2 = 3,
-			odds3 = 4,
-			odds4 = 5,
-			odds5 = 6,
+			odds1 = 1,
+			odds2 = 2,
+			odds3 = 3,
+			odds4 = 4,
+			odds5 = 5,
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -8772,6 +8823,58 @@ SMODS.Enhancement{
 				end
 			end
     	end
+	end
+}
+SMODS.Enhancement{
+	key = 'starcrossed',
+	atlas = 'enhancements',
+	pos = { x = 7, y = 0 },
+	loc_txt = {
+		name = 'Star-Crossed Card',
+		text = {
+			'Gains {X:mult,C:white}X#2#{} Mult if the',
+			'entire hand is {C:attention}Star-Crossed{}',
+			'Only applies to the',
+			'{C:attention}First Scored{} card',
+			'{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{}{C:inactive,s:0.8} Mult){}',
+
+		}
+	},
+	unlocked = true,
+	discovered = false,
+	config = {
+		extra = {
+			xmult = 1,
+			mult_gain = 0.05
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.mult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			if context.scoring_hand[1] == card then
+				local check = true
+				for i = 1, #context.scoring_hand do
+					if not SMODS.has_enhancement(context.scoring_hand[1], 'm_nyx_starcrossed') then
+						check = false
+						break
+					end
+				end
+				if check then
+					card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.mult_gain
+				end
+			end
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
 	end
 }
 -- 
