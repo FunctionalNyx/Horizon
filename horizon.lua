@@ -3435,6 +3435,172 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'gummies',
+    loc_txt = {
+        name = 'Vitamin Gummies',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult but decreases by {X:mult,C:white}X0.25{} every hand',
+		  "{C:inactive,E:1,s:0.8}You know you're only supposed to eat 2 a day right?{}",
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true,
+		["FoodJokers"] = true
+	},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    pos = {x = 7, y = 4},
+	config = { 
+		extra = {
+			Xmult = 2.5,
+			Xmult_loss = 0.25
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult,
+				center.ability.extra.Xmult_loss
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.Xmult,
+				card = card
+            }
+		end
+		if context.after and not context.blueprint then
+			card.ability.extra.Xmult = card.ability.extra.Xmult - card.ability.extra.Xmult_loss
+			if card.ability.extra.Xmult == 1 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.T.r = -0.2
+						card:juice_up(0.3, 0.4)
+						card.states.drag.is = true
+						card.children.center.pinch.x = true
+						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+							func = function()
+								G.jokers:remove_card(card)
+								card:remove()
+								card = nil
+							return true; end})) 
+						return true
+					end
+				}))
+				return {
+					message = 'Eaten!'
+				}
+			else
+				return {
+					message = '-X'..card.ability.extra.Xmult_loss,
+					colour = G.C.RED
+				}
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'discordmod',
+    loc_txt = {
+        name = 'Discord Mod',
+        text = {
+          'Gives {C:money}$5{} every {C:blue}hand{}',
+		  'but debuffs {C:attention}adjacent{} Jokers',
+		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 6, y = 4},
+	config = { 
+		extra = {
+			money = 5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.money
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				dollars = card.ability.extra.money,
+				card = card
+			}
+		end
+		local stopIndex = 0
+		for i = 1, #G.jokers.cards do
+			if G.jokers.cards[i] == card then
+				stopIndex = i
+				break
+			end
+		end
+
+		-- Debuff joker to left
+		if stopIndex > 1 then
+			local jokerToDebuff = G.jokers.cards[stopIndex - 1]
+
+			-- You cannot beat ERROR.
+			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
+				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
+			end
+		end
+
+		if G.jokers.cards[stopIndex + 1] then
+			local jokerToDebuff = G.jokers.cards[stopIndex + 1]
+
+			-- You cannot beat ERROR.
+			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
+				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
+			end
+		end
+
+		-- Undebuff other jokers
+		for i = 1, #G.jokers.cards do
+			if i ~= stopIndex and i ~= stopIndex - 1 and i ~= stopIndex + 1 then
+				local joker = G.jokers.cards[i]
+				local canUndebuff = true
+
+				-- Check if joker is chosen by crimson heart or has perished
+				if joker.ability.perishable then
+					if joker.ability.perish_tally <= 0 then
+						canUndebuff = false
+					end
+				end
+
+				if joker.ability.crimson_heart_chosen then
+					canUndebuff = false
+				end
+
+				if canUndebuff then
+					SMODS.debuff_card(joker, false, "discordmod")
+				end
+			end
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -6432,170 +6598,6 @@ SMODS.Joker{
 					return true
 				end
 			}))
-		end
-	end
-}
-SMODS.Joker{
-	key = 'gummies',
-    loc_txt = {
-        name = 'Vitamin Gummies',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult but decreases by {X:mult,C:white}X0.25{} every hand',
-		  "{C:inactive,E:1,s:0.8}You know you're only supposed to eat 2 a day right?{}"
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true,
-		["FoodJokers"] = true
-	},
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 6,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = false,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	config = { 
-		extra = {
-			Xmult = 2.5,
-			Xmult_loss = 0.25
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult,
-				center.ability.extra.Xmult_loss
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.Xmult,
-				card = card
-            }
-		end
-		if context.after and not context.blueprint then
-			card.ability.extra.Xmult = card.ability.extra.Xmult - card.ability.extra.Xmult_loss
-			if card.ability.extra.Xmult == 1 then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
-						return true
-					end
-				}))
-				return {
-					message = 'Eaten!'
-				}
-			else
-				return {
-					message = '-X'..card.ability.extra.Xmult_loss,
-					colour = G.C.RED
-				}
-			end
-		end
-	end
-}
-SMODS.Joker{
-	key = 'discordmod',
-    loc_txt = {
-        name = 'Discord Mod',
-        text = {
-          'Gives {C:money}$5{} every {C:blue}hand{}',
-		  'but debuffs {C:attention}adjacent{} Jokers'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 6,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	config = { 
-		extra = {
-			money = 5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.money
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			return {
-				dollars = card.ability.extra.money,
-				card = card
-			}
-		end
-		local stopIndex = 0
-		for i = 1, #G.jokers.cards do
-			if G.jokers.cards[i] == card then
-				stopIndex = i
-				break
-			end
-		end
-
-		-- Debuff joker to left
-		if stopIndex > 1 then
-			local jokerToDebuff = G.jokers.cards[stopIndex - 1]
-
-			-- You cannot beat ERROR.
-			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
-				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
-			end
-		end
-
-		if G.jokers.cards[stopIndex + 1] then
-			local jokerToDebuff = G.jokers.cards[stopIndex + 1]
-
-			-- You cannot beat ERROR.
-			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
-				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
-			end
-		end
-
-		-- Undebuff other jokers
-		for i = 1, #G.jokers.cards do
-			if i ~= stopIndex and i ~= stopIndex - 1 and i ~= stopIndex + 1 then
-				local joker = G.jokers.cards[i]
-				local canUndebuff = true
-
-				-- Check if joker is chosen by crimson heart or has perished
-				if joker.ability.perishable then
-					if joker.ability.perish_tally <= 0 then
-						canUndebuff = false
-					end
-				end
-
-				if joker.ability.crimson_heart_chosen then
-					canUndebuff = false
-				end
-
-				if canUndebuff then
-					SMODS.debuff_card(joker, false, "discordmod")
-				end
-			end
 		end
 	end
 }
