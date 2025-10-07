@@ -2598,8 +2598,8 @@ end
 -- '{X:chips,C:purple}Blind{} {X:mult,C:inactive}' .. corruptedText[math.random(1, #corruptedText)] .. '{} {C:mult}mult{} after',
 -- 'every {X:mult,C:chips}' .. corruptedText[math.random(1, #corruptedText)] .. '{}'
 
-local randomWords = {'Jo  ker', 'unde fined    ', 'broken', 'SJKFSUQ   ', '   FunctionalNyx', 'ER  ROR', '-face', 'Plac   eholder', 'Misprint  ', 'MESSAGE   ', 'UNK   NOWN', '34   213551', 'meani   ng', 'TRU  E', 'FAL  SE', 'Gi  ves', 'bozo!'}
-local colors = {G.C.RED, G.C.GREEN, G.C.BLUE, G.C.YELLOW, G.C.PURPLE, G.C.ORANGE, G.C.PINK, G.C.BROWN}
+local randomWords = {'Jo  ker', 'unde fined    ', 'broken', 'SJKFSUQ   ', '   Func tional Nyx', 'ER  ROR', '-face', 'Plac   eholder', 'Misprint  ', 'MESSAGE   ', 'UNK   NOWN', '34   213551', 'meani   ng', 'TRU  E', 'FAL  SE', 'Gi  ves', '  bozo!', 'I', 'F0U ND', 'Y0U'}
+--local colors = {G.C.RED, G.C.GREEN, G.C.BLUE, G.C.YELLOW, G.C.PURPLE, G.C.ORANGE, G.C.PINK, G.C.BROWN} -- unused
 local suits = {'Spades', 'Hearts', 'Diamonds', 'Clubs'}
 local ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'}
 local rarities = {'Common', 'Uncommon', 'Rare', 'Legendary'}
