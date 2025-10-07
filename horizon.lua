@@ -413,6 +413,13 @@ SMODS.Joker{
 			}
 		}
 	end,
+	add_to_deck = function(self, card, from_debuff)
+        if G.GAME.blind and G.GAME.blind.boss and not G.GAME.blind.disabled and G.GAME.round_resets.blind_choices.Boss == "bl_nyx_robber" then
+            G.GAME.blind:disable()
+            play_sound('timpani')
+            SMODS.calculate_effect({ message = localize('ph_boss_disabled') }, card)
+        end
+    end,
 	calculate = function(self,card,context)
 		if context.buying_card and pseudorandom('nyx_no') < G.GAME.probabilities.normal / card.ability.extra.odds then
             return {
@@ -427,6 +434,23 @@ SMODS.Joker{
 				message = "Refund!",
 				message_card = card
             }
+        end
+		if context.setting_blind and not context.blueprint and context.blind.boss and G.GAME.round_resets.blind_choices.Boss == "bl_nyx_robber" then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.GAME.blind:disable()
+                            play_sound('timpani')
+                            delay(0.4)
+                            return true
+                        end
+                    }))
+                    SMODS.calculate_effect({ message = localize('ph_boss_disabled') }, card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
         end
 	end
 }
@@ -9548,6 +9572,57 @@ SMODS.Blind {
                     end
                 }))
                 blind.triggered = true
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'immediate',
+                    func = (function()
+                        SMODS.juice_up_blind()
+                        G.E_MANAGER:add_event(Event({
+                            trigger = 'after',
+                            delay = 0.06 * G.SETTINGS.GAMESPEED,
+                            blockable = false,
+                            blocking = false,
+                            func = function()
+                                play_sound('tarot2', 0.76, 0.4)
+                                return true
+                            end
+                        }))
+                        play_sound('tarot2', 1, 0.4)
+                        return true
+                    end)
+                }))
+                delay(0.4)
+            end
+        end
+	end
+}
+SMODS.Blind {
+	key = 'robber',
+    loc_txt = {
+        name = 'The Robber',
+        text = {
+          'Steals 50% of your money',
+		  'when you play a Hand'
+        },
+    },
+	atlas = 'Blinds',
+	pos = {x = 0, y = 0},
+	boss = { min = 5 },
+	dollars = 5,
+	mult = 2,
+	boss_colour = HEX('ffffff'),
+	calculate = function(self, blind, context)
+        if not blind.disabled then
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        local cash = G.GAME.dollars
+						ease_dollars(cash * -0.5,true)
+                        return true
+                    end
+                }))
+                 blind.triggered = true
                 G.E_MANAGER:add_event(Event({
                     trigger = 'immediate',
                     func = (function()
