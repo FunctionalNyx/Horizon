@@ -6680,7 +6680,7 @@ SMODS.Joker{
     pos = {x = 4, y = 0},
 	config = { 
 		extra = {
-			xmult = 7,
+			xmult = 3,
 			odds = 7
 		}
 	},
@@ -6732,7 +6732,7 @@ SMODS.Joker{
     pos = {x = 4, y = 0},
 	config = { 
 		extra = {
-			xmult = 10,
+			xmult = 5,
 			hand = false
 		}
 	},
