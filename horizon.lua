@@ -1330,6 +1330,14 @@ SMODS.Joker{
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 		["DPGJokers"] = true
 	}, 
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_penis" then
+				return false
+            end
+        end
+        return true
+    end,
     atlas = 'Jokers',
     rarity = 1,
     cost = 5,
@@ -1341,7 +1349,7 @@ SMODS.Joker{
     pos = {x = 3, y = 3},
 	config = { 
 		extra = {
-			odds = 4
+			odds = 3
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -5091,6 +5099,14 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 8, y = 2},
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_penis" then
+				return false
+            end
+        end
+        return true
+    end,
 	config = { 
 		extra = {
 			retrigger = 3
@@ -5117,6 +5133,42 @@ SMODS.Joker{
 				if context.destroy_card == context.scoring_hand[i] and context.scoring_hand[i]:get_id() ~= 8 then
 					return {
 						remove = true
+					}
+				end
+			end
+		end
+		if context.ending_shop and not context.blueprint then
+			for i = 1, #G.jokers.cards do
+				local other_joker = G.jokers.cards[i]
+				if other_joker.config.center.key == 'j_nyx_moist' and combine then
+					G.E_MANAGER:add_event(Event({
+						func = function()
+							other_joker.T.r = -0.2
+							other_joker:juice_up(0.3, 0.4)
+							other_joker.states.drag.is = true
+							other_joker.children.center.pinch.x = true
+							card.T.r = -0.2
+							card:juice_up(0.3, 0.4)
+							card.states.drag.is = true
+							card.children.center.pinch.x = true
+							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
+								func = function()
+									G.jokers:remove_card(other_joker)
+									G.jokers:remove_card(card)
+									other_joker:remove()
+									card:remove()
+									other_joker = nil
+									card = nil
+								return true; end})) 
+							return true
+						end
+					})) 
+					SMODS.add_card{
+						key = 'j_nyx_penis'
+					}
+					return {
+						message = "Combined!",
+						colour = G.C.RED
 					}
 				end
 			end
@@ -6236,6 +6288,59 @@ SMODS.Joker{
 					return {
 						message = "Beheaded!",
 						message_card = card
+					}
+				end
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'penis',
+    loc_txt = {
+        name = 'Penis Nyx',
+        text = {
+          'This was a mistake'
+        },
+    },
+	in_pool = function(self)
+		return false 
+	end,
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 4},
+	config = { 
+		extra = {
+			retrigger = 5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+			if context.other_card:get_id() == 8 and SMODS.has_enhancement(context.other_card, 'm_nyx_wet') then
+				return {
+					repetitions = card.ability.extra.retrigger,
+					card = card
+				}
+			end
+		end
+		if context.destroy_card and not context.blueprint then
+			for i = 1, #context.scoring_hand do
+				if context.destroy_card == context.scoring_hand[i] and context.scoring_hand[i]:get_id() ~= 8 then
+					return {
+						remove = true
 					}
 				end
 			end
@@ -8620,7 +8725,7 @@ SMODS.Enhancement{
 	config = {
 		extra = {
 			odds = 5,
-			mult = 1.25
+			mult = 1.33
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -8657,7 +8762,7 @@ SMODS.Enhancement{
 			}
 		end
 		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
-			if pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds then
+			if (pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds) and (not SMODS.find_card('j_nyx_moist') or not SMODS.find_card('j_nyx_penis')) then
 				G.E_MANAGER:add_event(Event({
                 	trigger = 'after',
                 	delay = 0.1,
