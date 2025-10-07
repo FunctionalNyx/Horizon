@@ -3433,13 +3433,20 @@ SMODS.Joker{
 		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
   	end,
 	calculate = function(self, card, context)
-		if context.reroll_shop and not card.ability.extra.reroll then
-			change_shop_size(-card.ability.extra.slots)
+		if context.starting_shop then
+			G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
 			card.ability.extra.reroll = true
 		end
 		if context.ending_shop then
-			change_shop_size(card.ability.extra.slots)
-			card.ability.extra.reroll = false
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.1,
+				func = function()
+					G.GAME.shop.joker_max = G.GAME.shop.joker_max + card.ability.extra.slots
+					card.ability.extra.reroll = false
+					return true
+				end
+			}))
 		end
 	end
 }
@@ -4519,7 +4526,6 @@ SMODS.Joker{
 			}
 		end
 		if context.after and not context.blueprint then
-			print(count)
 			if count >= 7 then
 				for _, joker in ipairs(G.jokers.cards or {}) do
 					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
@@ -5140,7 +5146,7 @@ SMODS.Joker{
 		if context.ending_shop and not context.blueprint then
 			for i = 1, #G.jokers.cards do
 				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_moist' and combine then
+				if other_joker.config.center.key == 'j_nyx_moist' then
 					G.E_MANAGER:add_event(Event({
 						func = function()
 							other_joker.T.r = -0.2
@@ -6251,7 +6257,6 @@ SMODS.Joker{
 				if math.random(1, G.GAME.probabilities.normal) <= card.ability.extra.odds then
 					local beheadedcard = context.other_card
 					local suit = beheadedcard.base.suit
-					print(rank)
 					if context.other_card:get_id() == 13 then
 						local ran = math.random(3, 10)
 						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
