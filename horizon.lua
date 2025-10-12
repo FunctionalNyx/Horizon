@@ -9605,11 +9605,11 @@ SMODS.Blind {
         },
     },
 	atlas = 'Blinds',
-	pos = {x = 0, y = 0},
+	pos = {x = 0, y = 7},
 	boss = { min = 5 },
-	dollars = 5,
+	dollars = 6,
 	mult = 2,
-	boss_colour = HEX('ffffff'),
+	boss_colour = HEX('ffb707'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
             if context.press_play then
