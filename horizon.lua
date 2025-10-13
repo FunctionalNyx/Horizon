@@ -8522,7 +8522,8 @@ SMODS.Back {
 		text = {
 			'{C:red}#1#{} Hand Size',
 			'Gains {C:attention}+#2#{} Hand Size each ante',
-			'Starts with 2 random {C:blue}Common{} {C:attention}Jokers{}'
+			'Starts with 2 random {C:blue}Common{} {C:attention}Jokers{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	config = { 
