@@ -8725,7 +8725,8 @@ SMODS.Enhancement{
 			'{C:green}#1# in #3#{} chance',
 			'to {C:attention}retrigger{} again',
 			'{C:attention}And so on....{}',
-			'This can happen up to {C:attention}5{} times'
+			'This can happen up to {C:attention}5{} times',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	unlocked = true,
@@ -8973,7 +8974,8 @@ SMODS.Enhancement{
 		text = {
 			'{C:mult}+#1#{} Mult but {C:red}Burns{} adjacent cards',
 			'Gains {C:mult}#2#{} Mult when {C:red}burning{} cards',
-			'{C:red}Burns{} if there are no {C:attention}burnable{} cards'
+			'{C:red}Burns{} if there are no {C:attention}burnable{} cards',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	unlocked = true,
