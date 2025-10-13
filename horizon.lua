@@ -5,6 +5,14 @@
 
 -- i want to die - Nyx
 
+-- Hopefully a Talisman fix
+to_big = to_big or function(v)
+	return v
+end
+to_number = to_number or function(v)
+	return v
+end
+
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
 	G.C.COLORSS = HEX("be93d4")
@@ -7012,6 +7020,14 @@ SMODS.Joker{
 --
 
 --- Other Stuff ---
+SMODS.ConsumableType {
+    key = 'angelic',
+    default = 'nyx_divinity',
+    collection_rows = { 4, 6 },
+    primary_colour = HEX('#FFD700'),
+    secondary_colour = HEX('#FFF8DC')
+}
+
 -- Tarot --
 SMODS.Atlas{
     key = 'Tarot', --atlas key
