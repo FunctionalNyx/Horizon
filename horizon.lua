@@ -9084,7 +9084,7 @@ SMODS.Enhancement{
 			'entire hand is {C:attention}Star-Crossed{}',
 			'Only applies to the',
 			'{C:attention}First Scored{} card',
-			'{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{}{C:inactive,s:0.8} Mult){}',,
+			'{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{}{C:inactive,s:0.8} Mult){}',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 
 		}
