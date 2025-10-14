@@ -8562,7 +8562,7 @@ SMODS.Booster {
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
         }
     },
-	 config = {
+	config = {
         extra = 2,
         choose = 1, 
     },
@@ -8585,9 +8585,7 @@ SMODS.Booster {
 }
 SMODS.Booster {
     key = "hnh_pack",
-    weight = 0.4,
     kind = 'HnH', -- You can also use Arcana if you want it to belong to the vanilla kind
-    cost = 4,
     pos = { x = 0, y = 1 },
 	atlas = "Spectral",
 	loc_txt = {
@@ -8595,22 +8593,27 @@ SMODS.Booster {
 		group_name = 'Choose Wisely',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{}',
-			'Angelic or Demonic cards',
+			'{V:1}Angelic{} or {V:2}Demonic{} cards',
         }
     },
-    config = { extra = 3, choose = 1 },
+    config = {
+        extra = 3,
+        choose = 1, 
+    },
+	weight = 0.4,
+	cost = 4,
     group_key = "k_hnh_pack",
     draw_hand = true,
     loc_vars = function(self, info_queue, card)
-        local cfg = (card and card.ability) or self.config
-        return {
-            vars = { cfg.choose, cfg.extra },
-            key = self.key:sub(1, -3), -- This uses the description key of the booster without the number at the end
-        }
+        return { vars = { card.ability.choose, card.ability.extra, colours = { HEX('FFD700'), HEX('880808') } } }
     end,
     ease_background_colour = function(self)
         ease_background_colour_blind(HEX("FFD700"))
     end,
+	in_pool = function(self)
+		return false
+	end,
+	no_collection = true,
     particles = function(self)
         G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
             timer = 0.015,
