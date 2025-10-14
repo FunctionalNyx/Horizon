@@ -6,9 +6,11 @@
 -- i want to die - Nyx
 
 -- Hopefully a Talisman fix
+---@diagnostic disable-next-line: lowercase-global
 to_big = to_big or function(v)
 	return v
 end
+---@diagnostic disable-next-line: lowercase-global
 to_number = to_number or function(v)
 	return v
 end
