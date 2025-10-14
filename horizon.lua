@@ -7718,15 +7718,15 @@ SMODS.Consumable {
 		name = 'Devour',
 		text = {
 			'Gain the {C:money}rank{} of',
-			'#1# selected {C:attention}cards{} as {C:money}${}',
-			'Then {C:red}destroy{} them',
+			'#1# selected {C:attention}card{} as {C:money}${}',
+			'Then {C:red}destroy{} it',
 			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}'
 		}
 	},
 	cost = 6,
 	unlocked = true,
 	discovered = false,
-    config = { max_highlighted = 2},
+    config = { max_highlighted = 1},
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.max_highlighted } }
     end,
