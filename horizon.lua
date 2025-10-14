@@ -7272,7 +7272,7 @@ SMODS.Consumable {
     key = 'prosperity',
     set = 'nyx_angelic',
 	atlas = 'Spectral',
-    pos = { x = 7, y = 0 },
+    pos = { x = 0, y = 1 },
 	loc_txt = {
 		name = 'Prosperity',
 		text = {
@@ -7302,29 +7302,57 @@ SMODS.Consumable {
             end
         }))
         delay(0.2)
-		for i = 1, #G.hand.highlighted do
+		if #G.jokers.highlighted > 0 then
+			for i = 1, #G.jokers.highlighted do
+				if G.jokers.highlighted[i].set_cost and not G.jokers.highlighted[i].ability.nyx_prosperous then
+					G.jokers.highlighted[i].ability.extra_value = (G.jokers.highlighted[i].ability.extra_value or 0) + (G.jokers.highlighted[i].config.center.cost or 0)
+					G.jokers.highlighted[i]:add_sticker(card.ability.mod_conv, true)
+					G.jokers.highlighted[i]:set_cost()
+				end
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
+						return true
+					end
+				}))
+			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 0.1,
+				delay = 0.2,
 				func = function()
-					G.hand.highlighted[i]:juice_up(0.3, 0.3)
-					G.hand.highlighted[i]:add_sticker(card.ability.mod_conv, true)
+					G.jokers:unhighlight_all()
 					return true
 				end
 			}))
+			delay(0.5)
 		end
-		G.E_MANAGER:add_event(Event({
-			trigger = 'after',
-			delay = 0.2,
-			func = function()
-				G.hand:unhighlight_all()
-				return true
+		if #G.hand.highlighted > 0 then
+			for i = 1, #G.hand.highlighted do
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.hand.highlighted[i]:juice_up(0.3, 0.3)
+						G.hand.highlighted[i]:add_sticker(card.ability.mod_conv, true)
+						return true
+					end
+				}))
 			end
-		}))
-		delay(0.5)
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.hand:unhighlight_all()
+					return true
+				end
+			}))
+			delay(0.5)
+		end
     end,
     can_use = function(self, card)
-        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+        return (G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted) or (#G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted)
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
@@ -7337,7 +7365,7 @@ SMODS.Consumable {
     key = 'charity',
     set = 'nyx_angelic',
 	atlas = 'Spectral',
-    pos = { x = 7, y = 0 },
+    pos = { x = 0, y = 1 },
 	loc_txt = {
 		name = 'Charity',
 		text = {
@@ -7580,8 +7608,8 @@ SMODS.Consumable {
 SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
-	atlas = 'Placeholder',
-    pos = { x = 0, y = 0 },
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
 	loc_txt = {
 		name = 'Transmission',
 		text = {
@@ -7683,7 +7711,7 @@ SMODS.Consumable {
     key = 'devour',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
-    pos = { x = 7, y = 0 },
+    pos = { x = 1, y = 1 },
 	loc_txt = {
 		name = 'Devour',
 		text = {
@@ -9530,21 +9558,13 @@ SMODS.Sticker {
 		  'Doubles {C:money}sell{} value',
 		},
 	},
+	badge_colour = G.C.MONEY,
     rate = 0.0,
     needs_enable_flag = false,
 	default_compat = false,
 	no_collection = true,
 	apply = function(self, card, val)
 		card.ability[self.key] = val
-
-		for _, area in ipairs({ G.jokers, G.consumeables }) do
-			for _, other_card in ipairs(area.cards) do
-				if other_card.set_cost then
-					other_card.ability.extra_value = (other_card.ability.extra_value or 0) * 2
-					other_card:set_cost()
-				end
-			end
-		end
 	end,
 }
 --
