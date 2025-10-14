@@ -7871,22 +7871,22 @@ SMODS.Consumable{
     end
 }
 SMODS.Consumable {
-    key = 'plague',
+    key = 'arson',
     set = 'Tarot',
 	atlas = 'Tarot',
-    pos = { x = 1, y = 0 },
+    pos = { x = 2, y = 0 },
 	loc_txt = {
-		name = 'Plague',
+		name = 'Arson',
 		text = {
-			'Enhances {C:attention}#1#{} card into',
-			'a {C:attention}Diseased{} card',
+			'Enhances {C:attention}#1#{} cards into',
+			'a {C:attention}Burning{} card',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	cost = 3,
 	unlocked = true,
 	discovered = false,
-    config = { max_highlighted = 1, mod_conv = 'm_nyx_diseased' },
+    config = { max_highlighted = 2, mod_conv = 'm_nyx_burning' },
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
@@ -7953,22 +7953,22 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = 'arson',
+    key = 'plague',
     set = 'Tarot',
 	atlas = 'Tarot',
-    pos = { x = 2, y = 0 },
+    pos = { x = 1, y = 0 },
 	loc_txt = {
-		name = 'Arson',
+		name = 'Plague',
 		text = {
-			'Enhances {C:attention}#1#{} cards into',
-			'a {C:attention}Burning{} card',
+			'Enhances {C:attention}#1#{} card into',
+			'a {C:attention}Diseased{} card',
 			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	cost = 3,
 	unlocked = true,
 	discovered = false,
-    config = { max_highlighted = 2, mod_conv = 'm_nyx_burning' },
+    config = { max_highlighted = 1, mod_conv = 'm_nyx_diseased' },
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
