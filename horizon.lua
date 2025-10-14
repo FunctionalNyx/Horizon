@@ -7795,7 +7795,7 @@ SMODS.Consumable {
 	atlas = 'Decks',
     pos = { x = 1, y = 0 },
 	hidden = true,
-    soul_set = 'Tarot',
+    soul_set = 'Spectral',
 	loc_txt = {
 		name = 'Glitch',
 		text = {
