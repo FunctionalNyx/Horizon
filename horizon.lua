@@ -7021,12 +7021,429 @@ SMODS.Joker{
 
 --- Other Stuff ---
 SMODS.ConsumableType {
-    key = 'angelic',
-    default = 'nyx_divinity',
-    collection_rows = { 4, 6 },
-    primary_colour = HEX('#FFD700'),
-    secondary_colour = HEX('#FFF8DC')
+    key = 'nyx_angelic',
+    collection_rows = { 4, 5 },
+    primary_colour = HEX('000000'),
+    secondary_colour = HEX('FFF394'),
+	shop_rate = 0,
+	loc_txt = {
+		collection = 'Angelic',
+		name = 'Angelic'
+	}
 }
+SMODS.Consumable {
+    key = 'divinity',
+    set = 'nyx_angelic',
+	atlas = 'Spectral',
+    pos = { x = 7, y = 0 },
+	loc_txt = {
+		name = 'Divinity',
+		text = {
+			'Enhances {C:attention}#1#{} card into',
+			'a {C:attention}True Lucky{} card',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	cost = 6,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 1, mod_conv = 'm_nyx_truelucky' },
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
+        return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
+    end,
+	in_pool = function(self)
+		return false 
+	end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        for i = 1, #G.hand.highlighted do
+            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('card1', percent)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        delay(0.2)
+        for i = 1, #G.hand.highlighted do
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
+                    G.hand.highlighted[i]:set_ability(G.P_CENTERS[card.ability.mod_conv])
+                    return true
+                end
+            }))
+        end
+        for i = 1, #G.hand.highlighted do
+            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('tarot2', percent, 0.6)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+                G.hand:unhighlight_all()
+                return true
+            end
+        }))
+        delay(0.5)
+    end,
+    can_use = function(self, card)
+        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
+    key = 'blessing',
+    set = 'nyx_angelic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 0 },
+    config = { 
+		extra = {
+			max_highlighted = 1
+		}
+	},
+	loc_txt = {
+        name = 'Blessing', --name of card
+        text = { --text of card
+            'Remove all {C:attention}stickers{}',
+			'from a selected Joker',
+			'{C:inactive,s:0.8}If the joker has no stickers{}',
+			'{C:inactive,s:0.8}this card will not be consumed{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        }
+    },
+	cost = 4,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+		if G.jokers.highlighted[1] then
+			local chosen_joker = G.jokers.highlighted[1]
+			if chosen_joker.config.center.key == 'j_nyx_allin' then
+				local temp = nil
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.2,
+					func = function()
+						temp = G.SETTINGS.GAMESPEED
+						G.SETTINGS.GAMESPEED = 1
+						attention_text({
+							text = "DID YOU REALLY THINK",
+							scale = 1.4,
+							hold = 1.4,
+							major = card,
+							backdrop_colour = G.C.RED,
+							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+								'tm' or 'cm',
+							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+							silent = true
+						})
+						attention_text({
+							text = "IT WOULD BE THAT EASY?",
+							scale = 1.4,
+							hold = 1.4,
+							major = card,
+							backdrop_colour = G.C.RED,
+							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+								'tm' or 'cm',
+							offset = { x = 0, y = 1.2 },
+							silent = true
+						})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.06 * G.SETTINGS.GAMESPEED,
+							blockable = false,
+							blocking = false,
+							func = function()
+								play_sound('tarot2', 0.76, 0.4)
+								return true
+							end
+						}))
+						play_sound('tarot2', 1, 0.4)
+						card:juice_up(0.3, 0.5)
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 1,
+							blockable = false,
+							blocking = false,
+							func = function()
+								G.SETTINGS.GAMESPEED = temp
+								return true
+							end
+						}))
+						return true
+					end
+				}))
+				return
+			end
+			if chosen_joker.ability.eternal or chosen_joker.ability.perishable or chosen_joker.ability.rental then
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.4,
+					func = function()
+						SMODS.Stickers.eternal:apply(chosen_joker, false)
+						SMODS.Stickers.perishable:apply(chosen_joker, false)
+						SMODS.Stickers.rental:apply(chosen_joker, false)
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			else
+				SMODS.add_card {
+					key = 'c_nyx_blessing'
+				}
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.4,
+					func = function()
+						attention_text({
+							text = "No Stickers",
+							scale = 1.3,
+							hold = 1.4,
+							major = card,
+							backdrop_colour = G.C.SECONDARY_SET.Tarot,
+							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+								'tm' or 'cm',
+							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+							silent = true
+						})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.06 * G.SETTINGS.GAMESPEED,
+							blockable = false,
+							blocking = false,
+							func = function()
+								play_sound('tarot2', 0.76, 0.4)
+								return true
+							end
+						}))
+						play_sound('tarot2', 1, 0.4)
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			end
+		end
+    end,
+	can_use = function(self, card)
+        return #G.jokers.highlighted == 1
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+--
+SMODS.ConsumableType {
+    key = 'nyx_demonic',
+    collection_rows = { 4, 5 },
+    primary_colour = HEX('380000'),
+    secondary_colour = HEX('380000'),
+	shop_rate = 0,
+	loc_txt = {
+		collection = 'Demonic',
+		name = 'Demonic'
+	}
+}
+SMODS.Consumable {
+    key = 'ritual',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 4, y = 0 },
+	loc_txt = {
+        name = 'Ritual', --name of card
+        text = { --text of card
+            'Destroy a random {C:attention}Joker{}',
+			'Add {C:dark_edition}Negative{} to',
+			'random {C:attention}Joker{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        }
+    },
+	cost = 4,
+	unlocked = true,
+    discovered = false,
+	loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+    end,
+    use = function(self, card, area, copier)
+		local deletable_jokers = {}
+		local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('ritual_choice'))
+		local editionless_jokers = SMODS.Edition:get_edition_cards(G.jokers, true)
+		local eligible_card = pseudorandom_element(editionless_jokers, pseudoseed('ritual'))
+		if eligible_card == chosen_joker then
+			local count = 0
+			while eligible_card == chosen_joker and count < 10 do
+				eligible_card = pseudorandom_element(editionless_jokers, pseudoseed('ritual_' .. count))
+				count = count + 1
+			end
+			if count >= 10 and eligible_card == chosen_joker then
+				SMODS.add_card {
+					key = 'c_nyx_ritual'
+				}
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.4,
+					func = function()
+						attention_text({
+							text = "Failed, Try again",
+							scale = 1.3,
+							hold = 1.4,
+							major = card,
+							backdrop_colour = G.C.SECONDARY_SET.Tarot,
+							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+								'tm' or 'cm',
+							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
+							silent = true
+						})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.06 * G.SETTINGS.GAMESPEED,
+							blockable = false,
+							blocking = false,
+							func = function()
+								play_sound('tarot2', 0.76, 0.4)
+								return true
+							end
+						}))
+						play_sound('tarot2', 1, 0.4)
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			end
+		end
+		if eligible_card ~= chosen_joker then
+			if chosen_joker.ability.eternal then
+				G.E_MANAGER:add_event(Event({
+				trigger = 'before',
+				delay = 0.75,
+				func = function()
+					chosen_joker:juice_up(0.3, 0.5)
+					return true
+				end
+				}))
+			else
+				deletable_jokers[#deletable_jokers + 1] = chosen_joker
+				local _first_dissolve = nil
+				G.E_MANAGER:add_event(Event({
+					trigger = 'before',
+					delay = 0.75,
+					func = function()
+						for _, joker in pairs(deletable_jokers) do
+							joker:start_dissolve(nil, _first_dissolve)
+							_first_dissolve = true
+						end
+						return true
+					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					eligible_card:set_edition({ negative = true })
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+			delay(0.6)
+		end
+    end,
+    can_use = function(self, card)
+        return #G.jokers.cards > 1 and next(SMODS.Edition:get_edition_cards(G.jokers, true))
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
+    key = 'curse',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 3, y = 0 },
+	config = { 
+		extra = {
+			max_highlighted = 1
+		}
+	},
+	loc_txt = {
+        name = 'Curse', --name of card
+        text = { --text of card
+            'Add {C:attention}Eternal{}',
+			'to a selected joker',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+        }
+    },
+	cost = 3,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+		if G.jokers.highlighted[1] then
+			local chosen_joker = G.jokers.highlighted[1]
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					chosen_joker:set_eternal(true)
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+		end
+    end,
+	can_use = function(self, card)
+        return #G.jokers.highlighted == 1
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+
 
 -- Tarot --
 SMODS.Atlas{
@@ -7520,297 +7937,6 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = 'blessing',
-    set = 'Spectral',
-	atlas = 'Spectral',
-    pos = { x = 1, y = 0 },
-    config = { 
-		extra = {
-			max_highlighted = 1
-		}
-	},
-	loc_txt = {
-        name = 'Blessing', --name of card
-        text = { --text of card
-            'Remove all {C:attention}stickers{}',
-			'from a selected Joker',
-			'{C:inactive,s:0.8}If the joker has no stickers{}',
-			'{C:inactive,s:0.8}this card will not be consumed{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
-	cost = 4,
-	unlocked = true,
-    discovered = false,
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
-        return { vars = { card.ability.max_highlighted } }
-    end,
-    use = function(self, card, area, copier)
-		if G.jokers.highlighted[1] then
-			local chosen_joker = G.jokers.highlighted[1]
-			if chosen_joker.config.center.key == 'j_nyx_allin' then
-				local temp = nil
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.2,
-					func = function()
-						temp = G.SETTINGS.GAMESPEED
-						G.SETTINGS.GAMESPEED = 1
-						attention_text({
-							text = "DID YOU REALLY THINK",
-							scale = 1.4,
-							hold = 1.4,
-							major = card,
-							backdrop_colour = G.C.RED,
-							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
-								'tm' or 'cm',
-							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-							silent = true
-						})
-						attention_text({
-							text = "IT WOULD BE THAT EASY?",
-							scale = 1.4,
-							hold = 1.4,
-							major = card,
-							backdrop_colour = G.C.RED,
-							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
-								'tm' or 'cm',
-							offset = { x = 0, y = 1.2 },
-							silent = true
-						})
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.06 * G.SETTINGS.GAMESPEED,
-							blockable = false,
-							blocking = false,
-							func = function()
-								play_sound('tarot2', 0.76, 0.4)
-								return true
-							end
-						}))
-						play_sound('tarot2', 1, 0.4)
-						card:juice_up(0.3, 0.5)
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 1,
-							blockable = false,
-							blocking = false,
-							func = function()
-								G.SETTINGS.GAMESPEED = temp
-								return true
-							end
-						}))
-						return true
-					end
-				}))
-				return
-			end
-			if chosen_joker.ability.eternal or chosen_joker.ability.perishable or chosen_joker.ability.rental then
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.4,
-					func = function()
-						SMODS.Stickers.eternal:apply(chosen_joker, false)
-						SMODS.Stickers.perishable:apply(chosen_joker, false)
-						SMODS.Stickers.rental:apply(chosen_joker, false)
-						card:juice_up(0.3, 0.5)
-						return true
-					end
-				}))
-			else
-				SMODS.add_card {
-					key = 'c_nyx_blessing'
-				}
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.4,
-					func = function()
-						attention_text({
-							text = "No Stickers",
-							scale = 1.3,
-							hold = 1.4,
-							major = card,
-							backdrop_colour = G.C.SECONDARY_SET.Tarot,
-							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
-								'tm' or 'cm',
-							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-							silent = true
-						})
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.06 * G.SETTINGS.GAMESPEED,
-							blockable = false,
-							blocking = false,
-							func = function()
-								play_sound('tarot2', 0.76, 0.4)
-								return true
-							end
-						}))
-						play_sound('tarot2', 1, 0.4)
-						card:juice_up(0.3, 0.5)
-						return true
-					end
-				}))
-			end
-		end
-    end,
-	can_use = function(self, card)
-        return #G.jokers.highlighted == 1
-    end
-}
-SMODS.Consumable {
-    key = 'ritual',
-    set = 'Spectral',
-	atlas = 'Spectral',
-    pos = { x = 4, y = 0 },
-	loc_txt = {
-        name = 'Ritual', --name of card
-        text = { --text of card
-            'Destroy a random {C:attention}Joker{}',
-			'Add {C:dark_edition}Negative{} to',
-			'random {C:attention}Joker{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
-	cost = 4,
-	unlocked = true,
-    discovered = false,
-	loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
-    end,
-    use = function(self, card, area, copier)
-		local deletable_jokers = {}
-		local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('ritual_choice'))
-		local editionless_jokers = SMODS.Edition:get_edition_cards(G.jokers, true)
-		local eligible_card = pseudorandom_element(editionless_jokers, pseudoseed('ritual'))
-		if eligible_card == chosen_joker then
-			local count = 0
-			while eligible_card == chosen_joker and count < 10 do
-				eligible_card = pseudorandom_element(editionless_jokers, pseudoseed('ritual_' .. count))
-				count = count + 1
-			end
-			if count >= 10 and eligible_card == chosen_joker then
-				SMODS.add_card {
-					key = 'c_nyx_ritual'
-				}
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.4,
-					func = function()
-						attention_text({
-							text = "Failed, Try again",
-							scale = 1.3,
-							hold = 1.4,
-							major = card,
-							backdrop_colour = G.C.SECONDARY_SET.Tarot,
-							align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
-								'tm' or 'cm',
-							offset = { x = 0, y = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and -0.2 or 0 },
-							silent = true
-						})
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.06 * G.SETTINGS.GAMESPEED,
-							blockable = false,
-							blocking = false,
-							func = function()
-								play_sound('tarot2', 0.76, 0.4)
-								return true
-							end
-						}))
-						play_sound('tarot2', 1, 0.4)
-						card:juice_up(0.3, 0.5)
-						return true
-					end
-				}))
-			end
-		end
-		if eligible_card ~= chosen_joker then
-			if chosen_joker.ability.eternal then
-				G.E_MANAGER:add_event(Event({
-				trigger = 'before',
-				delay = 0.75,
-				func = function()
-					chosen_joker:juice_up(0.3, 0.5)
-					return true
-				end
-				}))
-			else
-				deletable_jokers[#deletable_jokers + 1] = chosen_joker
-				local _first_dissolve = nil
-				G.E_MANAGER:add_event(Event({
-					trigger = 'before',
-					delay = 0.75,
-					func = function()
-						for _, joker in pairs(deletable_jokers) do
-							joker:start_dissolve(nil, _first_dissolve)
-							_first_dissolve = true
-						end
-						return true
-					end
-				}))
-			end
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.4,
-				func = function()
-					eligible_card:set_edition({ negative = true })
-					card:juice_up(0.3, 0.5)
-					return true
-				end
-			}))
-			delay(0.6)
-		end
-    end,
-    can_use = function(self, card)
-        return #G.jokers.cards > 1 and next(SMODS.Edition:get_edition_cards(G.jokers, true))
-    end
-}
-SMODS.Consumable {
-    key = 'curse',
-    set = 'Spectral',
-	atlas = 'Spectral',
-    pos = { x = 3, y = 0 },
-	config = { 
-		extra = {
-			max_highlighted = 1
-		}
-	},
-	loc_txt = {
-        name = 'Curse', --name of card
-        text = { --text of card
-            'Add {C:attention}Eternal{}',
-			'to a selected joker',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
-	cost = 3,
-	unlocked = true,
-    discovered = false,
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
-        return { vars = { card.ability.max_highlighted } }
-    end,
-    use = function(self, card, area, copier)
-		if G.jokers.highlighted[1] then
-			local chosen_joker = G.jokers.highlighted[1]
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.4,
-				func = function()
-					chosen_joker:set_eternal(true)
-					card:juice_up(0.3, 0.5)
-					return true
-				end
-			}))
-		end
-    end,
-	can_use = function(self, card)
-        return #G.jokers.highlighted == 1
-    end
-}
-SMODS.Consumable {
     key = 'glacier',
     set = 'Spectral',
 	atlas = 'Spectral',
@@ -7827,91 +7953,6 @@ SMODS.Consumable {
 	unlocked = true,
 	discovered = false,
     config = { max_highlighted = 2, mod_conv = 'm_nyx_frozen' },
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
-        return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
-    end,
-	in_pool = function(self)
-		return false 
-	end,
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.4,
-            func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true
-            end
-        }))
-        for i = 1, #G.hand.highlighted do
-            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.15,
-                func = function()
-                    G.hand.highlighted[i]:flip()
-                    play_sound('card1', percent)
-                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
-                    return true
-                end
-            }))
-        end
-        delay(0.2)
-        for i = 1, #G.hand.highlighted do
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.1,
-                func = function()
-                    G.hand.highlighted[i]:set_ability(G.P_CENTERS[card.ability.mod_conv])
-                    return true
-                end
-            }))
-        end
-        for i = 1, #G.hand.highlighted do
-            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.15,
-                func = function()
-                    G.hand.highlighted[i]:flip()
-                    play_sound('tarot2', percent, 0.6)
-                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
-                    return true
-                end
-            }))
-        end
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.2,
-            func = function()
-                G.hand:unhighlight_all()
-                return true
-            end
-        }))
-        delay(0.5)
-    end,
-    can_use = function(self, card)
-        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
-    end
-}
-SMODS.Consumable {
-    key = 'divinity',
-    set = 'Spectral',
-	atlas = 'Spectral',
-    pos = { x = 7, y = 0 },
-	loc_txt = {
-		name = 'Divinity',
-		text = {
-			'Enhances {C:attention}#1#{} card into',
-			'a {C:attention}True Lucky{} card',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-		}
-	},
-	cost = 6,
-	unlocked = true,
-	discovered = false,
-    config = { max_highlighted = 1, mod_conv = 'm_nyx_truelucky' },
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
