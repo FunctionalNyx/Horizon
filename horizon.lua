@@ -3463,9 +3463,6 @@ SMODS.Joker{
 		end
 		}))
   	end,
-  	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
-  	end,
 	calculate = function(self, card, context)
 		if context.starting_shop then
 			G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
@@ -6250,9 +6247,9 @@ SMODS.Joker{
   	end
 }
 SMODS.Joker{
-	key = 'anarchist',
+	key = 'guillotine',
     loc_txt = {
-        name = 'Anarchist',
+        name = 'Guillotine',
         text = {
         	'When discarding {C:attention}Face{} cards',
 			'{C:green}#2# in #1#{} chance to {C:red}Behead{} it instead',
