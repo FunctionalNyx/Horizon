@@ -7305,7 +7305,7 @@ SMODS.Consumable {
 		if #G.jokers.highlighted > 0 then
 			for i = 1, #G.jokers.highlighted do
 				if G.jokers.highlighted[i].set_cost and not G.jokers.highlighted[i].ability.nyx_prosperous then
-					G.jokers.highlighted[i].ability.extra_value = (G.jokers.highlighted[i].ability.extra_value or 0) + (G.jokers.highlighted[i].config.center.cost or 0)
+					G.jokers.highlighted[i].ability.extra_value = (G.jokers.highlighted[i].ability.extra_value or 0) + (G.jokers.highlighted[i].config.center.cost or 0)/2
 					G.jokers.highlighted[i]:add_sticker(card.ability.mod_conv, true)
 					G.jokers.highlighted[i]:set_cost()
 				end
@@ -7396,16 +7396,18 @@ SMODS.Consumable {
         }))
         delay(0.2)
 		for i = 1, #G.hand.highlighted do
+			local money = 0
 			if G.hand.highlighted[i].ability.nyx_prosperous then
-				local money = G.hand.highlighted[i]:get_id()
+				money = tonumber(G.hand.highlighted[i]:get_id())
 			else
-				local money = G.hand.highlighted[i]:get_id() / 2
+				money = tonumber(G.hand.highlighted[i]:get_id()) / 2
 			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
 				delay = 0.1,
 				func = function()
 					G.hand.highlighted[i]:juice_up(0.3, 0.3)
+					ease_dollars(money)
 					return true
 				end
 			}))
@@ -7744,10 +7746,11 @@ SMODS.Consumable {
         delay(0.2)
 		if #G.hand.highlighted > 0 then
 			for i = 1, #G.hand.highlighted do
+				local money = 0
 				if G.hand.highlighted[i].ability.nyx_prosperous then
-					local money = G.hand.highlighted[i]:get_id() * 2
+					money = tonumber(G.hand.highlighted[i]:get_id()) * 2
 				else
-					local money = G.hand.highlighted[i]:get_id()
+					money = tonumber(G.hand.highlighted[i]:get_id())
 				end
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
@@ -8580,6 +8583,71 @@ SMODS.Booster {
 		return true 
 	end
 }
+SMODS.Booster {
+    key = "hnh_pack",
+    weight = 0.4,
+    kind = 'HnH', -- You can also use Arcana if you want it to belong to the vanilla kind
+    cost = 4,
+    pos = { x = 0, y = 1 },
+	atlas = "Spectral",
+	loc_txt = {
+        name = 'Heaven & Hell Pack',
+		group_name = 'Choose Wisely',
+        text = {
+            'Choose {C:attention}#1#{} of up to {C:attention}#2#{}',
+			'Angelic or Demonic cards',
+        }
+    },
+    config = { extra = 3, choose = 1 },
+    group_key = "k_hnh_pack",
+    draw_hand = true,
+    loc_vars = function(self, info_queue, card)
+        local cfg = (card and card.ability) or self.config
+        return {
+            vars = { cfg.choose, cfg.extra },
+            key = self.key:sub(1, -3), -- This uses the description key of the booster without the number at the end
+        }
+    end,
+    ease_background_colour = function(self)
+        ease_background_colour_blind(HEX("FFD700"))
+    end,
+    particles = function(self)
+        G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
+            timer = 0.015,
+            scale = 0.2,
+            initialize = true,
+            lifespan = 1,
+            speed = 1.1,
+            padding = -1,
+            attach = G.ROOM_ATTACH,
+            colours = { G.C.WHITE, lighten(HEX('880808'), 0.4)},
+            fill = true
+        })
+        G.booster_pack_sparkles.fade_alpha = 1
+        G.booster_pack_sparkles:fade(1, 0)
+    end,
+    create_card = function(self, card, i)
+        local _card
+        if math.random(0,1) == 1 then
+            _card = {
+                set = "nyx_angelic",
+                area = G.pack_cards,
+                skip_materialize = true,
+                soulable = true,
+                key_append = 'nyx_hnh'
+            }
+        else
+            _card = {
+                set = "nyx_demonic",
+                area = G.pack_cards,
+                skip_materialize = true,
+                soulable = true,
+                key_append = 'nyx_hnh'
+            }
+        end
+        return _card
+    end,
+}
 --
 
 -- TAGS --
@@ -8649,6 +8717,44 @@ SMODS.Tag {
             G.CONTROLLER.locks[lock] = true
             tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
                 local booster = SMODS.create_card { key = 'p_nyx_dpgbooster', area = G.play }
+                booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
+                booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
+                booster.T.w = G.CARD_W * 1.27
+                booster.T.h = G.CARD_H * 1.27
+                booster.cost = 0
+                booster.from_tag = true
+                G.FUNCS.use_card({ config = { ref_table = booster } })
+                booster:start_materialize()
+                G.CONTROLLER.locks[lock] = nil
+                return true
+            end)
+            tag.triggered = true
+            return true
+        end
+    end
+}
+SMODS.Tag {
+    key = "hnhtag",
+    min_ante = 2,
+    atlas = 'Tags',
+    pos = { x = 1, y = 0 },
+    loc_vars = function(self, info_queue, tag)
+        info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_hnh_pack
+    end,
+	loc_txt = {
+		name = "Heaven & Hell Tag",
+		text = {
+			'Immediately open a free',
+			'{C:attention,T:p_nyx_hnh_pack}Heaven & Hell Pack.{}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+    apply = function(self, tag, context)
+        if context.type == 'new_blind_choice' then
+            local lock = tag.ID
+            G.CONTROLLER.locks[lock] = true
+            tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
+                local booster = SMODS.create_card { key = 'p_nyx_hnh_pack', area = G.play }
                 booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
                 booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
                 booster.T.w = G.CARD_W * 1.27
@@ -9553,6 +9659,7 @@ SMODS.Sticker {
 	atlas = 'Jokers',
 	pos = {x = -1, y = -1},
 	loc_txt = {
+		label = 'Prosperous',
 		name = 'Prosperous',
 		text = {
 		  'Doubles {C:money}sell{} value',
