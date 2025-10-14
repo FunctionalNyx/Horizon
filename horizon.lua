@@ -7285,8 +7285,8 @@ SMODS.Consumable {
 	discovered = false,
     config = { max_highlighted = 1, mod_conv = 'nyx_prosperous' },
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
-        return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
+        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.mod_conv]
+        return { vars = { card.ability.max_highlighted } }
     end,
 	in_pool = function(self)
 		return false 
@@ -7302,56 +7302,29 @@ SMODS.Consumable {
             end
         }))
         delay(0.2)
-		if #G.jokers.highlighted > 0 then
-			for i = 1, #G.jokers.highlighted do
-				if G.jokers.highlighted[i].set_cost then
-					G.jokers.highlighted[i].ability.extra_value = (G.jokers.highlighted[i].ability.extra_value or 0) + (G.jokers.highlighted[i].config.center.cost or 0)
-					G.jokers.highlighted[i]:set_cost()
-				end
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.1,
-					func = function()
-						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
-						return true
-					end
-				}))
-			end
+		for i = 1, #G.hand.highlighted do
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 0.2,
+				delay = 0.1,
 				func = function()
-					G.jokers:unhighlight_all()
+					G.hand.highlighted[i]:juice_up(0.3, 0.3)
+					G.hand.highlighted[i]:add_sticker(card.ability.mod_conv, true)
 					return true
 				end
 			}))
-			delay(0.5)
 		end
-		if #G.hand.highlighted > 0 then
-			for i = 1, #G.hand.highlighted do
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.1,
-					func = function()
-						G.hand.highlighted[i]:juice_up(0.3, 0.3)
-						G.hand.highlighted[i]:add_sticker(card.ability.mod_conv, true)
-						return true
-					end
-				}))
+		G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 0.2,
+			func = function()
+				G.hand:unhighlight_all()
+				return true
 			end
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.2,
-				func = function()
-					G.hand:unhighlight_all()
-					return true
-				end
-			}))
-			delay(0.5)
-		end
+		}))
+		delay(0.5)
     end,
     can_use = function(self, card)
-        return (G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted) or (#G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted)
+        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
@@ -7368,7 +7341,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Charity',
 		text = {
-			'Gain {C:attention}half{} the {C:money}sell value / rank{} of',
+			'Gain {C:attention}half{} the {C:money}rank{} of',
 			'#1# selected {C:attention}card{} as {C:money}${}',
 			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}'
 		}
@@ -7394,57 +7367,33 @@ SMODS.Consumable {
             end
         }))
         delay(0.2)
-		if #G.jokers.highlighted > 0 then
-			for i = 1, #G.jokers.highlighted do
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.1,
-					func = function()
-						ease_dollars((G.jokers.highlighted[i].sell_cost)/2)
-						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
-						return true
-					end
-				}))
+		for i = 1, #G.hand.highlighted do
+			if G.hand.highlighted[i].ability.nyx_prosperous then
+				local money = G.hand.highlighted[i]:get_id()
+			else
+				local money = G.hand.highlighted[i]:get_id() / 2
 			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 0.2,
+				delay = 0.1,
 				func = function()
-					G.jokers:unhighlight_all()
+					G.hand.highlighted[i]:juice_up(0.3, 0.3)
 					return true
 				end
 			}))
-			delay(0.5)
 		end
-		if #G.hand.highlighted > 0 then
-			for i = 1, #G.hand.highlighted do
-				if G.hand.highlighted[i].ability.nyx_prosperous then
-					local money = G.hand.highlighted[i]:get_id()
-				else
-					local money = G.hand.highlighted[i]:get_id() / 2
-				end
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.1,
-					func = function()
-						G.hand.highlighted[i]:juice_up(0.3, 0.3)
-						return true
-					end
-				}))
+		G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 0.2,
+			func = function()
+				G.hand:unhighlight_all()
+				return true
 			end
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.2,
-				func = function()
-					G.hand:unhighlight_all()
-					return true
-				end
-			}))
-			delay(0.5)
-		end
+		}))
+		delay(0.5)
     end,
     can_use = function(self, card)
-        return (G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted) or (#G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted)
+        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
@@ -7627,6 +7576,108 @@ SMODS.Consumable {
             card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
         end
     end
+}
+SMODS.Consumable {
+    key = 'transmission',
+    set = 'nyx_demonic',
+	atlas = 'Placeholder',
+    pos = { x = 0, y = 0 },
+	loc_txt = {
+		name = 'Transmission',
+		text = {
+			'Tranfer {C:attention}everything{} but rank and suit',
+			'From the {C:attention}right{} card to the {C:attention}left{} card',
+			'{C:red}Destroys the right card{}'
+		}
+	},
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 2, min_highlighted = 2 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+		local left = G.hand.highlighted[1]
+		local right = G.hand.highlighted[2]
+
+		-- Make it position based
+		if right.T.x < left.T.x then
+			local swap = left
+			left = right
+			right = swap
+		end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        for i = 1, #G.hand.highlighted do
+            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('card1', percent)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        delay(0.2)
+        for i = 1, #G.hand.highlighted do
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
+                    local rank = left.base.value
+					local suit = left.base.suit
+
+					copy_card(right, left)
+					assert(SMODS.change_base(left, suit, rank))
+					SMODS.destroy_cards { right }
+                    return true
+                end
+            }))
+        end
+        for i = 1, #G.hand.highlighted do
+            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('tarot2', percent, 0.6)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+                G.hand:unhighlight_all()
+                return true
+            end
+        }))
+        delay(0.5)
+    end,
+    can_use = function(self, card)
+        return G.hand and #G.hand.highlighted >= card.ability.min_highlighted and
+            #G.hand.highlighted <= card.ability.max_highlighted
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
 }
 SMODS.Consumable {
     key = 'devour',
@@ -7950,102 +8001,6 @@ SMODS.Consumable {
     end,
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
-    end
-}
-SMODS.Consumable {
-    key = 'transmission',
-    set = 'Tarot',
-	atlas = 'Placeholder',
-    pos = { x = 0, y = 0 },
-	loc_txt = {
-		name = 'Transmission',
-		text = {
-			'Tranfer {C:attention}everything{} but rank and suit',
-			'From the {C:attention}right{} card to the {C:attention}left{} card',
-			'{C:red}Destroys the right card{}'
-		}
-	},
-	cost = 3,
-	unlocked = true,
-	discovered = false,
-    config = { max_highlighted = 2, min_highlighted = 2 },
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.max_highlighted } }
-    end,
-    use = function(self, card, area, copier)
-		local left = G.hand.highlighted[1]
-		local right = G.hand.highlighted[2]
-
-		-- Make it position based
-		if right.T.x < left.T.x then
-			local swap = left
-			left = right
-			right = swap
-		end
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.4,
-            func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true
-            end
-        }))
-        for i = 1, #G.hand.highlighted do
-            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.15,
-                func = function()
-                    G.hand.highlighted[i]:flip()
-                    play_sound('card1', percent)
-                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
-                    return true
-                end
-            }))
-        end
-        delay(0.2)
-        for i = 1, #G.hand.highlighted do
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.1,
-                func = function()
-                    local rank = left.base.value
-					local suit = left.base.suit
-
-					copy_card(right, left)
-					assert(SMODS.change_base(left, suit, rank))
-					SMODS.destroy_cards { right }
-                    return true
-                end
-            }))
-        end
-        for i = 1, #G.hand.highlighted do
-            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.15,
-                func = function()
-                    G.hand.highlighted[i]:flip()
-                    play_sound('tarot2', percent, 0.6)
-                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
-                    return true
-                end
-            }))
-        end
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.2,
-            func = function()
-                G.hand:unhighlight_all()
-                return true
-            end
-        }))
-        delay(0.5)
-    end,
-    can_use = function(self, card)
-        return G.hand and #G.hand.highlighted >= card.ability.min_highlighted and
-            #G.hand.highlighted <= card.ability.max_highlighted
     end
 }
 SMODS.Consumable {
