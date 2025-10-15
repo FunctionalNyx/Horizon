@@ -7608,6 +7608,82 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
+    key = 'devour',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 8, y = 0 },
+	loc_txt = {
+		name = 'Devour',
+		text = {
+			'Gain the {C:money}rank{} of',
+			'#1# selected {C:attention}card{} as {C:money}${}',
+			'Then {C:red}destroy{} it',
+			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}',
+			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	cost = 6,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 1},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
+	in_pool = function(self)
+		return false 
+	end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        delay(0.2)
+		if #G.hand.highlighted > 0 then
+			for i = 1, #G.hand.highlighted do
+				local money = 0
+				if G.hand.highlighted[i].ability.nyx_prosperous then
+					money = tonumber(G.hand.highlighted[i]:get_id()) * 2
+				else
+					money = tonumber(G.hand.highlighted[i]:get_id())
+				end
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.hand.highlighted[i]:juice_up(0.3, 0.3)
+						ease_dollars(money)
+						SMODS.destroy_cards { G.hand.highlighted[i] }
+						return true
+					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.hand:unhighlight_all()
+					return true
+				end
+			}))
+			delay(0.5)
+		end
+    end,
+    can_use = function(self, card)
+        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
@@ -7709,81 +7785,7 @@ SMODS.Consumable {
 		end
 	end
 }
-SMODS.Consumable {
-    key = 'devour',
-    set = 'nyx_demonic',
-	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
-	loc_txt = {
-		name = 'Devour',
-		text = {
-			'Gain the {C:money}rank{} of',
-			'#1# selected {C:attention}card{} as {C:money}${}',
-			'Then {C:red}destroy{} it',
-			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}'
-		}
-	},
-	cost = 6,
-	unlocked = true,
-	discovered = false,
-    config = { max_highlighted = 1},
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.max_highlighted } }
-    end,
-	in_pool = function(self)
-		return false 
-	end,
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.4,
-            func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true
-            end
-        }))
-        delay(0.2)
-		if #G.hand.highlighted > 0 then
-			for i = 1, #G.hand.highlighted do
-				local money = 0
-				if G.hand.highlighted[i].ability.nyx_prosperous then
-					money = tonumber(G.hand.highlighted[i]:get_id()) * 2
-				else
-					money = tonumber(G.hand.highlighted[i]:get_id())
-				end
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.1,
-					func = function()
-						G.hand.highlighted[i]:juice_up(0.3, 0.3)
-						ease_dollars(money)
-						SMODS.destroy_cards { G.hand.highlighted[i] }
-						return true
-					end
-				}))
-			end
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.2,
-				func = function()
-					G.hand:unhighlight_all()
-					return true
-				end
-			}))
-			delay(0.5)
-		end
-    end,
-    can_use = function(self, card)
-        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
-    end,
-	draw = function(self, card, layer)
-        -- This is for the Spectral shader.
-        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
-            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
-        end
-    end
-}
+
 
 
 -- Tarot --
