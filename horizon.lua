@@ -2609,10 +2609,13 @@ end
 -- 'every {X:mult,C:chips}' .. corruptedText[math.random(1, #corruptedText)] .. '{}'
 
 local randomWords = {'Jo  ker', 'unde fined    ', 'broken', 'SJKFSUQ   ', '   Func tional Nyx', 'ER  ROR', '-face', 'Plac   eholder', 'Misprint  ', 'MESSAGE   ', 'UNK   NOWN', '34   213551', 'meani   ng', 'TRU  E', 'FAL  SE', 'Gi  ves', '  bozo!', 'I', 'F0U ND', 'Y0U'}
---local colors = {G.C.RED, G.C.GREEN, G.C.BLUE, G.C.YELLOW, G.C.PURPLE, G.C.ORANGE, G.C.PINK, G.C.BROWN} -- unused
+local colors = {G.C.RED, G.C.GREEN, G.C.BLUE, G.C.YELLOW, G.C.PURPLE, G.C.ORANGE, G.C.PINK, G.C.BROWN} -- unused
 local suits = {'Spades', 'Hearts', 'Diamonds', 'Clubs'}
 local ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'}
 local rarities = {'Common', 'Uncommon', 'Rare', 'Legendary'}
+local enhancements = {'m_bonus','m_mult','m_wild','m_glass','m_steel','m_stone','m_gold','m_lucky','m_nyx_diseased','m_nyx_frozen','m_nyx_truelucky','m_nyx_burning','m_nyx_wet','m_nyx_starcrossed'}
+local editions = {'e_negative','e_polychrome','e_foil','e_holo'}
+local seals = {'Red', 'Blue', 'Gold','Purple','nyx_greenseal','nyx_greenblue'}
 
 SMODS.Joker { -- This joker should be referred to as "ERROR"
 	key = 'err',
@@ -3977,7 +3980,8 @@ SMODS.Joker{
 									Xmult_mod = true,
 									mult_mod = true,
 									chips_mod = true,
-									extra = true
+									extra = true,
+									card_limit = true
 								}
 							})
 						elseif G.jokers.cards[i].ability.name == "Ramen" then
@@ -3985,7 +3989,8 @@ SMODS.Joker{
 								multiply = card.ability.extra.multiplier,
 								x_protect = true,
 								unkeywords = {
-									Xmult = true
+									Xmult = true,
+									card_limit = true
 								}
 							})
 						elseif G.jokers.cards[i].ability.name == "Loyalty Card" then
@@ -4001,7 +4006,8 @@ SMODS.Joker{
 									discard_sub = true,
 									h_mod = true,
 									loyalty_remaining = true,
-									every = true
+									every = true,
+									card_limit = true
 								}
 							})
 						elseif G.jokers.cards[i].ability.name == "Campfire" or G.jokers.cards[i].ability.name == "Hit the Road" then
@@ -4015,7 +4021,8 @@ SMODS.Joker{
 									chips_mod = true,
 									hand_add = true,
 									discard_sub = true,
-									h_mod = true
+									h_mod = true,
+									card_limit = true
 								}
 							})
 						else
@@ -4033,7 +4040,8 @@ SMODS.Joker{
 									size = true,
 									chip_mod = true,
 									h_size = true,
-									increase = true
+									increase = true,
+									card_limit = true
 								}
 							})
 						end
@@ -4355,23 +4363,7 @@ SMODS.Joker{
 				if other_joker.config.center.key == 'j_nyx_fresh_start' and combine then
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							other_joker.T.r = -0.2
-							other_joker:juice_up(0.3, 0.4)
-							other_joker.states.drag.is = true
-							other_joker.children.center.pinch.x = true
-							card.T.r = -0.2
-							card:juice_up(0.3, 0.4)
-							card.states.drag.is = true
-							card.children.center.pinch.x = true
-							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-								func = function()
-									G.jokers:remove_card(other_joker)
-									G.jokers:remove_card(card)
-									other_joker:remove()
-									card:remove()
-									other_joker = nil
-									card = nil
-								return true; end})) 
+							SMODS.destroy_cards { card, other_joker }
 							return true
 						end
 					})) 
@@ -4460,30 +4452,7 @@ SMODS.Joker{
 				if origin and _end then
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							odd_card.T.r = -0.2
-							odd_card:juice_up(0.3, 0.4)
-							odd_card.states.drag.is = true
-							odd_card.children.center.pinch.x = true
-							even_card.T.r = -0.2
-							even_card:juice_up(0.3, 0.4)
-							even_card.states.drag.is = true
-							even_card.children.center.pinch.x = true
-							card.T.r = -0.2
-							card:juice_up(0.3, 0.4)
-							card.states.drag.is = true
-							card.children.center.pinch.x = true
-							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-								func = function()
-									G.jokers:remove_card(odd_card)
-									G.jokers:remove_card(even_card)
-									G.jokers:remove_card(card)
-									odd_card:remove()
-									even_card:remove()
-									card:remove()
-									odd_card = nil
-									even_card = nil
-									card = nil
-								return true; end})) 
+							SMODS.destroy_cards { card, odd_card, even_card }
 							return true
 						end
 					})) 
@@ -7790,7 +7759,101 @@ SMODS.Consumable {
 		end
 	end
 }
-
+SMODS.Consumable {
+    key = 'insanity',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+	loc_txt = {
+		name = 'Insanity',
+		text = {
+			'Completely {C:attention}randomize{}',
+			'up to #1# selected {C:attention}cards{}'
+		}
+	},
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 2 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        for i = 1, #G.hand.highlighted do
+            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('card1', percent)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        delay(0.2)
+        for i = 1, #G.hand.highlighted do
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
+					assert(SMODS.change_base(G.hand.highlighted[i], suits[math.random(1, #suits)], ranks[math.random(1, #ranks)]))
+                    if math.random(1, #editions+1) ~= 1 then
+						G.hand.highlighted[i]:set_edition(editions[math.random(1, #editions)])
+					end
+					if math.random(1, #enhancements+1) ~= 1 then
+						G.hand.highlighted[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
+					end
+					if math.random(1, #seals+1) ~= 1 then
+						G.hand.highlighted[i]:set_seal(seals[math.random(1, #seals)], nil, true)
+					end
+					return true
+                end
+            }))
+        end
+        for i = 1, #G.hand.highlighted do
+            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('tarot2', percent, 0.6)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+                G.hand:unhighlight_all()
+                return true
+            end
+        }))
+        delay(0.5)
+    end,
+    can_use = function(self, card)
+        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
+}
 
 
 -- Tarot --
@@ -8894,35 +8957,8 @@ SMODS.Back {
             delay = 0.2,
             func = function()
 				for i=1, #G.playing_cards do
-					local percent = 1.15 - (i-0.999)/(#G.playing_cards-0.998)*0.3
-					G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.playing_cards[i]:flip();play_sound('card1', percent);G.playing_cards[i]:juice_up(0.3, 0.3);return true end }))
+					G.playing_cards[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
 				end
-					delay(0.2)
-				local enhancements = {
-					'm_bonus',
-					'm_mult',
-					'm_wild',
-					'm_glass',
-					'm_steel',
-					'm_stone',
-					'm_gold',
-					'm_lucky',
-					'm_nyx_diseased',
-					'm_nyx_frozen',
-					'm_nyx_truelucky',
-					'm_nyx_burning',
-					'm_nyx_wet'
-				}
-				for i=1, #G.playing_cards do
-					if not SMODS.has_enhancement(G.playing_cards[i]) then
-						G.playing_cards[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
-					end
-				end
-				for i=1, #G.playing_cards do
-					local percent = 0.85 + (i-0.999)/(#G.playing_cards-0.998)*0.3
-					G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() G.playing_cards[i]:flip();play_sound('tarot2', percent, 0.6);G.playing_cards[i]:juice_up(0.3, 0.3);return true end }))
-				end
-				delay(0.5)
 				return true
 			end
 		}))
