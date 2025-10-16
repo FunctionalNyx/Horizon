@@ -8646,7 +8646,7 @@ SMODS.Booster {
 }
 SMODS.Booster {
     key = "hnh_pack",
-    kind = 'HnH', -- You can also use Arcana if you want it to belong to the vanilla kind
+    kind = 'HnH',
 	weight = 0.4,
 	cost = 4,
 	group_key = "k_hnh_pack",
