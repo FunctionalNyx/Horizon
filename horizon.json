@@ -2,12 +2,12 @@
     "id": "Horizon",
     "name": "Horizon",
     "author": ["nyx","bozo!","Milk Mann","astololofo"],
-    "description": "Shitty mod that does stuff",
+    "description": "Collection of dumb ideas and bad design",
     "prefix": "nyx",
     "main_file": "horizon.lua",
-    "badge_colour": "eb17eb",
+    "badge_colour": "301934",
     "dependencies": [
-        "Steamodded (>=1.0.0~BETA-0711a)"
+        "Steamodded (>=1.0.0~BETA-0827c)"
     ],
-    "version": "0.3.0"
+    "version": "0.3.1"
 }

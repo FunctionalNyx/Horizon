@@ -7026,9 +7026,6 @@ SMODS.Consumable {
         info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted, localize { type = 'name_text', set = 'Enhanced', key = card.ability.mod_conv } } }
     end,
-	in_pool = function(self)
-		return false 
-	end,
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
@@ -7262,9 +7259,6 @@ SMODS.Consumable {
         info_queue[#info_queue + 1] = G.P_SEALS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted } }
     end,
-	in_pool = function(self)
-		return false 
-	end,
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
@@ -7355,9 +7349,6 @@ SMODS.Consumable {
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.max_highlighted } }
     end,
-	in_pool = function(self)
-		return false 
-	end,
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
@@ -8656,8 +8647,12 @@ SMODS.Booster {
 SMODS.Booster {
     key = "hnh_pack",
     kind = 'HnH', -- You can also use Arcana if you want it to belong to the vanilla kind
-    pos = { x = 0, y = 1 },
+	weight = 0.4,
+	cost = 4,
+	group_key = "k_hnh_pack",
+    draw_hand = true,
 	atlas = "Spectral",
+	pos = { x = 0, y = 1 },
 	loc_txt = {
         name = 'Heaven & Hell Pack',
 		group_name = 'Choose Wisely',
@@ -8670,55 +8665,19 @@ SMODS.Booster {
         extra = 3,
         choose = 1, 
     },
-	weight = 0.4,
-	cost = 4,
-    group_key = "k_hnh_pack",
-    draw_hand = true,
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.choose, card.ability.extra, colours = { HEX('FFD700'), HEX('880808') } } }
     end,
     ease_background_colour = function(self)
         ease_background_colour_blind(HEX("FFD700"))
     end,
-	in_pool = function(self)
-		return false
-	end,
-	no_collection = true,
-    particles = function(self)
-        G.booster_pack_sparkles = Particles(1, 1, 0, 0, {
-            timer = 0.015,
-            scale = 0.2,
-            initialize = true,
-            lifespan = 1,
-            speed = 1.1,
-            padding = -1,
-            attach = G.ROOM_ATTACH,
-            colours = { G.C.WHITE, lighten(HEX('880808'), 0.4)},
-            fill = true
-        })
-        G.booster_pack_sparkles.fade_alpha = 1
-        G.booster_pack_sparkles:fade(1, 0)
-    end,
     create_card = function(self, card, i)
-        local _card
-        if math.random(0,1) == 1 then
-            _card = {
-                set = "nyx_angelic",
-                area = G.pack_cards,
-                skip_materialize = true,
-                soulable = true,
-                key_append = 'nyx_hnh'
-            }
-        else
-            _card = {
-                set = "nyx_demonic",
-                area = G.pack_cards,
-                skip_materialize = true,
-                soulable = true,
-                key_append = 'nyx_hnh'
-            }
-        end
-        return _card
+        return {
+			set = 'nyx_angelic',
+			area = G.pack_cards,
+			skip_materialize = true,
+			soulable = true
+		}
     end,
 }
 --
@@ -8810,10 +8769,14 @@ SMODS.Tag {
     key = "hnhtag",
     min_ante = 2,
     atlas = 'Tags',
+	no_collection = true,
     pos = { x = 1, y = 0 },
     loc_vars = function(self, info_queue, tag)
         info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_hnh_pack
     end,
+	in_pool = function() 
+		return false 
+	end,
 	loc_txt = {
 		name = "Heaven & Hell Tag",
 		text = {
