@@ -3468,6 +3468,11 @@ SMODS.Joker{
 			G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
 			card.ability.extra.reroll = true
 		end
+		if context.reroll_shop and context.cardarea == G.jokers then
+			if G.GAME.shop.joker_max < 2 then
+				G.GAME.shop.joker_max = 2
+			end
+		end
 		if context.ending_shop then
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
@@ -6285,7 +6290,7 @@ SMODS.Joker{
 			if  (context.other_card:get_id() == 11 or
 				context.other_card:get_id() == 12 or
 				context.other_card:get_id() == 13) then
-				if math.random(1, G.GAME.probabilities.normal) <= card.ability.extra.odds then
+				if pseudorandom('guillotine') < G.GAME.probabilities.normal / card.ability.extra.odds then
 					local beheadedcard = context.other_card
 					local suit = beheadedcard.base.suit
 					if context.other_card:get_id() == 13 then
