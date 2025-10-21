@@ -319,16 +319,7 @@ SMODS.Joker{
 				SMODS.smart_level_up_hand(card, 'High Card', nil, -1)
 				G.E_MANAGER:add_event(Event({
                     func = function()
-                        card.T.r = -0.2
-                        card:juice_up(0.3, 0.4)
-                        card.states.drag.is = true
-                        card.children.center.pinch.x = true
-                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                            func = function()
-                                G.jokers:remove_card(card)
-                                card:remove()
-                                card = nil
-                            return true; end})) 
+                        SMODS.destroy_cards{ card }
                         return true
                     end
                 })) 
@@ -515,16 +506,7 @@ SMODS.Joker{
 			if print_count > 5 then -- Prevents people from abusing Blessing creating itself to infinitely duplicate
 				G.E_MANAGER:add_event(Event({
                     func = function()
-                        card.T.r = -0.2
-                        card:juice_up(0.3, 0.4)
-                        card.states.drag.is = true
-                        card.children.center.pinch.x = true
-                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                            func = function()
-                                G.jokers:remove_card(card)
-                                card:remove()
-                                card = nil
-                            return true; end})) 
+                        SMODS.destroy_cards{ card } 
                         return true
                     end
                 })) 
@@ -1032,16 +1014,7 @@ SMODS.Joker{
 			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds2 and not card.ability.eternal then
 				G.E_MANAGER:add_event(Event({
 					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
+						SMODS.destroy_cards{ card }
 						return true
 					end
 				})) 
@@ -1171,23 +1144,7 @@ SMODS.Joker{
 				if other_joker.config.center.key == 'j_nyx_origin' and combine then
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							other_joker.T.r = -0.2
-							other_joker:juice_up(0.3, 0.4)
-							other_joker.states.drag.is = true
-							other_joker.children.center.pinch.x = true
-							card.T.r = -0.2
-							card:juice_up(0.3, 0.4)
-							card.states.drag.is = true
-							card.children.center.pinch.x = true
-							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-								func = function()
-									G.jokers:remove_card(other_joker)
-									G.jokers:remove_card(card)
-									other_joker:remove()
-									card:remove()
-									other_joker = nil
-									card = nil
-								return true; end})) 
+							SMODS.destroy_cards{ card, other_joker }
 							return true
 						end
 					})) 
@@ -1264,30 +1221,7 @@ SMODS.Joker{
 				if origin and _end then
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							or_card.T.r = -0.2
-							or_card:juice_up(0.3, 0.4)
-							or_card.states.drag.is = true
-							or_card.children.center.pinch.x = true
-							end_card.T.r = -0.2
-							end_card:juice_up(0.3, 0.4)
-							end_card.states.drag.is = true
-							end_card.children.center.pinch.x = true
-							card.T.r = -0.2
-							card:juice_up(0.3, 0.4)
-							card.states.drag.is = true
-							card.children.center.pinch.x = true
-							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-								func = function()
-									G.jokers:remove_card(or_card)
-									G.jokers:remove_card(end_card)
-									G.jokers:remove_card(card)
-									or_card:remove()
-									end_card:remove()
-									card:remove()
-									or_card = nil
-									end_card = nil
-									card = nil
-								return true; end})) 
+							SMODS.destroy_cards{ or_card, end_card, card }
 							return true
 						end
 					})) 
@@ -2045,16 +1979,7 @@ SMODS.Joker{
 				message_card = card,
 				G.E_MANAGER:add_event(Event({
                     func = function()
-                        card.T.r = -0.2
-                        card:juice_up(0.3, 0.4)
-                        card.states.drag.is = true
-                        card.children.center.pinch.x = true
-                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                            func = function()
-                                G.jokers:remove_card(card)
-                                card:remove()
-                                card = nil
-                            return true; end})) 
+                        SMODS.destroy_cards{ card }
                         return true
                     end
                 })) 
@@ -2144,16 +2069,7 @@ SMODS.Joker{
 		if context.ending_shop then
 			G.E_MANAGER:add_event(Event({
                 func = function()
-                    card.T.r = -0.2
-                    card:juice_up(0.3, 0.4)
-                    card.states.drag.is = true
-                    card.children.center.pinch.x = true
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                        func = function()
-                           G.jokers:remove_card(card)
-                           card:remove()
-                           card = nil
-						return true; end})) 
+                    SMODS.destroy_cards{ card }
 					return true
 				end
             })) 
@@ -3199,7 +3115,7 @@ SMODS.Joker{
         text = {
           'Rerolls the {C:attention}Joker{} to the right',
 		  'when you {C:attention}reroll{} in the shop',
-		  '{C:inactive,s:0.8}Does not reroll editions, enhancements, or seals{}',
+		  '{C:inactive,s:0.8}Does not reroll editions or stickers{}',
 		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
         },
     },
@@ -3213,9 +3129,6 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 20, y = 2},
-	config = {
-
-	},
 	calculate = function(self,card,context)
 		if context.reroll_shop and context.cardarea == G.jokers then
 			for i = 1, #G.jokers.cards do
@@ -3249,6 +3162,47 @@ SMODS.Joker{
 							colour = G.C.GREEN
 						}
 					end
+				end
+			end
+			if G.jokers.cards[#G.jokers.cards] == card then
+				local ran = math.random(1, 20)
+				card:juice_up(0.5, 0.5)
+				if ran == 20 then
+					local st = 0.50
+					G.E_MANAGER:add_event(Event({
+						trigger = 'before',
+						delay = st,
+						func = function()
+							card:juice_up(0.5, 0.5)
+						return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = st/2,
+						func = function()
+							card:juice_up(0.5, 0.5)
+						return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 2,
+						func = function()
+							SMODS.destroy_cards{card}
+							SMODS.add_card {
+								key = 'j_nyx_loadeddice',
+								area = G.jokers
+							}
+							return true
+						end
+					}))
+				else 
+					return {
+						message = "" .. tostring(ran) .. "!",
+						message_card = card,
+						colour = G.C.YELLOW
+					}
 				end
 			end
 		end
@@ -3538,16 +3492,7 @@ SMODS.Joker{
 			if card.ability.extra.Xmult == 1 then
 				G.E_MANAGER:add_event(Event({
 					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-							return true; end})) 
+						SMODS.destroy_cards{ card }
 						return true
 					end
 				}))
@@ -3797,16 +3742,7 @@ SMODS.Joker{
 			if pseudorandom('nyx_straz') < G.GAME.probabilities.normal / card.ability.extra.odds and not card.ability.eternal then
 				G.E_MANAGER:add_event(Event({
                     func = function()
-                        card.T.r = -0.2
-                        card:juice_up(0.3, 0.4)
-                        card.states.drag.is = true
-                        card.children.center.pinch.x = true
-                        G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                            func = function()
-                                G.jokers:remove_card(card)
-                                card:remove()
-                                card = nil
-                            return true; end})) 
+                        SMODS.destroy_cards{ card }
                         return true
                     end
                 })) 
@@ -4054,22 +3990,7 @@ SMODS.Joker{
 					G.E_MANAGER:add_event(Event({
 						func = function()
 							play_sound('tarot1')
-							_card.T.r = -0.2
-							_card:juice_up(0.3, 0.4)
-							_card.states.drag.is = true
-							_card.children.center.pinch.x = true
-							-- This part destroys the card.
-							G.E_MANAGER:add_event(Event({
-								trigger = 'after',
-								delay = 0.3,
-								blockable = false,
-								func = function()
-									G.jokers:remove_card(_card)
-									_card:remove()
-									_card = nil
-									return true;
-								end
-							}))
+							SMODS.destroy_cards{ _card }
 							return true
 						end
 					}))							
@@ -4537,16 +4458,7 @@ SMODS.Joker{
 						local card_ = joker
 						G.E_MANAGER:add_event(Event({
 							func = function()
-								card_.T.r = -0.2
-								card_:juice_up(0.3, 0.4)
-								card_.states.drag.is = true
-								card_.children.center.pinch.x = true
-								G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-									func = function()
-										G.jokers:remove_card(card_)
-										card_:remove()
-										card_ = nil
-									return true; end})) 
+								SMODS.destroy_cards{ card_ }
 								return true
 							end
 						}))
@@ -4554,19 +4466,10 @@ SMODS.Joker{
 				end
 				G.E_MANAGER:add_event(Event({
 					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-								SMODS.add_card {
-									key = "j_nyx_joe_ultimate",
-								}
-							return true; end})) 
+						SMODS.destroy_cards{ card }
+						SMODS.add_card {
+							key = "j_nyx_joe_ultimate",
+						}
 						return true
 					end
 				}))
@@ -4842,19 +4745,10 @@ SMODS.Joker{
 				end
 				G.E_MANAGER:add_event(Event({
 					func = function()
-						card.T.r = -0.2
-						card:juice_up(0.3, 0.4)
-						card.states.drag.is = true
-						card.children.center.pinch.x = true
-						G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-							func = function()
-								G.jokers:remove_card(card)
-								card:remove()
-								card = nil
-								SMODS.add_card {
-									key = "j_nyx_joe_almighty",
-								}
-							return true; end})) 
+						SMODS.destroy_cards{ card }
+						SMODS.add_card {
+							key = "j_nyx_joe_almighty",
+						}
 						return true
 					end
 				}))
@@ -5154,23 +5048,7 @@ SMODS.Joker{
 				if other_joker.config.center.key == 'j_nyx_moist' then
 					G.E_MANAGER:add_event(Event({
 						func = function()
-							other_joker.T.r = -0.2
-							other_joker:juice_up(0.3, 0.4)
-							other_joker.states.drag.is = true
-							other_joker.children.center.pinch.x = true
-							card.T.r = -0.2
-							card:juice_up(0.3, 0.4)
-							card.states.drag.is = true
-							card.children.center.pinch.x = true
-							G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-								func = function()
-									G.jokers:remove_card(other_joker)
-									G.jokers:remove_card(card)
-									other_joker:remove()
-									card:remove()
-									other_joker = nil
-									card = nil
-								return true; end})) 
+							SMODS.destroy_cards{ card , other_joker }
 							return true
 						end
 					})) 
@@ -5226,16 +5104,7 @@ SMODS.Joker{
 		if context.starting_shop and not card.ability.eternal then
 			G.E_MANAGER:add_event(Event({
                 func = function()
-                    card.T.r = -0.2
-                    card:juice_up(0.3, 0.4)
-                    card.states.drag.is = true
-                    card.children.center.pinch.x = true
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                        func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+                    SMODS.destroy_cards{ card }
 					return true
 				end
             })) 
@@ -5460,16 +5329,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5520,16 +5380,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5580,16 +5431,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5640,16 +5482,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5692,16 +5525,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5752,16 +5576,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5812,16 +5627,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5887,16 +5693,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5938,16 +5735,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -5989,16 +5777,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -6058,16 +5837,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -6109,16 +5879,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
-					card.T.r = -0.2
-					card:juice_up(0.3, 0.4)
-					card.states.drag.is = true
-					card.children.center.pinch.x = true
-					G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-						func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+					SMODS.destroy_cards{ card }
 					return true
 				end
 			}))
@@ -6974,10 +6735,14 @@ SMODS.Joker{
     cost = 12,
     unlocked = true,
     discovered = false,
+	no_collection = true,
     blueprint_compat = false,
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 5, y = 0},
+	in_pool = function(self)
+		return false 
+	end,
 	add_to_deck = function(self, card, from_debuff)
 		for k, v in pairs(G.GAME.probabilities) do 
 			G.GAME.probabilities[k] = v*1000
@@ -7363,9 +7128,9 @@ SMODS.Consumable {
 		for i = 1, #G.hand.highlighted do
 			local money = 0
 			if G.hand.highlighted[i].ability.nyx_prosperous then
-				money = tonumber(G.hand.highlighted[i]:get_id())
+				money = G.hand.highlighted[i]:get_id()
 			else
-				money = tonumber(G.hand.highlighted[i]:get_id()) / 2
+				money = G.hand.highlighted[i]:get_id() / 2
 			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
@@ -7612,9 +7377,9 @@ SMODS.Consumable {
 			for i = 1, #G.hand.highlighted do
 				local money = 0
 				if G.hand.highlighted[i].ability.nyx_prosperous then
-					money = tonumber(G.hand.highlighted[i]:get_id()) * 2
+					money = G.hand.highlighted[i]:get_id() * 2
 				else
-					money = tonumber(G.hand.highlighted[i]:get_id())
+					money = G.hand.highlighted[i]:get_id()
 				end
 				G.E_MANAGER:add_event(Event({
 					trigger = 'after',
@@ -10321,16 +10086,7 @@ SMODS.Joker{
 --[[ Delete card thingy
 			G.E_MANAGER:add_event(Event({
                 func = function()
-                    card.T.r = -0.2
-                    card:juice_up(0.3, 0.4)
-                    card.states.drag.is = true
-                    card.children.center.pinch.x = true
-                    G.E_MANAGER:add_event(Event({trigger = 'after', delay = 0.3, blockable = false,
-                        func = function()
-							G.jokers:remove_card(card)
-							card:remove()
-							card = nil
-						return true; end})) 
+                    SMODS.destroy_cards{ card }
 					return true
 				end
             })) 
