@@ -384,9 +384,11 @@ SMODS.Joker{
         text = {
           '{C:green}#1# in #2#{} Chance to',
 		  'refund a {C:attention}purchase{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true
@@ -464,9 +466,11 @@ SMODS.Joker{
           '{C:green}#1# in 4{} Chance to Generate a {C:attention}Consumable{}',
 		  'when using a {C:attention}Consumable{}',
 		  '{C:inactive,s:0.8}Does {}{C:red,s:0.8}NOT{}{C:inactive,s:0.8} need room{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true
@@ -536,10 +540,12 @@ SMODS.Joker{
         name = 'Scratch Ticket',
         text = {
           '{C:green}#2# in #1#{} Chance to',
-		  'give {C:money}$#3#{} every hand',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}astololofo{}'
+		  'give {C:money}$#3#{} every hand'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: astololofo', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true, ["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 1,
@@ -589,9 +595,11 @@ SMODS.Joker{
         	'{C:green}#1# in 2{} Chance of giving {X:mult,C:white}X5{} Mult!',
 			'{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}',
 			'#2#',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}astololofo{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: astololofo', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -648,9 +656,11 @@ SMODS.Joker{
         text = {
           'Always start with {C:blue}#1#{} hands',
 		  '{C:red}#2#{} discards, and {C:attention}#3#{} hand size',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 1,
@@ -697,9 +707,11 @@ SMODS.Joker{
         text = {
           '{C:red}-#1#{} Hand size',
 		  '{C:green}#2# in #3#{} Chance to create a {C:attention}Glass Card{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
     atlas = 'Jokers',
     rarity = 1,
@@ -756,10 +768,12 @@ SMODS.Joker{
         text = {
           'Gives {C:chips}+#1#{} chips',
 		  'Amount is increased by the',
-		  '{C:attention}rank of destroyed cards{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+		  '{C:attention}rank of destroyed cards{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -812,9 +826,11 @@ SMODS.Joker{
         text = {
           'Will {E:2}almost{} always prevent Death',
 		  '{C:red}Self destructs{} and {C:attention}Doubles{} all blinds',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
     atlas = 'Jokers',
     rarity = 1,
@@ -854,9 +870,11 @@ SMODS.Joker{
         text = {
           'Gain {C:red}+1{} Discard',
 		  'Able to discard {C:red}6{} cards',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 1,
@@ -901,9 +919,11 @@ SMODS.Joker{
         name = 'Stethoscope',
         text = {
           '{C:green}Diseased{} cards always {C:red}decay{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 1,
@@ -935,9 +955,11 @@ SMODS.Joker{
 		  '{C:attention}Item{} in the shop {C:green}Free{}',
 		  '{C:green}#1# in #3#{} Chance to {C:red}destroy{}',
 		  'this card when {C:attention}purchasing{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -1032,9 +1054,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Odd{} cards',
 		  '{C:attention}retrigger #1#{} time when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -1087,9 +1111,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Even{} cards',
 		  '{C:attention}retrigger #1#{} time when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -1167,9 +1193,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Non-face{} cards',
 		  '{C:attention}retrigger #1#{} times when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = 2,
     cost = 3,
@@ -1244,9 +1272,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Non-face{} cards',
 		  '{C:attention}retrigger #1#{} times when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = 3,
     cost = 8,
@@ -1291,9 +1321,11 @@ SMODS.Joker{
         text = {
           '{C:green}#2# in #1#{} Chance to',
 		  '{C:blue}Moisturize{} scoring cards',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 		["DPGJokers"] = true
@@ -1353,10 +1385,12 @@ SMODS.Joker{
         text = {
           'All {C:attention}Non-Face{} cards',
 		  'Give {C:mult}+#1#{} Mult and {C:chips}+#2#{} Chips',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}',
 		  '{C:inactive,s:0.5}Unnamed loser{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -1424,9 +1458,11 @@ SMODS.Joker{
         text = {
           'Earn {C:money}$#1#{} if the',
 		  'score is on {C:red}fire{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -1470,9 +1506,11 @@ SMODS.Joker{
         text = {
           'Gains {X:mult,C:white}X#2#{} Mult every {C:attention}Joe{} Sold',
 		  '{s:0.8}(Currently{} {X:mult,C:white,s:0.8}X#1#{} {s:0.8}Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -1526,10 +1564,12 @@ SMODS.Joker{
         text = {
           '{C:purple,s:0.8}Ourpling{}',
 		  'If the first {C:attention}hand{} has {C:attention}one card{}',
-		  'Add a {C:purple}Purple Seal{} to it',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}kirb{}'
+		  'Add a {C:purple}Purple Seal{} to it'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: kirb0s', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -1564,9 +1604,11 @@ SMODS.Joker{
           'Gives {C:mult}#1#{} Mult and {C:chips}#2#{} Chips',
 		  'For every level the',
 		  'played {C:attention}Poker{} {C:attention}hand{} has',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -1759,9 +1801,11 @@ SMODS.Joker{
         text = {
           '{C:green}#1# in 2{} Chance on selecting a {C:attention}Blind{} to',
 		  'produce a {C:dark_edition}Negative{} {C:attention}Joe{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -1859,9 +1903,11 @@ SMODS.Joker{
         text = {
           '{C:green}#2# in #1#{} Chance to {C:attention}create Milk{} when selecting {C:attention}blind{}',
 		  '{C:green}Chance{} increases with every successful proc',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -1921,9 +1967,11 @@ SMODS.Joker{
 		  '{C:green}#3# in #4#{} Chance to {C:red}not{} be {C:attention}consumed{}',
 		  'when leaving the {C:attention}shop{}',
 		  '{C:inactive,s:0.9}(Currently{} {X:mult,C:white,s:0.8}#1#X{} {C:inactive,s:0.8}Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["FoodJokers"] = true
@@ -2026,9 +2074,11 @@ SMODS.Joker{
         text = {
           '{C:dark_edition,E:1,s:2}EVERYTHING IS 50% OFF!{}',
 		  '{C:red,s:0.5}Destroyed when leaving the shop{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -2084,9 +2134,11 @@ SMODS.Joker{
           '{C:gold,s:1.2,E:2}The Golden Ratio{}',
 		  'Scored {C:attention}Gold{} Cards give {X:mult,C:white}X#1#{}',
 		  '{C:attention}Steel{} Cards in hand give {C:money}$#2#{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -2144,10 +2196,12 @@ SMODS.Joker{
 		  'Gains {C:mult}+#5#{} Mult after every {C:attention}Blind{}',
 		  'As your friend, he has a {C:green}#1# in #2#{} chance to give {C:money}$#6#{},', -- money
 		  'and {C:green}#1# in #3#{} chance to create a {C:tarot}Tarot{} Card every hand played.',
-		  '{C:inactive,s:0.7}snuggle... -w-{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+		  '{C:inactive,s:0.7}snuggle... -w-{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers', --atlas' key
     rarity = 2, --rarity: 1 = Common, 2 = Uncommon, 3 = Rare, 4 = Legendary
@@ -2231,10 +2285,12 @@ SMODS.Joker{
         text = {
 		  'Gains {X:mult,C:white}X0.2{} Mult for every',
 		  '{C:attention}Stone{} Card in deck',
-		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -2288,10 +2344,12 @@ SMODS.Joker{
         name = 'Bell Curve',
         text = {
           'Converges the {C:attention}first{} and',
-		  '{C:attention}last{} scored cards towards {C:attention}8{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}',
+		  '{C:attention}last{} scored cards towards {C:attention}8{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -2352,9 +2410,11 @@ SMODS.Joker{
           'Every {C:attention}other{} scored card is {C:attention}retriggered{}',
 		  '{C:attention}Stone{} Cards are {C:attention}retriggered{} twice',
 		  '{C:inactive,s:0.8}#3#',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -2413,10 +2473,12 @@ SMODS.Joker{
         text = {
 			'Gives {X:mult,C:white}X2{} Mult, but {C:red}debuffs{} the {C:attention}Joker{} to the left',
 			'{s:0.8}Does not update immediately{}',
-			'{C:red,s:0.8}Will destroy its own duplicates{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+			'{C:red,s:0.8}Will destroy its own duplicates{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -2540,10 +2602,12 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
         text = {
 			'When {X:chips,C:mult}#1#{}',
 			'#2# {X:chips,C:purple}Blind{} {X:purple,C:inactive}#3#{} {C:mult}mult{} after',
-			'every {X:mult,C:white}#4#{}',
-			'{C:inactive,s:0.8}Art by {}{X:chips,C:white,s:0.8}#2#{}'
+			'every {X:mult,C:white}#4#{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: #2#', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3003,10 +3067,12 @@ SMODS.Joker{
     loc_txt = {
         name = 'Dead End',
         text = {
-          '{X:mult,C:white}X#1#{} Mult if you have no cards held in hand',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+          '{X:mult,C:white}X#1#{} Mult if you have no cards held in hand'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3047,9 +3113,11 @@ SMODS.Joker{
         text = {
 		  'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Diseased{} card destroyed',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3115,10 +3183,12 @@ SMODS.Joker{
         text = {
           'Rerolls the {C:attention}Joker{} to the right',
 		  'when you {C:attention}reroll{} in the shop',
-		  '{C:inactive,s:0.8}Does not reroll editions or stickers{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
+		  '{C:inactive,s:0.8}Does not reroll editions or stickers{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3216,9 +3286,11 @@ SMODS.Joker{
           'When leaving the {C:attention}shop{} takes {C:money}$#1#{}',
 		  'But has a {C:green}#2# in #3#{} chance',
 		  'to create a random {C:attention}Food{} Joker',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3274,9 +3346,11 @@ SMODS.Joker{
           '{C:green}#1# in #2#{} chance for each played {C:attention}Ace{}',
 		  'to create an {C:spectral}Aura{} card when scored',
 		  '{C:inactive,s:0.8}(Must have room){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -3334,10 +3408,12 @@ SMODS.Joker{
     loc_txt = {
         name = 'Under Construction',
         text = {
-          'Gives {C:money}$#1#{} for each empty joker slot',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+          'Gives {C:money}$#1#{} for each empty joker slot'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true
 	}, 
@@ -3383,9 +3459,11 @@ SMODS.Joker{
           'The {C:attention}Shop{} has {C:attention}#1#{}',
 		  'extra slots when {C:attention}entering{}',
 		  '{C:attention,s:0.8}Rerolling{}{C:inactive,s:0.8} the shop will {}{C:red,s:0.8}remove{}{C:inactive,s:0.8} this bonus{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -3450,9 +3528,11 @@ SMODS.Joker{
         text = {
           '{X:mult,C:white}X#1#{} Mult but decreases by {X:mult,C:white}X0.25{} every hand',
 		  "{C:inactive,E:1,s:0.8}You know you're only supposed to eat 2 a day right?{}",
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true,
 		["FoodJokers"] = true
@@ -3515,9 +3595,11 @@ SMODS.Joker{
         text = {
           'Gives {C:money}$5{} every {C:blue}hand{}',
 		  'but debuffs {C:attention}adjacent{} Jokers',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -3607,10 +3689,12 @@ SMODS.Joker{
         name = 'All Eyes On Me',
         text = {
           'All {C:attention}face{} Cards',
-          'Grant {X:mult,C:white}X#1#{} Mult',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
+          'Grant {X:mult,C:white}X#1#{} Mult'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers', --atlas' key
     rarity = 3, --rarity: 1 = Common, 2 = Uncommon, 3 = Rare, 4 = Legendary
@@ -3651,9 +3735,11 @@ SMODS.Joker{
         text = {
           'Either {X:mult,C:white}XMult{} of {X:mult,C:white}50{} or {X:mult,C:white}0.02{}',
 		  '{C:inactive,s:0.8}Not Compatible with {}{C:green,s:0.8}Oops All 6s{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -3690,9 +3776,11 @@ SMODS.Joker{
         name = '{C:red}Beastmode{}',
         text = {
           'There can only be {C:red}one{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -3770,10 +3858,12 @@ SMODS.Joker{
         name = 'Pentagram',
         text = {
           'Scoring cards of rank {C:attention}6{}',
-		  'give {X:mult,C:white}X#1#{} Mult',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+		  'give {X:mult,C:white}X#1#{} Mult'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 3,
@@ -3815,9 +3905,11 @@ SMODS.Joker{
           'All {C:attention}scored{} cards give {C:money}$#1#{}',
 		  '{C:green}#2# in #3#{} Chance to set money to {C:red}0{} after each hand',
 		  "{C:inactive,s:0.8}You're not supposed to have this you know{}",
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 3,
@@ -3870,9 +3962,11 @@ SMODS.Joker{
 		  '{C:red,E:2}Self Destructs{}',
 		  '{C:inactive,s:0.8}[3:18 PM] nyx: Now I need to figure out a name for it....{}',
 		  '{C:inactive,s:0.8}[6:03 PM] bozo!: t{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4013,9 +4107,11 @@ SMODS.Joker{
         text = {
           'After {C:attention}5{} rounds, becomes a {C:purple}Legendary{} Joker... {C:red,E:1}sometimes{}.',
 		  "{C:inactive,s:0.8}(#1#/5){}",
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 3,
@@ -4072,9 +4168,11 @@ SMODS.Joker{
         name = 'Mathematician',
         text = {
           '{C:attention}Copies{} all {E:2,C:dark_edition}Math{} Jokers',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4118,9 +4216,11 @@ SMODS.Joker{
 		  'your most played {C:red}hand{}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#2#{}{C:inactive,s:0.8} Mult){}',
 		  "{C:inactive,s:0.8}What Nyx doesn't have{}",
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4181,9 +4281,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Odd{} cards',
 		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4236,9 +4338,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Even{} cards',
 		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4316,9 +4420,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Non-face{} cards',
 		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4397,9 +4503,11 @@ SMODS.Joker{
           'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
 		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Ultimate){}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4487,10 +4595,12 @@ SMODS.Joker{
         name = 'Plague Bearer',
         text = {
           'All {C:attention}Diseased{} cards give {X:mult,C:white}X#1#{}',
-		  '{C:attention}Evolves{} when all cards are {C:attention}Diseased{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
+		  '{C:attention}Evolves{} when all cards are {C:attention}Diseased{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true
 	}, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -4565,11 +4675,12 @@ SMODS.Joker{
         text = {
           'Gains {X:mult,C:white}X#1#{} Mult for every {C:attention}$1{} you have',
 		  'All {C:attention}Jokers{} give {C:attention}#2#${}',
-		  '{C:inactive,s:0.8}(Currently{} {X:mult,C:white,s:0.8}X#3#{} Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-
+		  '{C:inactive,s:0.8}(Currently{} {X:mult,C:white,s:0.8}X#3#{} Mult){}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["DPGJokers"] = true,
@@ -4671,9 +4782,11 @@ SMODS.Joker{
           'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
 		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Almighty){}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -4766,10 +4879,12 @@ SMODS.Joker{
         name = 'FATE',
         text = {
         	'Copies the effects of all other Jokers',
-			'{C:inactive,s:0.8}Does not copy {}{C:attention,s:0.8}Blueprint, Brainstorm, {}{C:inactive,s:0.8}or{} {C:attention,s:0.8}FATE{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}bozo!{}'
+			'{C:inactive,s:0.8}Does not copy {}{C:attention,s:0.8}Blueprint, Brainstorm, {}{C:inactive,s:0.8}or{} {C:attention,s:0.8}FATE{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true
 	},
@@ -4821,10 +4936,12 @@ SMODS.Joker{
         text = {
           'Scored {C:attention}Diseased{} cards give {X:mult,C:white}X#1#{} Mult',
 		  'All {C:attention}Diseased{} cards {C:attention}retrigger #2#{} time',
-		  '{C:attention}Diseased{} cards no longer {C:red}decay{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
+		  '{C:attention}Diseased{} cards no longer {C:red}decay{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true
 	},
@@ -4912,10 +5029,12 @@ SMODS.Joker{
         text = {
           'Gains {X:mult,C:white}X#2#{} Mult for every card {C:attention}scored{}',
 		  '{C:attention}Resets{} at the end of round',
-		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
+		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true
 	},
@@ -4989,9 +5108,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}8s{} {C:attention}retrigger #1#{} times',
 		  "All {C:attention}scoring{} cards that aren't {C:attention}8s{} are {C:red}destroyed{}",
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true
 	},
@@ -5070,9 +5191,11 @@ SMODS.Joker{
         name = '{X:chips,C:white}@everyone{}',
         text = {
           '{C:inactive,s:1.2,E:2}[11:43 PM]{} {C:green,s:1.2,E:2}Juic+e [131/150]{}{C:inactive,s:1.2,E:2}:{} {s:1.2,E:2}Oops{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
     cost = 15,
@@ -5118,9 +5241,11 @@ SMODS.Joker{
         text = {
           'Creates a {V:1}Card{}',
 		  'At the start of each round',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 12,
@@ -5159,9 +5284,11 @@ SMODS.Joker{
         text = {
           'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 16,
@@ -5213,9 +5340,11 @@ SMODS.Joker{
         name = 'The Gourmet',
         text = {
           '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 14,
@@ -5254,9 +5383,11 @@ SMODS.Joker{
         text = {
           'All {C:attention}Non-face{} cards',
 		  'Give {X:mult,C:white}X#1#{} Mult when scored',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 20,
@@ -5309,9 +5440,11 @@ SMODS.Joker{
         text = {
           'Does nothing',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5343,9 +5476,11 @@ SMODS.Joker{
         text = {
           '{X:mult,C:white}X#1#{} Mult',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5394,9 +5529,11 @@ SMODS.Joker{
         text = {
           '{C:chips}+#1#{} Chips',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5445,9 +5582,11 @@ SMODS.Joker{
         text = {
           '{X:mult,C:white}X#1#{} Mult',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5496,9 +5635,11 @@ SMODS.Joker{
         text = {
           'Calls you a mean name',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5539,9 +5680,11 @@ SMODS.Joker{
         text = {
           '{C:money}$#1#{}',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5590,9 +5733,11 @@ SMODS.Joker{
         text = {
           '{C:money}$#1#{}',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5641,9 +5786,11 @@ SMODS.Joker{
         text = {
           '{C:red}Disables{} a random {C:attention}Joker{}',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5707,9 +5854,11 @@ SMODS.Joker{
         text = {
           '{C:attention}Summons{} {C:blue}Moist{}',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5749,9 +5898,11 @@ SMODS.Joker{
         text = {
           '{C:attention}Summons{} the {C:blue}Milk Mann{}',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5791,9 +5942,11 @@ SMODS.Joker{
         text = {
           '{C:attention}Summons{} 3 {C:blue}Joe{}s',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5851,9 +6004,11 @@ SMODS.Joker{
         text = {
           '{C:attention}Summons{} a {C:blue}Nerd{}',
 		  '{C:red}Self destructs after 1 round{}',
-		  '{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        },
-    },
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -5943,6 +6098,9 @@ SMODS.Joker{
 		  '{C:attention}-#1#{} consumable slot'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -5990,6 +6148,9 @@ SMODS.Joker{
 			'{C:green}#2# in #1#{} chance to {C:red}Behead{} it instead',
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -6073,6 +6234,9 @@ SMODS.Joker{
           'This was a mistake'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	in_pool = function(self)
 		return false 
 	end,
@@ -6129,6 +6293,9 @@ SMODS.Joker{
 		  'Never see a {C:attention}shop{} again'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
     rarity = 2,
@@ -6219,6 +6386,9 @@ SMODS.Joker{
 		  'Hand {C:attention}size{} is set to 1'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
     rarity = 2,
@@ -6287,6 +6457,9 @@ SMODS.Joker{
 		  'Joker {C:attention}slots{} are set to 1'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
     rarity = 2,
@@ -6344,6 +6517,9 @@ SMODS.Joker{
 		  '{C:red}Only one Joker{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
     rarity = 2,
@@ -6489,6 +6665,9 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -6542,6 +6721,9 @@ SMODS.Joker{
 		  '{C:green}#3# in #2#{} chance to flip cards in hand'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -6594,6 +6776,9 @@ SMODS.Joker{
 		  'every other hand'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -6688,6 +6873,9 @@ SMODS.Joker{
           'Always draw {C:attention}#1# cards{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -6730,6 +6918,9 @@ SMODS.Joker{
 		  '{C:inactive,s:0.8}(Hopefully){}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Placeholder',
     rarity = 4,
     cost = 12,
@@ -6779,10 +6970,12 @@ SMODS.Consumable {
 		name = 'Divinity',
 		text = {
 			'Enhances {C:attention}#1#{} card into',
-			'a {C:attention}True Lucky{} card',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'a {C:attention}True Lucky{} card'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 6,
 	unlocked = true,
 	discovered = false,
@@ -6874,10 +7067,12 @@ SMODS.Consumable {
             'Remove all {C:attention}stickers{}',
 			'from a selected Joker',
 			'{C:inactive,s:0.8}If the joker has no stickers{}',
-			'{C:inactive,s:0.8}this card will not be consumed{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'{C:inactive,s:0.8}this card will not be consumed{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 4,
 	unlocked = true,
     discovered = false,
@@ -7185,9 +7380,11 @@ SMODS.Consumable {
             'Destroy a random {C:attention}Joker{}',
 			'Add {C:dark_edition}Negative{} to',
 			'random {C:attention}Joker{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 4,
 	unlocked = true,
     discovered = false,
@@ -7302,10 +7499,12 @@ SMODS.Consumable {
         name = 'Curse', --name of card
         text = { --text of card
             'Add {C:attention}Eternal{}',
-			'to a selected joker',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'to a selected joker'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 3,
 	unlocked = true,
     discovered = false,
@@ -7348,10 +7547,12 @@ SMODS.Consumable {
 			'Gain the {C:money}rank{} of',
 			'#1# selected {C:attention}card{} as {C:money}${}',
 			'Then {C:red}destroy{} it',
-			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 6,
 	unlocked = true,
 	discovered = false,
@@ -7610,6 +7811,65 @@ SMODS.Consumable {
 		end
 	end
 }
+SMODS.Consumable {
+    key = 'pride',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+	loc_txt = {
+		name = 'Pride',
+		text = {
+			'{C:red}Double{} the current Blind {C:attention}requirements{}',
+			'But gain {C:money}$#1#{}',
+			'{C:inactive,s:0.8}(Scales with type of blind){}'
+		}
+	},
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    config = { 
+		extra = { 
+			money = 5 
+		}  
+	},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.money } }
+    end,
+	calculate = function(self, card)
+		if G.GAME.blind:get_type() == "Small" then
+			card.ability.extra.money = 5
+		elseif G.GAME.blind:get_type() == "Big" then
+			card.ability.extra.money = 10
+		else
+			card.ability.extra.money = 20
+		end
+	end,
+    use = function(self, card, area, copier)
+        if G.GAME.blind then
+			G.GAME.blind.chips = G.GAME.blind.chips * 2
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+			G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end,
+			ease_dollars(card.ability.extra.money)
+        }))
+		end
+    end,
+    can_use = function(self, card)
+        return G.GAME.blind.in_blind
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
+}
 
 
 -- Tarot --
@@ -7705,10 +7965,12 @@ SMODS.Consumable {
 		name = 'Arson',
 		text = {
 			'Enhances {C:attention}#1#{} cards into',
-			'a {C:attention}Burning{} card',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'a {C:attention}Burning{} card'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 3,
 	unlocked = true,
 	discovered = false,
@@ -7787,10 +8049,12 @@ SMODS.Consumable {
 		name = 'Plague',
 		text = {
 			'Enhances {C:attention}#1#{} card into',
-			'a {C:attention}Diseased{} card',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'a {C:attention}Diseased{} card'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 3,
 	unlocked = true,
 	discovered = false,
@@ -7966,10 +8230,12 @@ SMODS.Consumable {
         text = { --text of card
             'Add a {C:green}Green Seal{}',
 			'to {C:attention}1{} selected',
-			'card in your hand',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Nyx{}'
-        }
-    },
+			'card in your hand'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 3,
 	unlocked = true,
     discovered = false,
@@ -8016,10 +8282,12 @@ SMODS.Consumable {
 		name = 'Glacier',
 		text = {
 			'Enhances {C:attention}#1#{} cards into',
-			'{C:attention}Frozen{} cards',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:attention}Frozen{} cards'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	cost = 4,
 	unlocked = true,
 	discovered = false,
@@ -8244,10 +8512,12 @@ SMODS.Booster {
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'From the {C:attention,E:2}Horizon{} Mod'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	 config = {
         extra = 2,
         choose = 1, 
@@ -8279,10 +8549,12 @@ SMODS.Booster {
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'From the {C:attention,E:2}Horizon{} Mod'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	 config = {
         extra = 2,
         choose = 1, 
@@ -8314,10 +8586,12 @@ SMODS.Booster {
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'From the {C:attention,E:2}Horizon{} Mod'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	 config = {
         extra = 4,
         choose = 1, 
@@ -8349,10 +8623,12 @@ SMODS.Booster {
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From the {C:attention,E:2}Horizon{} Mod',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'From the {C:attention,E:2}Horizon{} Mod'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	 config = {
         extra = 4,
         choose = 2, 
@@ -8384,10 +8660,12 @@ SMODS.Booster {
 		group_name = 'Dont pick Joe',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From {C:attention,E:2}Dark Pyro Gaming{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-        }
-    },
+			'From {C:attention,E:2}Dark Pyro Gaming{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	config = {
         extra = 2,
         choose = 1, 
@@ -8423,9 +8701,12 @@ SMODS.Booster {
 		group_name = 'Choose Wisely',
         text = {
             'Choose {C:attention}#1#{} of up to {C:attention}#2#{}',
-			'{V:1}Angelic{} or {V:2}Demonic{} cards',
-        }
-    },
+			'{V:1}Angelic{} or {V:2}Demonic{} cards'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     config = {
         extra = 3,
         choose = 1, 
@@ -8467,7 +8748,7 @@ SMODS.Tag {
 		text = {
 			'Immediately open a free',
 			'{C:attention,T:p_nyx_horizonboost_mega}Mega Horizon Pack.{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
     apply = function(self, tag, context)
@@ -8505,7 +8786,7 @@ SMODS.Tag {
 		text = {
 			'Immediately open a free',
 			'{C:attention,T:p_nyx_dpgbooster}DPG Pack.{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
     apply = function(self, tag, context)
@@ -8547,7 +8828,7 @@ SMODS.Tag {
 		text = {
 			'Immediately open a free',
 			'{C:attention,T:p_nyx_hnh_pack}Heaven & Hell Pack.{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
     apply = function(self, tag, context)
@@ -8590,7 +8871,7 @@ SMODS.Back {
 		text = {
 			'Start the game with a {C:attention,T:j_nyx_milkmann}Milk Mann{}',
 			'And an {C:green,T:j_oops}Oops all 6s{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	unlocked = true,
@@ -8673,8 +8954,9 @@ SMODS.Back {
 	loc_txt = {
 		name = "Enhanced Deck",
 		text = {
-			'All {C:attention}playing{} cards are {C:attention}enhanced{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'All Starting {C:attention}cards{}',
+			'are {C:attention}enhanced{}',
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	unlocked = true,
@@ -8702,7 +8984,7 @@ SMODS.Back {
 			'{C:red}#1#{} Hand Size',
 			'Gains {C:attention}+#2#{} Hand Size each ante',
 			'Starts with 2 random {C:blue}Common{} {C:attention}Jokers{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
 	config = { 
@@ -8769,10 +9051,12 @@ SMODS.Enhancement{
 		name = 'Diseased Card',
 		text = {
 			'{C:green}Infects{} the card to the {C:attention}right{}',
-			'{C:green}#2# in #1#{} chance to {C:red}Decay{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:green}#2# in #1#{} chance to {C:red}Decay{}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
@@ -8860,10 +9144,12 @@ SMODS.Enhancement{
 		text = {
 			'{C:green}#2# in #1#{} chance',
 			'to {C:blue}Freeze{}',
-			'{C:attention}retriggering #3#{} times',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:attention}retriggering #3#{} times'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
@@ -8905,10 +9191,12 @@ SMODS.Enhancement{
 			'{C:green}#1# in #3#{} chance',
 			'to {C:attention}retrigger{} again',
 			'{C:attention}And so on....{}',
-			'This can happen up to {C:attention}5{} times',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'This can happen up to {C:attention}5{} times'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
@@ -8965,10 +9253,12 @@ SMODS.Enhancement{
 		name = 'Diamond Card',
 		text = {
 			'{C:chips}+#1#{} Chips when held in hand',
-			'Gains {C:chips}#2#{} Chips when played',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'Gains {C:chips}#2#{} Chips when played'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
@@ -9010,10 +9300,12 @@ SMODS.Enhancement{
 			'All cards to the {C:attention}left{}',
 			'will be {C:blue}Moisturized{}',
 			'{X:mult,C:white}X#3#{} Mult',
-			'{C:green}#2# in #1#{} chance to {C:red}Dry{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:green}#2# in #1#{} chance to {C:red}Dry{}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
@@ -9081,10 +9373,12 @@ SMODS.Enhancement{
 		name = 'Dry Card',
 		text = {
 			'{C:chips}#1#{} Chips when scored',
-			'{C:red}Very Brittle{}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:red}Very Brittle{}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	in_pool = function(self)
@@ -9154,10 +9448,12 @@ SMODS.Enhancement{
 		text = {
 			'{C:mult}+#1#{} Mult but {C:red}Burns{} adjacent cards',
 			'Gains {C:mult}#2#{} Mult when {C:red}burning{} cards',
-			'{C:red}Burns{} if there are no {C:attention}burnable{} cards',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
+			'{C:red}Burns{} if there are no {C:attention}burnable{} cards'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
@@ -9266,11 +9562,12 @@ SMODS.Enhancement{
 			'entire hand is {C:attention}Star-Crossed{}',
 			'Only applies to the',
 			'{C:attention}First Scored{} card',
-			'{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{}{C:inactive,s:0.8} Mult){}',
-			'{C:inactive,s:0.8}Art by {}{C:green,s:0.8}Milk Mann{}'
-
+			'{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{}{C:inactive,s:0.8} Mult){}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	unlocked = true,
 	discovered = false,
 	config = {
