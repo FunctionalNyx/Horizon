@@ -9473,7 +9473,7 @@ SMODS.Enhancement{
 		name = 'Diamond Card',
 		text = {
 			'{C:chips}+#1#{} Chips when held in hand',
-			'Gains {C:chips}#2#{} Chips when played'
+			'Gains {C:chips}#2#{} Chips when {C:attention}scored{}'
 		}
 	},
 	set_badges = function (self, card, badges)
