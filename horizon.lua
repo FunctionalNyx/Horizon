@@ -8875,7 +8875,7 @@ SMODS.Back {
 		}
 	},
 	unlocked = true,
-    discovered = false,
+    discovered = true,
 	apply = function(self, back)
 		G.E_MANAGER:add_event(Event({
 			func = function()
@@ -8909,7 +8909,7 @@ SMODS.Back {
 		}
 	},
 	unlocked = true,
-    discovered = false,
+    discovered = true,
 	config = {
 		line1 = "" .. corruptedText[math.random(1, #corruptedText)],
 		line2 = "" .. corruptedText[math.random(1, #corruptedText)],
@@ -8960,7 +8960,7 @@ SMODS.Back {
 		}
 	},
 	unlocked = true,
-    discovered = false,
+    discovered = true,
 	apply = function(self, back)
 		G.E_MANAGER:add_event(Event({
             trigger = 'after',
@@ -9002,7 +9002,7 @@ SMODS.Back {
 		}
 	end,
 	unlocked = true,
-    discovered = false,
+    discovered = true,
 	calculate = function(self, back, context)
         if context.round_eval and G.GAME.last_blind and G.GAME.last_blind.boss then
             G.E_MANAGER:add_event(Event({
@@ -9031,6 +9031,86 @@ SMODS.Back {
 					return true
 				end
 			end,
+		}))
+	end
+}
+SMODS.Back {
+	key = 'chessdeck',
+	atlas = 'Decks',
+	pos = { x = 4, y = 0 },
+	loc_txt = {
+		name = "Chess Deck",
+		text = {
+			'Look its hard to explain...',
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	unlocked = true,
+    discovered = true,
+	apply = function(self, back)
+		G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+				for i=1, #G.playing_cards do
+					SMODS.destroy_cards{ G.playing_cards[i] }
+				end
+				return true
+			end
+		}))
+		G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+				SMODS.add_card{
+					set = "Base",
+					rank = "King",
+					area = G.deck
+				}
+				SMODS.add_card{
+					set = "Base",
+					rank = "Queen",
+					area = G.deck
+				}
+				for i=1, 2 do
+					SMODS.add_card{
+						set = "Base",
+						rank = "Ace",
+						area = G.deck
+					}
+					SMODS.add_card{
+						set = "Base",
+						rank = "Jack",
+						area = G.deck
+					}
+					SMODS.add_card{
+						set = "Base",
+						rank = "10",
+						area = G.deck
+					}
+					SMODS.add_card{
+						set = "Base",
+						rank = "2",
+						area = G.deck
+					}
+					SMODS.add_card{
+						set = "Base",
+						rank = "3",
+						area = G.deck
+					}
+					SMODS.add_card{
+						set = "Base",
+						rank = "4",
+						area = G.deck
+					}
+					SMODS.add_card{
+						set = "Base",
+						rank = "5",
+						area = G.deck
+					}
+				end
+				return true
+			end
 		}))
 	end
 }
