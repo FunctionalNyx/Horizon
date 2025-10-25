@@ -3490,14 +3490,6 @@ SMODS.Joker{
 			}
 		}
 	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			change_shop_size(card.ability.extra.slots)
-			return true
-		end
-		}))
-  	end,
 	calculate = function(self, card, context)
 		if context.starting_shop then
 			G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
@@ -6282,6 +6274,154 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'oven',
+    loc_txt = {
+        name = 'Oven',
+        text = {
+        	'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:inactive}#2#/#1# rounds until the muffin is baked{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = {
+		extra = {
+			rounds = 0,
+			total_rounds = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.total_rounds,
+				center.ability.extra.rounds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+            card.ability.extra.rounds = card.ability.extra.rounds + 1
+			if card.ability.extra.rounds == card.ability.extra.total_rounds then
+				SMODS.destroy_cards{ card }
+				SMODS.add_card{
+					key = 'j_nyx_muffin',
+					area = G.jokers
+				}
+			end
+            return {
+                message = (card.ability.extra.rounds < card.ability.extra.total_rounds) and
+                    (card.ability.extra.rounds .. '/' .. card.ability.extra.total_rounds),
+                colour = G.C.FILTER
+            }
+        end
+	end
+}
+SMODS.Joker{
+	key = 'muffin',
+    loc_txt = {
+        name = 'Muffin',
+        text = {
+        	'Muffin'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	},
+	in_pool = function(self)
+		return false
+	end,
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = {
+		extra = {
+			rounds = 0,
+			total_rounds = 2
+		}
+	},
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			card.ability.extra_value = card.ability.extra_value + 6
+            card:set_cost()
+			return true
+		end
+		}))
+  	end,
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.total_rounds,
+				center.ability.extra.rounds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+			card.ability.extra.rounds = card.ability.extra.rounds + 1
+			if card.ability.extra.rounds == card.ability.extra.total_rounds then
+				SMODS.destroy_cards{ card }
+				SMODS.add_card{
+					key = 'j_nyx_muffin_burnt',
+					area = G.jokers
+				}
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'muffin_burnt',
+    loc_txt = {
+        name = 'Burnt Muffin',
+        text = {
+        	'Sad Muffin'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		return false
+	end,
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'allinred',
@@ -8694,8 +8834,8 @@ SMODS.Booster {
 	cost = 4,
 	group_key = "k_hnh_pack",
     draw_hand = true,
-	atlas = "Spectral",
-	pos = { x = 0, y = 1 },
+	atlas = "Boosters",
+	pos = { x = 5, y = 0 },
 	loc_txt = {
         name = 'Heaven & Hell Pack',
 		group_name = 'Choose Wisely',
