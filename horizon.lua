@@ -6452,7 +6452,8 @@ SMODS.Joker{
 			money = 0,
 			cost = 1,
 			chips = 0,
-			chips_gain = 4
+			chips_gain = 2,
+			gain = 0
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -6461,7 +6462,8 @@ SMODS.Joker{
 				center.ability.extra.money,
 				center.ability.extra.cost,
 				center.ability.extra.chips,
-				center.ability.extra.chips_gain
+				center.ability.extra.chips_gain,
+				center.ability.extra.gain
 			}
 		}
 	end,
@@ -6476,15 +6478,14 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if card.ability.extra.money > G.GAME.dollars + (G.GAME.dollar_buffer or 0) then
 			local money_spent = card.ability.extra.money - (G.GAME.dollars + (G.GAME.dollar_buffer or 0))
-			local chips_to_add = math.floor(money_spent / card.ability.extra.cost) * card.ability.extra.chips_gain
-			if chips_to_add > 0 then
-				card.ability.extra.chips = card.ability.extra.chips + chips_to_add
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						card:juice_up(0.3, 0.5)
-						return true
-					end
-				}))
+			card.ability.extra.gain = (math.floor(money_spent / card.ability.extra.cost) * card.ability.extra.chips_gain)
+			if card.ability.extra.gain > 0 then
+				SMODS.scale_card(card, {
+					ref_table = card.ability.extra,
+					ref_value = "chips",
+					scalar_value = "gain",
+					message_colour = G.C.CHIPS,
+				})
 			end
 		end
 		card.ability.extra.money = G.GAME.dollars + (G.GAME.dollar_buffer or 0)
