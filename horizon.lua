@@ -3674,6 +3674,50 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'cosmicmap',
+    loc_txt = {
+        name = 'Cosmic Map',
+        text = {
+        	'If 5 cards are {C:attention}Scored{}',
+			'Enhance the middle card to',
+			'be {C:attention}Star-Crossed{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 8, y = 4},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
+    end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play and not context.end_of_round then
+			if #context.scoring_hand >= 5 and context.other_card == context.scoring_hand[3] then
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						context.scoring_hand[3]:set_ability(G.P_CENTERS.m_nyx_starcrossed)
+						context.scoring_hand[3]:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			end
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -7122,6 +7166,89 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'shootingstar',
+    loc_txt = {
+        name = 'Shooting Star',
+        text = {
+        	'All {C:attention}Star-Crossed{} cards',
+			'{C:attention}Increment{} when scored'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		for _, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_nyx_starcrossed') then
+                return true
+            end
+        end
+        return false
+	end,
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
+    end,
+}
+SMODS.Joker{
+	key = 'constellation',
+    loc_txt = {
+        name = 'Constellation',
+        text = {
+        	'All {C:attention}Star-Crossed{} cards',
+			'{C:attention}Scale{} faster when scored'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		for _, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_nyx_starcrossed') then
+                return true
+            end
+        end
+        return false
+	end,
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
+    end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play and not context.end_of_round then
+			if SMODS.has_enhancement(context.other_card, 'm_nyx_starcrossed') then
+				context.other_card.ability.extra.mult_gain = context.other_card.ability.extra.mult_gain + 0.01
+				return {
+					message = localize('k_upgrade_ex'),
+					colour = G.C.MULT
+				}
+			end
+		end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'loadeddice',
@@ -7980,7 +8107,7 @@ SMODS.Consumable {
                 func = function()
 					assert(SMODS.change_base(G.hand.highlighted[i], suits[math.random(1, #suits)], ranks[math.random(1, #ranks)]))
                     if math.random(1, #editions+1) ~= 1 then
-						G.hand.highlighted[i]:set_edition(editions[math.random(1, #editions)])
+						G.hand.highlighted[i]:set_edition(editions[math.random(2, #editions)])
 					end
 					if math.random(1, #enhancements+1) ~= 1 then
 						G.hand.highlighted[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
@@ -9880,15 +10007,22 @@ SMODS.Enhancement{
 	end,
 	calculate = function(self,card,context)
 		if context.main_scoring and context.cardarea == G.play then
-			if context.scoring_hand[1] == card then
-				local check = true
-				for i = 1, #context.scoring_hand do
-					if not SMODS.has_enhancement(context.scoring_hand[1], 'm_nyx_starcrossed') then
-						check = false
-						break
-					end
+			local star = false
+			for i, v in ipairs(G.jokers.cards) do
+				if v.config.center.key == 'j_nyx_shootingstar' then
+					star = true
+					break
 				end
-				if check then
+			end
+			local check = true
+			for i = 1, #context.scoring_hand do
+				if not SMODS.has_enhancement(context.scoring_hand[1], 'm_nyx_starcrossed') then
+					check = false
+					break
+				end
+			end
+			if check or star then
+				if card == context.scoring_hand[1] or star then
 					card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.mult_gain
 				end
 			end
