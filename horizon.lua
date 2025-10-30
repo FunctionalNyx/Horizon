@@ -7286,6 +7286,48 @@ SMODS.Joker{
 		end
 	end,
 }
+SMODS.Joker{
+	key = 'entropy',
+    loc_txt = {
+        name = 'Entropy',
+        text = {
+          'Converges all {C:attention}scored cards{}',
+		  'Towards the {C:attention}last{} card'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+    atlas = 'Placeholder',
+    rarity = 4,
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	calculate = function(self,card,context)
+		if context.before and context.main_eval and not context.blueprint then
+			local last_card = context.scoring_hand[#context.scoring_hand]
+			local con = tonumber(last_card:get_id())
+			for i=1, #context.scoring_hand do
+				if context.scoring_hand[i] ~= context.scoring_hand[#context.scoring_hand] then
+					local _card = context.scoring_hand[i]
+					if tonumber(_card:get_id()) > con then
+						SMODS.modify_rank(_card, -1)
+						_card:juice_up(0.3, 0.4)
+						play_sound('card1')
+					elseif tonumber(_card:get_id()) < con then
+						SMODS.modify_rank(_card, 1)
+						_card:juice_up(0.3, 0.4)
+						play_sound('card1')
+					end
+				end
+			end
+		end
+	end
+}
 -- LOST SOULS --
 --
 
