@@ -7160,9 +7160,9 @@ SMODS.Joker{
     end,
 }
 SMODS.Joker{
-	key = 'constellation',
+	key = 'astrophysics',
     loc_txt = {
-        name = 'Constellation',
+        name = 'Astrophysics',
         text = {
         	'All {C:attention}Star-Crossed{} cards',
 			'{C:attention}Scale{} faster when scored'
