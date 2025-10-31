@@ -15,66 +15,7 @@ to_number = to_number or function(v)
 	return v
 end
 
-local game_main_menu_ref = Game.main_menu
-function Game:main_menu(change_context)
-	G.C.COLORSS = HEX("be93d4")
-	G.C.COLORSSTHESECOND = HEX("ffffff") -- Cum
-	G.C.mid_flash = 0
-	G.C.vort_time = 7
-	G.C.vort_speed = 0.4
-    local ret = game_main_menu_ref(self, change_context)
 
-    local newcard = SMODS.create_card({key='j_nyx_frontcard', area = G.title_top, no_edition = true })
-    self.title_top.T.w = self.title_top.T.w * 1.7675
-	self.title_top.T.x = self.title_top.T.x - 0.8
-
-	newcard.T.w = newcard.T.w * 1.1 * 1.2
-	newcard.T.h = newcard.T.h * 1.1 * 1.2
-	newcard.no_ui = true
-	newcard.states.visible = false
-	self.title_top:emplace(newcard)
-	self.title_top:align_cards()
-
-	G.SPLASH_BACK:define_draw_steps({
-		{
-			shader = "splash",
-			send = {
-				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
-				{name = 'vort_speed', val = G.C.vort_speed},
-				{name = 'colour_1', ref_table = G.C, ref_value = 'COLORSS'},
-				{name = 'colour_2', ref_table = G.C, ref_value = 'COLORSSTHESECOND'},
-				{name = 'mid_flash', ref_table = G.C, ref_value = 'mid_flash'},
-			},
-		},
-	})
-	if change_context == "splash" then
-		G.E_MANAGER:add_event(Event({
-			trigger = "after",
-			delay = 0,
-			blockable = false,
-			blocking = false,
-			func = function()
-				newcard.states.visible = true
-				newcard:start_materialize({ G.C.WHITE, G.C.WHITE }, true, 2.5)
-				return true
-			end,
-		}))
-	else
-		G.E_MANAGER:add_event(Event({
-			trigger = "after",
-			delay = 0,
-			blockable = false,
-			blocking = false,
-			func = function()
-				newcard.states.visible = true
-				newcard:start_materialize({ G.C.WHITE, G.C.WHITE }, nil, 1.2)
-				return true
-			end,
-		}))
-	end
-
-	return ret
-end
 
 if SMODS.Atlas then
   SMODS.Atlas({
@@ -781,7 +722,7 @@ SMODS.Joker{
     rarity = 1,
     cost = 4,
     unlocked = true,
-    discovered = true,
+    discovered = false,
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
@@ -6136,6 +6077,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6186,6 +6128,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6272,6 +6215,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	in_pool = function(self)
 		return false 
@@ -6332,6 +6276,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6387,6 +6332,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6449,6 +6395,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6478,6 +6425,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6553,6 +6501,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
@@ -6646,6 +6595,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
@@ -6717,6 +6667,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
@@ -6777,6 +6728,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
@@ -6925,6 +6877,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6981,6 +6934,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -7036,6 +6990,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -7133,6 +7088,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -7177,6 +7133,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -7213,6 +7170,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -7261,6 +7219,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
     atlas = 'Placeholder',
     rarity = 4,
@@ -7297,6 +7256,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
     atlas = 'Placeholder',
     rarity = 4,
@@ -9101,12 +9061,21 @@ SMODS.Booster {
         ease_background_colour_blind(HEX("FFD700"))
     end,
     create_card = function(self, card, i)
-        return {
-			set = 'nyx_angelic',
-			area = G.pack_cards,
-			skip_materialize = true,
-			soulable = true
-		}
+		if math.random() < 0.5 then
+			return {
+				set = 'nyx_angelic',
+				area = G.pack_cards,
+				skip_materialize = true,
+				soulable = true
+			}
+		else
+			return {
+				set = 'nyx_demonic',
+				area = G.pack_cards,
+				skip_materialize = true,
+				soulable = true
+			}
+		end
     end,
 }
 --
@@ -10705,18 +10674,99 @@ SMODS.Blind {
 
 -- Nyx bullshit --
 
-
+local position = math.random(1,9)
+local night = false
+if position == 9 then
+	position = 9
+	night = true
+else
+	position = 8
+end
 SMODS.Joker{
 	key = 'frontcard',
     atlas = 'Jokers',
     unlocked = true,
     discovered = true,
 	no_collection = true,
-    pos = {x = 8, y = 1},
+    pos = {x = position, y = 1},
 	in_pool = function(self) 
 		return false 
 	end
 }
+SMODS.Sound({
+	key = "music_cursed",
+	path = "music_cursed.ogg",
+	volume = 1,
+	pitch = 1,
+	select_music_track = function()
+		return G.STAGE == G.STAGES.MAIN_MENU and night
+	end,
+})
+
+local game_main_menu_ref = Game.main_menu
+function Game:main_menu(change_context)
+	G.C.COLORSS = HEX("be93d4")
+	G.C.COLORSSTHESECOND = HEX("ffffff") -- Cum
+	if night then
+		G.C.COLORSS = HEX("0f0c29")
+		G.C.COLORSSTHESECOND = HEX("302b63")
+	end
+	G.C.mid_flash = 0
+	G.C.vort_time = 7
+	G.C.vort_speed = 0.4
+    local ret = game_main_menu_ref(self, change_context)
+
+    local newcard = SMODS.create_card({key='j_nyx_frontcard', area = G.title_top, no_edition = true })
+    self.title_top.T.w = self.title_top.T.w * 1.7675
+	self.title_top.T.x = self.title_top.T.x - 0.8
+
+	newcard.T.w = newcard.T.w * 1.1 * 1.2
+	newcard.T.h = newcard.T.h * 1.1 * 1.2
+	newcard.no_ui = true
+	newcard.states.visible = false
+	self.title_top:emplace(newcard)
+	self.title_top:align_cards()
+
+	G.SPLASH_BACK:define_draw_steps({
+		{
+			shader = "splash",
+			send = {
+				{ name = "time", ref_table = G.TIMERS, ref_value = "REAL_SHADER" },
+				{name = 'vort_speed', val = G.C.vort_speed},
+				{name = 'colour_1', ref_table = G.C, ref_value = 'COLORSS'},
+				{name = 'colour_2', ref_table = G.C, ref_value = 'COLORSSTHESECOND'},
+				{name = 'mid_flash', ref_table = G.C, ref_value = 'mid_flash'},
+			},
+		},
+	})
+	if change_context == "splash" then
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			delay = 0,
+			blockable = false,
+			blocking = false,
+			func = function()
+				newcard.states.visible = true
+				newcard:start_materialize({ G.C.WHITE, G.C.WHITE }, true, 2.5)
+				return true
+			end,
+		}))
+	else
+		G.E_MANAGER:add_event(Event({
+			trigger = "after",
+			delay = 0,
+			blockable = false,
+			blocking = false,
+			func = function()
+				newcard.states.visible = true
+				newcard:start_materialize({ G.C.WHITE, G.C.WHITE }, nil, 1.2)
+				return true
+			end,
+		}))
+	end
+
+	return ret
+end
 -- I have no idea how this all works but it does so dont question it
 -- This is required for the Joker that multiplies other joker values
 NYX = {
