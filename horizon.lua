@@ -7027,12 +7027,14 @@ SMODS.Joker{
             juice_card_until(card, eval, true)
 		end
 		if context.joker_main then
-			if card.ability.extra.hand == true then
-				card.ability.extra.hand = false
+			if card.ability.extra.hand == false then
+				card.ability.extra.hand = true
 				if #G.jokers.cards > 0 then
 					G.jokers:unhighlight_all()
 					for _, joker in ipairs(G.jokers.cards) do
-						joker:flip()
+						if joker ~= card then
+							joker:flip()
+						end
 					end
 					if #G.jokers.cards > 1 then
 						G.E_MANAGER:add_event(Event({
@@ -7069,7 +7071,7 @@ SMODS.Joker{
 					end
 				end
 			else
-				card.ability.extra.hand = true
+				card.ability.extra.hand = false
 			end
 			return {
 				Xmult = card.ability.extra.xmult,
