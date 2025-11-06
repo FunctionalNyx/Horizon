@@ -7556,6 +7556,10 @@ SMODS.Consumable {
 			'{C:money}Prosperous{}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	cost = 6,
 	unlocked = true,
 	discovered = false,
@@ -7647,6 +7651,10 @@ SMODS.Consumable {
 			'{C:inactive,s:0.8}(Aces = 14, Kings = 13, Queens = 12, Jacks = 11){}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	cost = 6,
 	unlocked = true,
 	discovered = false,
@@ -7972,6 +7980,10 @@ SMODS.Consumable {
 			'{C:red}Destroys the right card{}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	cost = 3,
 	unlocked = true,
 	discovered = false,
@@ -8073,6 +8085,10 @@ SMODS.Consumable {
 			'up to #1# selected {C:attention}cards{}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	cost = 3,
 	unlocked = true,
 	discovered = false,
@@ -8169,6 +8185,10 @@ SMODS.Consumable {
 			'{C:inactive,s:0.8}(Scales with type of blind){}'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	cost = 3,
 	unlocked = true,
 	discovered = false,
@@ -8214,6 +8234,96 @@ SMODS.Consumable {
 			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
 		end
 	end
+}
+SMODS.Consumable {
+    key = 'sacrifice',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+	loc_txt = {
+        name = 'Sacrifice', --name of card
+        text = { --text of card
+			'Destroy a random {C:attention}Joker{}',
+			'And create a Joker of a higher rarity'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 4,
+	unlocked = true,
+    discovered = false,
+	loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+    end,
+    use = function(self, card, area, copier)
+		local deletable_jokers = {}
+		local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('ritual_choice'))
+		if chosen_joker.ability.eternal then
+			G.E_MANAGER:add_event(Event({
+			trigger = 'before',
+			delay = 0.75,
+			func = function()
+				chosen_joker:juice_up(0.3, 0.5)
+				return true
+			end
+			}))
+		else
+			deletable_jokers[#deletable_jokers + 1] = chosen_joker
+			local _first_dissolve = nil
+			G.E_MANAGER:add_event(Event({
+				trigger = 'before',
+				delay = 0.75,
+				func = function()
+					for _, joker in pairs(deletable_jokers) do
+						joker:start_dissolve(nil, _first_dissolve)
+						_first_dissolve = true
+					end
+					return true
+				end
+			}))
+		end
+		G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 0.4,
+			func = function()
+				if chosen_joker:is_rarity(1) then
+					SMODS.add_card {
+						set = 'Joker',
+                		rarity = 'Uncommon',
+					}
+				elseif chosen_joker:is_rarity(2) then
+					SMODS.add_card {
+						set = 'Joker',
+                		rarity = 'Rare',
+					}
+				elseif chosen_joker:is_rarity(3) then
+					SMODS.add_card {
+						set = 'Joker',
+               	 		rarity = 'Legendary',
+					}
+				elseif chosen_joker:is_rarity(4) then
+					SMODS.add_card {
+						set = 'Joker',
+                		rarity = 'nyx_LostSoul',
+					}
+				end
+				card:juice_up(0.3, 0.5)
+				return true
+			end
+		}))
+		delay(0.6)
+    end,
+    can_use = function(self, card)
+        return #G.jokers.cards > 0
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
 }
 
 
