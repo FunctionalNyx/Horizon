@@ -10705,6 +10705,56 @@ SMODS.Sound({
 	end,
 })
 
+SMODS.Joker{
+	key = 'testing',
+    loc_txt = {
+        name = 'tessst',
+        text = {
+		  'Able to play {C:blue}6{} cards',
+		  "You aren't supposed to have this"
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nani', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 3},
+	in_pool = function(self) 
+		return false 
+	end,
+	config = { 
+		extra = {
+			limit = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.limit
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.play_limit = G.GAME.starting_params.play_limit + (card.ability.extra.limit)
+		G.hand.config.highlighted_limit = G.hand.config.highlighted_limit + (card.ability.extra.limit)
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.play_limit = G.GAME.starting_params.play_limit + (-1 * card.ability.extra.limit)
+		G.hand.config.highlighted_limit = G.hand.config.highlighted_limit + (-1 * card.ability.extra.limit)
+		if not G.GAME.before_play_buffer then
+			G.hand:unhighlight_all()
+		end
+	end
+}
+
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
 	G.C.COLORSS = HEX("be93d4")
