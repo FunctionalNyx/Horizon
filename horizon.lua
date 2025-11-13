@@ -5411,9 +5411,9 @@ SMODS.Joker{
 		  'And runs it'
         },
     },
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
     cost = 1,
@@ -5442,6 +5442,9 @@ SMODS.Joker{
 		  "I'm sorry theres nothing that can be done"
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
     cost = 1,
@@ -8391,6 +8394,10 @@ SMODS.Consumable {
 			'Closes the game'
 		}
 	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	cost = 3,
 	unlocked = true,
 	discovered = false,
