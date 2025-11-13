@@ -15,7 +15,7 @@ to_number = to_number or function(v)
 	return v
 end
 
-
+local horizonmod = SMODS.current_mod
 
 if SMODS.Atlas then
   SMODS.Atlas({
@@ -37,6 +37,40 @@ SMODS.Atlas{
     px = 71, --width of one card
     py = 95 -- height of one card
 }
+
+horizonmod.config_tab = function()
+	return {n = G.UIT.ROOT, config = {align = "cl", outline = 0.5, outline_colour = HEX('C3C3C3'), padding = 0.025, colour = G.C.UI.BACKGROUND_DARK, minw = 7, minh = 2}, nodes = {
+		{n = G.UIT.R, config = {align = "cl", padding = 0 }, nodes = {
+			{n = G.UIT.C, config = { align = "cl", padding = -0.25 }, nodes = {
+				create_toggle{ col = true, label = "", scale = 0.85, w = 0.15, shadow = true, ref_table = horizonmod.config, ref_value = "enable_WIP_cards" },
+			}},
+			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
+				{n = G.UIT.T, config = { text = ' Enable WIP Cards', scale = 0.5, colour = G.C.UI.TEXT_LIGHT }},
+			}},
+		}},
+		{n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
+			{n = G.UIT.C, config = { align = "cl", padding = -0.25 }, nodes = {
+				create_toggle{ col = true, label = "", scale = 0.85, w = 0.15, shadow = true, ref_table = horizonmod.config, ref_value = "enable_FATE2" },
+			}},
+			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
+				{n = G.UIT.T, config = { text = ' Enable FATE to work with Blueprint', scale = 0.5, colour = G.C.UI.TEXT_LIGHT }},
+			}},
+		}},
+		{n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
+			{n = G.UIT.C, config = { align = "cl", padding = -0.25 }, nodes = {
+				create_toggle{ col = true, label = "", scale = 0.85, w = 0.15, shadow = true, ref_table = horizonmod.config, ref_value = "enable_Malware" },
+			}},
+			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
+				{n = G.UIT.T, config = { text = ' Enable Malware Cards', scale = 0.5, colour = G.C.UI.TEXT_LIGHT }},
+			}},
+		}},
+		{n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
+			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
+				{n = G.UIT.T, config = { text = 'Restart the game after changes', scale = 0.5, colour = G.C.RED }},
+			}},
+		}},
+	}}
+end
 
 -- Supposed to work
 local card_release_ref = Card.release
@@ -4881,7 +4915,7 @@ SMODS.Joker{
 			if G.jokers.cards[i] ~= card then -- not itself
 				local other_joker = G.jokers.cards[i]
 				
-				if (other_joker.config.center.key ~= "j_blueprint" and other_joker.config.center.key ~= "j_nyx_fate" and other_joker.config.center.key ~= "j_brainstorm") then
+				if ((other_joker.config.center.key ~= "j_blueprint" and other_joker.config.center.key ~= "j_brainstorm") or horizonmod.config.enable_FATE2) and other_joker.config.center.key ~= "j_nyx_fate" then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
@@ -5407,12 +5441,13 @@ SMODS.Joker{
     loc_txt = {
         name = 'spacewar.exe',
         text = {
-          'Installs spacewar',
-		  'And runs it'
+          '{C:attention}Installs{} spacewar',
+		  'And {C:attention}runs{} it'
         },
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
@@ -5438,12 +5473,12 @@ SMODS.Joker{
     loc_txt = {
         name = 'Loss',
         text = {
-          'You just lose',
-		  "I'm sorry theres nothing that can be done"
+          'There is nothing to be done'
         },
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
@@ -6122,7 +6157,7 @@ SMODS.Joker{
 -- unfinished jokers below--
 -- unfinished jokers below--
 -- unfinished jokers below--
-
+if horizonmod.config.enable_WIP_cards then
 -- Common --
 SMODS.Joker{
 	key = 'shoppingmall',
@@ -7350,7 +7385,7 @@ SMODS.Joker{
 }
 -- LOST SOULS --
 --
-
+end
 --- Other Stuff ---
 -- Angelic --
 SMODS.ConsumableType {
@@ -10882,6 +10917,9 @@ SMODS.Joker{
     pos = {x = 9, y = 1},
 	in_pool = function(self) 
 		return false 
+	end,
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
 	calculate = function(self, card, context)
 		if context.joker_main then
