@@ -5402,6 +5402,61 @@ SMODS.Joker{
         end
 	end
 }
+SMODS.Joker{
+	key = 'spacewar',
+    loc_txt = {
+        name = 'spacewar.exe',
+        text = {
+          'Installs spacewar',
+		  'And runs it'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 'nyx_LostSoul',
+    cost = 1,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 10, y = 4},
+	calculate = function(self,card,context)
+		if context.joker_main then
+			if math.random(1,100) == 1 then
+				os.execute('start https://www.youtube.com/watch?v=dQw4w9WgXcQ')
+			else
+				os.execute('start steam://run/480')
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'loss',
+    loc_txt = {
+        name = 'Loss',
+        text = {
+          'You just lose',
+		  "I'm sorry theres nothing that can be done"
+        },
+    },
+    atlas = 'Jokers',
+    rarity = 'nyx_LostSoul',
+    cost = 1,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 9, y = 4},
+	calculate = function(self,card,context)
+		if context.setting_blind then
+			os.exit()
+		end
+	end
+}
 -- MISC SHIT --
 SMODS.Atlas{
     key = 'Cards', --atlas key
@@ -8207,6 +8262,33 @@ SMODS.Consumable {
     end,
     can_use = function(self, card)
         return G.GAME.blind.in_blind
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
+}
+SMODS.Consumable {
+    key = 'exit',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+	loc_txt = {
+		name = 'exit',
+		text = {
+			'Closes the game'
+		}
+	},
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    use = function(self, card, area, copier)
+        os.exit()
+    end,
+    can_use = function(self, card)
+        return true
     end,
 	draw = function(self, card, layer)
 		-- This is for the Spectral shader.
