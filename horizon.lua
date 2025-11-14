@@ -6646,13 +6646,11 @@ SMODS.Joker{
 		}
 	end,
 	remove_from_deck = function(self, card, from_debuff)
-		--[[
 		if one then
 			os.remove(os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\"..data[math.random(temp, #data)]) -- Deletes a random file from desktop when removed from deck
 		else
 			os.remove(os.getenv("USERPROFILE") .. "\\Desktop\\"..data[math.random(1, temp)]) -- Deletes a random file from desktop when removed from deck
 		end
-		]]
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
