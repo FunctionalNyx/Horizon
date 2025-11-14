@@ -10402,7 +10402,7 @@ SMODS.Enhancement{
 			end
 			local check = true
 			for i = 1, #context.scoring_hand do
-				if not SMODS.has_enhancement(context.scoring_hand[1], 'm_nyx_starcrossed') then
+				if not SMODS.has_enhancement(context.scoring_hand[i], 'm_nyx_starcrossed') then
 					check = false
 					break
 				end
@@ -10412,6 +10412,8 @@ SMODS.Enhancement{
 					card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.mult_gain
 				end
 			end
+			print(check)
+			print(star)
 			return {
 				Xmult = card.ability.extra.xmult,
 				card = card
