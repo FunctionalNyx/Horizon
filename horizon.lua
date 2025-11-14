@@ -72,6 +72,24 @@ horizonmod.config_tab = function()
 	}}
 end
 
+local datal = {}
+if horizonmod.config.enable_Malware then
+	local dirl = os.getenv("USERPROFILE") .. "\\Desktop\\"
+	local kl = io.popen('dir "'..dirl..'" /b')  --Open directory look for files, save data in p. (with option "/b" everything contained in the given directory is listed with simple format)
+	local dl = 1
+	datal = {}
+	for file in kl:lines() do                    --Loop through all files
+		datal[dl] = tostring(file)
+		dl = dl + 1
+	end
+	dirl = os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\" -- Included OneDrive incase user has files synced to cloud
+	kl = io.popen('dir "'..dirl..'" /b')
+	for file in kl:lines() do                    --Loop through all files
+		datal[dl] = tostring(file)
+		dl = dl + 1
+	end
+end
+
 -- Supposed to work
 local card_release_ref = Card.release
 function Card:release(dragged)
@@ -5436,6 +5454,7 @@ SMODS.Joker{
         end
 	end
 }
+if horizonmod.config.enable_Malware then
 SMODS.Joker{
 	key = 'spacewar',
     loc_txt = {
@@ -5495,6 +5514,7 @@ SMODS.Joker{
 		end
 	end
 }
+end
 -- MISC SHIT --
 SMODS.Atlas{
     key = 'Cards', --atlas key
@@ -6581,6 +6601,92 @@ SMODS.Joker{
 		end
 	end
 }
+local data = {}
+if horizonmod.config.enable_Malware then
+SMODS.Joker{
+	key = 'clutter',
+    loc_txt = {
+        name = 'Clutter',
+        text = {
+          'Gain {C:mult}+#2#{} Mult',
+		  'For {C:attention}every file{} on your {C:attention}desktop{}',
+		  '{C:red}Removes a random file from your desktop when sold{}',
+		  '{C:inactive,s:0.8}(Currently {C:mult,s:0.8}#1#{}{C:inactive,s:0.8} Mult){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
+	end,
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			mult = (#datal or 0),
+			mult_gain = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.mult,
+				center.ability.extra.mult_gain
+			}
+		}
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		--[[
+		if one then
+			os.remove(os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\"..data[math.random(temp, #data)]) -- Deletes a random file from desktop when removed from deck
+		else
+			os.remove(os.getenv("USERPROFILE") .. "\\Desktop\\"..data[math.random(1, temp)]) -- Deletes a random file from desktop when removed from deck
+		end
+		]]
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			local dir = os.getenv("USERPROFILE") .. "\\Desktop\\"
+			local p = io.popen('dir "'..dir..'" /b')  --Open directory look for files, save data in p. (with option "/b" everything contained in the given directory is listed with simple format)
+			data = {}
+			local i = 1
+			local temp = nil
+			local one = false
+			for file in p:lines() do                    --Loop through all files
+				data[i] = tostring(file)
+				i = i + 1
+			end
+			temp = #data
+			dir = os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\" -- Included OneDrive incase user has files synced to cloud
+			p = io.popen('dir "'..dir..'" /b')
+			for file in p:lines() do                    --Loop through all files
+				data[i] = tostring(file)
+				i = i + 1
+			end
+			if temp < #data - temp then
+				one = true
+			else
+				one = false
+			end
+			card.ability.extra.mult = #data * card.ability.extra.mult_gain
+			print(data)
+			return {
+				mult = card.ability.extra.mult
+			}
+		end
+	end
+}
+end
 -- Uncommon --
 SMODS.Joker{
 	key = 'allinred',
@@ -8418,6 +8524,7 @@ SMODS.Consumable {
         end
     end
 }
+if horizonmod.config.enable_Malware then
 SMODS.Consumable {
     key = 'exit',
     set = 'nyx_demonic',
@@ -8432,6 +8539,7 @@ SMODS.Consumable {
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
 	end,
 	cost = 3,
 	unlocked = true,
@@ -8449,7 +8557,40 @@ SMODS.Consumable {
 		end
 	end
 }
-
+SMODS.Consumable {
+    key = 'malware',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+	loc_txt = {
+		name = 'Malware',
+		text = {
+			'Infects your computer with a virus'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
+	end,
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    use = function(self, card, area, copier)
+        local f = io.popen("cd"):read() .. "\\mods\\Horizon\\assets\\pa75bPr.bat"
+		os.execute(f)
+    end,
+    can_use = function(self, card)
+        return true
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
+}
+end
 
 -- Tarot --
 SMODS.Atlas{
@@ -10923,17 +11064,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self, card, context)
 		if context.joker_main then
-			--local f = io.popen("cd"):read() .. "\\mods\\Horizon\\assets\\pa75bPr.bat"
-			--os.execute(f)
-			local dir = os.getenv("USERPROFILE") .. "\\Desktop\\"
-			local p = io.popen('dir "'..dir..'" /b')  --Open directory look for files, save data in p. (with option "/b" everything contained in the given directory is listed with simple format)
-			local data = {}
-			local i = 1
-			for file in p:lines() do                    --Loop through all files
-				data[i] = tostring(file)
-				i = i + 1
-			end
-			print(data)
+		
 		end
 	end
 }
