@@ -1491,6 +1491,80 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'debitcard',
+    loc_txt = {
+        name = 'Debit Card',
+        text = {
+        	'Gain {C:chips}#4#{} Chips when',
+			'{C:money}$#2#{} is lost',
+			'{C:inactive,s:0.8}(Currently {C:chips,s:0.8}#3#{}{C:inactive,s:0.8} Chips){}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 11, y = 4},
+	config = {
+		extra = {
+			money = 0,
+			cost = 1,
+			chips = 0,
+			chips_gain = 2,
+			gain = 0
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.money,
+				center.ability.extra.cost,
+				center.ability.extra.chips,
+				center.ability.extra.chips_gain,
+				center.ability.extra.gain
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			card.ability.extra.money = G.GAME.dollars + (G.GAME.dollar_buffer or 0)
+			return true
+		end
+		}))
+  	end,
+	calculate = function(self,card,context)
+		if card.ability.extra.money > G.GAME.dollars + (G.GAME.dollar_buffer or 0) then
+			local money_spent = card.ability.extra.money - (G.GAME.dollars + (G.GAME.dollar_buffer or 0))
+			card.ability.extra.gain = (math.floor(money_spent / card.ability.extra.cost) * card.ability.extra.chips_gain)
+			if card.ability.extra.gain > 0 then
+				SMODS.scale_card(card, {
+					ref_table = card.ability.extra,
+					ref_value = "chips",
+					scalar_value = "gain",
+					message_colour = G.C.CHIPS,
+				})
+			end
+		end
+		card.ability.extra.money = G.GAME.dollars + (G.GAME.dollar_buffer or 0)
+		if context.joker_main then
+			return {
+				chips = card.ability.extra.chips
+			}
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -6388,13 +6462,13 @@ SMODS.Joker{
         },
     },
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 1,
     cost = 4,
     unlocked = true,
@@ -6402,7 +6476,7 @@ SMODS.Joker{
     blueprint_compat = false,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 2, y = 0},
+    pos = {x = 12, y = 4},
 	config = {
 		extra = {
 			rounds = 0,
@@ -6525,81 +6599,6 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 2, y = 0},
-}
-SMODS.Joker{
-	key = 'debitcard',
-    loc_txt = {
-        name = 'Debit Card',
-        text = {
-        	'Gain {C:chips}#4#{} Chips when',
-			'{C:money}$#2#{} is lost',
-			'{C:inactive,s:0.8}(Currently {C:chips,s:0.8}#3#{}{C:inactive,s:0.8} Chips){}'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = {
-		extra = {
-			money = 0,
-			cost = 1,
-			chips = 0,
-			chips_gain = 2,
-			gain = 0
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.money,
-				center.ability.extra.cost,
-				center.ability.extra.chips,
-				center.ability.extra.chips_gain,
-				center.ability.extra.gain
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			card.ability.extra.money = G.GAME.dollars + (G.GAME.dollar_buffer or 0)
-			return true
-		end
-		}))
-  	end,
-	calculate = function(self,card,context)
-		if card.ability.extra.money > G.GAME.dollars + (G.GAME.dollar_buffer or 0) then
-			local money_spent = card.ability.extra.money - (G.GAME.dollars + (G.GAME.dollar_buffer or 0))
-			card.ability.extra.gain = (math.floor(money_spent / card.ability.extra.cost) * card.ability.extra.chips_gain)
-			if card.ability.extra.gain > 0 then
-				SMODS.scale_card(card, {
-					ref_table = card.ability.extra,
-					ref_value = "chips",
-					scalar_value = "gain",
-					message_colour = G.C.CHIPS,
-				})
-			end
-		end
-		card.ability.extra.money = G.GAME.dollars + (G.GAME.dollar_buffer or 0)
-		if context.joker_main then
-			return {
-				chips = card.ability.extra.chips
-			}
-		end
-	end
 }
 local data = {}
 if horizonmod.config.enable_Malware then
@@ -11264,17 +11263,17 @@ NYX = {
         end,
 	}
 }
-NYX.REND = {}
+NYX.T = {}
 ---@param str string
 ---@param start string
 ---@return boolean
-NYX.REND.starts_with = function(str,start)
+NYX.T.starts_with = function(str,start)
     return str:sub(1, #start) == start
 end
 ---@param table table
 ---@param value any
 ---@return boolean
-NYX.REND.table_contains = function(table,value)
+NYX.T.table_contains = function(table,value)
     for i = 1,#table do
         if (table[i] == value) then
             return true
@@ -11284,7 +11283,7 @@ NYX.REND.table_contains = function(table,value)
 end
 ---@param table table
 ---@return number
-NYX.REND.table_true_size = function(table)
+NYX.T.table_true_size = function(table)
     local n = 0
     for k,v in pairs(table) do
         n = n+1
