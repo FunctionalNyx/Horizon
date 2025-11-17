@@ -6,9 +6,11 @@ Link to Steamodded (Which includes instructions on how to install Lovely): https
 
 # WARNING
 
-This mod contains some Cards and Jokers that more or less act like MALWARE
+This mod contains some Cards and Jokers that more or less act like MALWARE. PLEASE BE CAREFUL!!
 
-All of these cards can be and will be disabled in the config of the mod
+I do plan on making a 'malware-free' version as well if necessary.
+
+All of these cards can be and will be disabled in the config of the mod by default
 
 Enable these at your own risk. 'Clutter' specifically accesses both your OneDrive Desktop
 and your normal Desktop. And it deletes files outright, no trash can. It cannot delete folders
