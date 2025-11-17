@@ -7878,7 +7878,6 @@ SMODS.Consumable {
         end
     end
 }
-if horizonmod.config.enable_WIP_cards then
 SMODS.Consumable {
     key = 'prosperity',
     set = 'nyx_angelic',
@@ -8046,7 +8045,6 @@ SMODS.Consumable {
         end
     end
 }
-end
 -- Demonic --
 SMODS.ConsumableType {
     key = 'nyx_demonic',
@@ -8304,7 +8302,6 @@ SMODS.Consumable {
         end
     end
 }
-if horizonmod.config.enable_WIP_cards then
 SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
@@ -8729,7 +8726,6 @@ SMODS.Consumable {
 		end
 	end
 }
-end
 end
 
 -- Tarot --
