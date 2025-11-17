@@ -1577,6 +1577,224 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'penis',
+    loc_txt = {
+        name = 'Penis Nyx',
+        text = {
+          'This was a mistake'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann (Sadly)', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	in_pool = function(self)
+		return false 
+	end,
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 4},
+	config = { 
+		extra = {
+			retrigger = 5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.retrigger
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+			if context.other_card:get_id() == 8 and SMODS.has_enhancement(context.other_card, 'm_nyx_wet') then
+				return {
+					repetitions = card.ability.extra.retrigger,
+					card = card
+				}
+			end
+		end
+		if context.individual and context.cardarea == G.play then
+			local funnycard = context.other_card
+			if funnycard:get_id() == 8 and not SMODS.has_enhancement(funnycard, 'm_nyx_wet') then
+				funnycard:set_ability(G.P_CENTERS.m_nyx_wet)
+				return {
+					message = "Moisturized!",
+					message_card = card,
+					colour = G.C.BLUE,
+					card = card
+				}
+			end
+		end
+		if context.destroy_card and not context.blueprint then
+			for i = 1, #context.scoring_hand do
+				if context.destroy_card == context.scoring_hand[i] and context.scoring_hand[i]:get_id() ~= 8 then
+					return {
+						remove = true
+					}
+				end
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'oven',
+    loc_txt = {
+        name = 'Oven',
+        text = {
+        	'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:dark_edition,E:2}Bake that muffin!{}',
+			'{C:inactive}#2#/#1# rounds until the muffin is baked{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 12, y = 4},
+	config = {
+		extra = {
+			rounds = 0,
+			total_rounds = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.total_rounds,
+				center.ability.extra.rounds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+            card.ability.extra.rounds = card.ability.extra.rounds + 1
+			if card.ability.extra.rounds == card.ability.extra.total_rounds then
+				SMODS.destroy_cards{ card }
+				SMODS.add_card{
+					key = 'j_nyx_muffin',
+					area = G.jokers
+				}
+			end
+            return {
+                message = (card.ability.extra.rounds < card.ability.extra.total_rounds) and
+                    (card.ability.extra.rounds .. '/' .. card.ability.extra.total_rounds),
+                colour = G.C.FILTER
+            }
+        end
+	end
+}
+SMODS.Joker{
+	key = 'muffin',
+    loc_txt = {
+        name = 'Muffin',
+        text = {
+        	'Muffin'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	},
+	in_pool = function(self)
+		return false
+	end,
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 15, y = 4},
+	soul_pos = {x = 14, y = 1},
+	config = {
+		extra = {
+			rounds = 0,
+			total_rounds = 2
+		}
+	},
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			card.ability.extra_value = card.ability.extra_value + 6
+            card:set_cost()
+			return true
+		end
+		}))
+  	end,
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.total_rounds,
+				center.ability.extra.rounds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+			card.ability.extra.rounds = card.ability.extra.rounds + 1
+			if card.ability.extra.rounds == card.ability.extra.total_rounds then
+				SMODS.destroy_cards{ card }
+				SMODS.add_card{
+					key = 'j_nyx_muffin_burnt',
+					area = G.jokers
+				}
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'muffin_burnt',
+    loc_txt = {
+        name = 'Burnt Muffin',
+        text = {
+        	'Sad Muffin'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		return false
+	end,
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 16, y = 4},
+	soul_pos = {x = 16, y = 1},
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -6556,214 +6774,6 @@ SMODS.Joker{
 			end
 		end
 	end
-}
-SMODS.Joker{
-	key = 'penis',
-    loc_txt = {
-        name = 'Penis Nyx',
-        text = {
-          'This was a mistake'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	in_pool = function(self)
-		return false 
-	end,
-    atlas = 'Jokers',
-    rarity = 1,
-    cost = 0,
-    unlocked = true,
-    discovered = false,
-	no_collection = true,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 4},
-	config = { 
-		extra = {
-			retrigger = 5
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.retrigger
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.repetition and context.cardarea == G.play then
-			if context.other_card:get_id() == 8 and SMODS.has_enhancement(context.other_card, 'm_nyx_wet') then
-				return {
-					repetitions = card.ability.extra.retrigger,
-					card = card
-				}
-			end
-		end
-		if context.destroy_card and not context.blueprint then
-			for i = 1, #context.scoring_hand do
-				if context.destroy_card == context.scoring_hand[i] and context.scoring_hand[i]:get_id() ~= 8 then
-					return {
-						remove = true
-					}
-				end
-			end
-		end
-	end
-}
-SMODS.Joker{
-	key = 'oven',
-    loc_txt = {
-        name = 'Oven',
-        text = {
-        	'{C:dark_edition,E:2}Bake that muffin!{}',
-			'{C:dark_edition,E:2}Bake that muffin!{}',
-			'{C:dark_edition,E:2}Bake that muffin!{}',
-			'{C:dark_edition,E:2}Bake that muffin!{}',
-			'{C:inactive}#2#/#1# rounds until the muffin is baked{}'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Jokers',
-    rarity = 1,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 12, y = 4},
-	config = {
-		extra = {
-			rounds = 0,
-			total_rounds = 3
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.total_rounds,
-				center.ability.extra.rounds
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
-            card.ability.extra.rounds = card.ability.extra.rounds + 1
-			if card.ability.extra.rounds == card.ability.extra.total_rounds then
-				SMODS.destroy_cards{ card }
-				SMODS.add_card{
-					key = 'j_nyx_muffin',
-					area = G.jokers
-				}
-			end
-            return {
-                message = (card.ability.extra.rounds < card.ability.extra.total_rounds) and
-                    (card.ability.extra.rounds .. '/' .. card.ability.extra.total_rounds),
-                colour = G.C.FILTER
-            }
-        end
-	end
-}
-SMODS.Joker{
-	key = 'muffin',
-    loc_txt = {
-        name = 'Muffin',
-        text = {
-        	'Muffin'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	},
-	in_pool = function(self)
-		return false
-	end,
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = {
-		extra = {
-			rounds = 0,
-			total_rounds = 2
-		}
-	},
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			card.ability.extra_value = card.ability.extra_value + 6
-            card:set_cost()
-			return true
-		end
-		}))
-  	end,
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.total_rounds,
-				center.ability.extra.rounds
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
-			card.ability.extra.rounds = card.ability.extra.rounds + 1
-			if card.ability.extra.rounds == card.ability.extra.total_rounds then
-				SMODS.destroy_cards{ card }
-				SMODS.add_card{
-					key = 'j_nyx_muffin_burnt',
-					area = G.jokers
-				}
-			end
-		end
-	end
-}
-SMODS.Joker{
-	key = 'muffin_burnt',
-    loc_txt = {
-        name = 'Burnt Muffin',
-        text = {
-        	'Sad Muffin'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-	in_pool = function(self)
-		return false
-	end,
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 0,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
 }
 SMODS.Joker{
 	key = 'bagofchips',
