@@ -201,13 +201,25 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		if context.joker_main then
+		local ultimate = false
+		for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_joe_ultimate" or joker.config.center.key == "j_nyx_joe_almighty" then
+                ultimate = true
+            end
+        end
+		if context.joker_main and not ultimate then
 			return {
 				mult = card.ability.extra.mult,
 				colour = G.C.MULT,
-				chip_mod = card.ability.extra.chips,
-				message = card.ability.extra.chips..' Chips',
+				chip_mod = center.ability.extra.chips,
+				message = center.ability.extra.chips..' Chips',
 				colour = G.C.CHIP,
+				card = card
+			}
+		elseif context.joker_main and ultimate then
+			return {
+				mult = card.ability.extra.mult,
+				colour = G.C.MULT,
 				card = card
 			}
 		end
@@ -4984,6 +4996,7 @@ SMODS.Joker{
         name = 'Joe Ultimate',
         text = {
           'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+		  '{C:attention}Joe\'s{} no longer reduce {C:chips}Chips{}',
 		  '{C:dark_edition,E:1,s:1.2}(Evolves into Joe Almighty){}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
 		  }
@@ -5528,8 +5541,11 @@ SMODS.Joker{
     loc_txt = {
         name = 'Joe Almighty',
         text = {
-          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Joe{}',
+          'Gains {X:mult,C:white}X#2#{} Mult',
+		  'And {X:chips,C:white}X#4#{} Chips',
+		  'for every {C:attention}Joe{}',
 		  '{C:inactive,s:0.8}(Currently {}{X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
+		  '{C:inactive,s:0.8}(Currently {}{X:chips,C:white,s:0.8}X#3#{} {C:inactive,s:0.8}Chips){}',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -5550,7 +5566,9 @@ SMODS.Joker{
 	config = { 
 		extra = {
 			xmult = 1,
-			xmult_gain = 2.5
+			xmult_gain = 2.5,
+			xchips = 1,
+			xchips_gain = 1.5
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -5559,7 +5577,9 @@ SMODS.Joker{
 		return{
 			vars = {
 				center.ability.extra.xmult,
-				center.ability.extra.xmult_gain
+				center.ability.extra.xmult_gain,
+				center.ability.extra.xchips,
+				center.ability.extra.xchips_gain
 			}
 		}
 	end,
@@ -5572,9 +5592,11 @@ SMODS.Joker{
             end
         end
 		card.ability.extra.xmult = 1 + (count * card.ability.extra.xmult_gain)
+		card.ability.extra.xchips = 1 + (count * card.ability.extra.xchips_gain)
 		if context.joker_main then
 			return {
 				Xmult = card.ability.extra.xmult,
+				xchips = card.ability.extra.xchips,
 				card = card
 			}
 		end
