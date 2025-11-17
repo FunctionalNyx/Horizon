@@ -33,7 +33,7 @@ Currently adds (Hidden Cards not Included)
     
     -   3 Tarots
     -   3 Spectrals
-    -   Rest are custom
+    -   Rest are custom [8 are without Art]
     
     2 Seals
     
