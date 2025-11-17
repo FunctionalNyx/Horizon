@@ -5934,6 +5934,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 10, y = 4},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
 			if math.random(1,100) == 1 then
@@ -5949,7 +5952,9 @@ SMODS.Joker{
     loc_txt = {
         name = 'Loss',
         text = {
-          'There is nothing to be done'
+          'There is nothing to be done',
+		  'Just accept it',
+		  '{C:inactive,s:0.8}(No seriously just restart the run){}'
         },
     },
 	set_badges = function (self, card, badges)
@@ -5965,6 +5970,9 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 9, y = 4},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
 	calculate = function(self,card,context)
 		if context.setting_blind then
 			os.exit()
