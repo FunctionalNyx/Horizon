@@ -19,22 +19,31 @@ that contain files. But even then don't risk it. Backup important things, or bet
 A shitty balatro mod made by a bunch of nerds
 
 Currently adds (Hidden Cards not Included)
+
     96 Jokers [14 of which are Work in Progress and can be Disabled]
     -   22 Common
     -   28 Uncommon
     -   13 Rare
     -   6 Legendary
     -   10 Modded Rarity
+    
     8 Enhancements
+    
     19 Consumables
+    
     -   3 Tarots
     -   3 Spectrals
     -   Rest are custom
+    
     2 Seals
+    
     6 Booster packs
+    
     5 Decks
+    
     2 Tags
-    and 8 Blinds
+    
+    8 Blinds
 
 Is it balanced? Probably poorly. [We strive for fun yet not crazily overpowered so criticism is welcomed!]
 
