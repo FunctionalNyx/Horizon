@@ -35,7 +35,7 @@ Currently adds (Hidden Cards not Included)
     
     -   3 Tarots
     -   3 Spectrals
-    -   Rest are custom [8 are without Art]
+    -   Rest are custom [8 are Work in Progress]
     
     2 Seals
     
@@ -47,6 +47,8 @@ Currently adds (Hidden Cards not Included)
     
     8 Blinds
 
+There are currently no unlock requirements implemented
+
 Is it balanced? Probably poorly. [We strive for fun yet not crazily overpowered so criticism is welcomed!]
 
 Is it fun? We say so.
@@ -54,7 +56,7 @@ Is it fun? We say so.
 How do I download it?
 
 Go to [Releases](https://github.com/FunctionalNyx/Horizon/releases) for a stable experience.
-Otherwise just download the code directly for the most "up-to-date" version thats probably broken (Proceed at your own risk)
+Otherwise just download the code directly on the [GitHub](https://github.com/FunctionalNyx/Horizon) for the most "up-to-date" version thats probably broken (Proceed at your own risk)
 
 Have fun
 
