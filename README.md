@@ -8,7 +8,7 @@ Link to Steamodded (Which includes instructions on how to install Lovely): https
 
 This mod contains some Cards and Jokers that more or less act like MALWARE. PLEASE BE CAREFUL!!
 
-I do plan on making a 'malware-free' version as well if necessary.
+There is a malware free version that can be found in the releases tab
 
 All of these cards can be and will be disabled in the config of the mod by default
 
