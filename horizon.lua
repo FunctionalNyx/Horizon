@@ -4691,6 +4691,107 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'cupnball',
+    loc_txt = {
+        name = 'Cup & Ball',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult but {C:attention}flips{} and',
+		  '{C:attention}shuffles{} all Joker cards',
+		  'every other hand'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 13, y = 4},
+	config = { 
+		extra = {
+			xmult = 5,
+			hand = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xmult,
+				center.ability.extra.hand
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.first_hand_drawn then
+			card.ability.extra.hand = false
+		end
+		if card.ability.extra.hand == false then
+			local eval = function() return card.ability.extra.hand and not G.RESET_JIGGLES end
+            juice_card_until(card, eval, true)
+		end
+		if context.joker_main then
+			if card.ability.extra.hand == false then
+				card.ability.extra.hand = true
+				if #G.jokers.cards > 0 then
+					G.jokers:unhighlight_all()
+					for _, joker in ipairs(G.jokers.cards) do
+						if joker ~= card then
+							joker:flip()
+						end
+					end
+					if #G.jokers.cards > 1 then
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.2,
+							func = function()
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.jokers:shuffle('aajk')
+										play_sound('cardSlide1', 0.85)
+										return true
+									end,
+								}))
+								delay(0.15)
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.jokers:shuffle('aajk')
+										play_sound('cardSlide1', 1.15)
+										return true
+									end
+								}))
+								delay(0.15)
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										G.jokers:shuffle('aajk')
+										play_sound('cardSlide1', 1)
+										return true
+									end
+								}))
+								delay(0.5)
+								return true
+							end
+						}))
+					end
+				end
+			else
+				card.ability.extra.hand = false
+			end
+			return {
+				Xmult = card.ability.extra.xmult,
+				card = card
+			}
+		end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
@@ -4971,6 +5072,48 @@ SMODS.Joker{
 				return {
 					message = 'Evolved!'
 				}
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'entropy',
+    loc_txt = {
+        name = 'Entropy',
+        text = {
+          'Converges all {C:attention}scored cards{}',
+		  'Towards the {C:attention}last{} card'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 14, y = 4},
+	calculate = function(self,card,context)
+		if context.before and context.main_eval and not context.blueprint then
+			local last_card = context.scoring_hand[#context.scoring_hand]
+			local con = tonumber(last_card:get_id())
+			for i=1, #context.scoring_hand do
+				if context.scoring_hand[i] ~= context.scoring_hand[#context.scoring_hand] then
+					local _card = context.scoring_hand[i]
+					if tonumber(_card:get_id()) > con then
+						SMODS.modify_rank(_card, -1)
+						_card:juice_up(0.3, 0.4)
+						play_sound('card1')
+					elseif tonumber(_card:get_id()) < con then
+						SMODS.modify_rank(_card, 1)
+						_card:juice_up(0.3, 0.4)
+						play_sound('card1')
+					end
+				end
 			end
 		end
 	end
@@ -6600,6 +6743,57 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 2, y = 0},
 }
+SMODS.Joker{
+	key = 'bagofchips',
+    loc_txt = {
+        name = 'Bag of Chips',
+        text = {
+          'When {C:attention}selling{} a card gain {C:red}X#2#{}',
+		  'Its {C:money}sell value{} as {C:chips}Chips{}',
+		  '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}#1#{}{C:inactive,s:0.8} Chips){}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 0,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			chips = 0,
+			mult = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.chips,
+				center.ability.extra.mult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				chips = card.ability.extra.chips
+			}
+		end
+		if context.selling_card then
+			card.ability.extra.chips = (context.card.sell_cost*2) + card.ability.extra.chips
+		end
+	end
+}
 local data = {}
 if horizonmod.config.enable_Malware then
 SMODS.Joker{
@@ -7224,108 +7418,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'cupnball',
-    loc_txt = {
-        name = 'Cup & Ball',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult but {C:attention}flips{} and',
-		  '{C:attention}shuffles{} all Joker cards',
-		  'every other hand'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 10,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-	config = { 
-		extra = {
-			xmult = 5,
-			hand = false
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.xmult,
-				center.ability.extra.hand
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.first_hand_drawn then
-			card.ability.extra.hand = false
-		end
-		if card.ability.extra.hand == false then
-			local eval = function() return card.ability.extra.hand and not G.RESET_JIGGLES end
-            juice_card_until(card, eval, true)
-		end
-		if context.joker_main then
-			if card.ability.extra.hand == false then
-				card.ability.extra.hand = true
-				if #G.jokers.cards > 0 then
-					G.jokers:unhighlight_all()
-					for _, joker in ipairs(G.jokers.cards) do
-						if joker ~= card then
-							joker:flip()
-						end
-					end
-					if #G.jokers.cards > 1 then
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.2,
-							func = function()
-								G.E_MANAGER:add_event(Event({
-									func = function()
-										G.jokers:shuffle('aajk')
-										play_sound('cardSlide1', 0.85)
-										return true
-									end,
-								}))
-								delay(0.15)
-								G.E_MANAGER:add_event(Event({
-									func = function()
-										G.jokers:shuffle('aajk')
-										play_sound('cardSlide1', 1.15)
-										return true
-									end
-								}))
-								delay(0.15)
-								G.E_MANAGER:add_event(Event({
-									func = function()
-										G.jokers:shuffle('aajk')
-										play_sound('cardSlide1', 1)
-										return true
-									end
-								}))
-								delay(0.5)
-								return true
-							end
-						}))
-					end
-				end
-			else
-				card.ability.extra.hand = false
-			end
-			return {
-				Xmult = card.ability.extra.xmult,
-				card = card
-			}
-		end
-	end
-}
-SMODS.Joker{
 	key = 'ouroboros',
     loc_txt = {
         name = 'Ouroboros',
@@ -7491,49 +7583,6 @@ SMODS.Joker{
 			G.GAME.probabilities[k] = v/1000
 		end
 	end,
-}
-SMODS.Joker{
-	key = 'entropy',
-    loc_txt = {
-        name = 'Entropy',
-        text = {
-          'Converges all {C:attention}scored cards{}',
-		  'Towards the {C:attention}last{} card'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-    atlas = 'Placeholder',
-    rarity = 4,
-    cost = 12,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	calculate = function(self,card,context)
-		if context.before and context.main_eval and not context.blueprint then
-			local last_card = context.scoring_hand[#context.scoring_hand]
-			local con = tonumber(last_card:get_id())
-			for i=1, #context.scoring_hand do
-				if context.scoring_hand[i] ~= context.scoring_hand[#context.scoring_hand] then
-					local _card = context.scoring_hand[i]
-					if tonumber(_card:get_id()) > con then
-						SMODS.modify_rank(_card, -1)
-						_card:juice_up(0.3, 0.4)
-						play_sound('card1')
-					elseif tonumber(_card:get_id()) < con then
-						SMODS.modify_rank(_card, 1)
-						_card:juice_up(0.3, 0.4)
-						play_sound('card1')
-					end
-				end
-			end
-		end
-	end
 }
 -- LOST SOULS --
 --
@@ -7789,6 +7838,7 @@ SMODS.Consumable {
         end
     end
 }
+if horizonmod.config.enable_WIP_cards then
 SMODS.Consumable {
     key = 'prosperity',
     set = 'nyx_angelic',
@@ -7797,8 +7847,9 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Prosperity',
 		text = {
-			'Make {C:attention}#1#{} card{}',
-			'{C:money}Prosperous{}'
+			'Make {C:attention}#1# card{} or',
+			'{C:attention}Joker{} {C:money}Prosperous{}',
+			'Doubling its {C:money}sell value{}'
 		}
 	},
 	set_badges = function (self, card, badges)
@@ -7810,7 +7861,7 @@ SMODS.Consumable {
 	discovered = false,
     config = { max_highlighted = 1, mod_conv = 'nyx_prosperous' },
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.mod_conv]
+        info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted } }
     end,
     use = function(self, card, area, copier)
@@ -7955,6 +8006,7 @@ SMODS.Consumable {
         end
     end
 }
+end
 -- Demonic --
 SMODS.ConsumableType {
     key = 'nyx_demonic',
@@ -8212,6 +8264,7 @@ SMODS.Consumable {
         end
     end
 }
+if horizonmod.config.enable_WIP_cards then
 SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
@@ -8636,6 +8689,7 @@ SMODS.Consumable {
 		end
 	end
 }
+end
 end
 
 -- Tarot --
@@ -11098,17 +11152,6 @@ SMODS.Blind {
 
 
 -- Nyx bullshit --
-SMODS.Joker{
-	key = 'testing',
-    atlas = 'Jokers',
-    unlocked = true,
-    discovered = true,
-	in_collection = false,
-    pos = {x = 9, y = 1},
-	in_pool = function(self) 
-		return false 
-	end
-}
 
 local position = math.random(1,9)
 local night = false
