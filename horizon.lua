@@ -1795,6 +1795,89 @@ SMODS.Joker{
     pos = {x = 16, y = 4},
 	soul_pos = {x = 16, y = 1},
 }
+local data = {}
+if horizonmod.config.enable_Malware then
+SMODS.Joker{
+	key = 'clutter',
+    loc_txt = {
+        name = 'Clutter',
+        text = {
+          'Gain {C:mult}+#2#{} Mult',
+		  'For {C:attention}every file{} on your {C:attention}desktop{}',
+		  '{C:red}Removes a random file from your desktop when sold{}',
+		  '{C:inactive,s:0.8}(Currently {C:mult,s:0.8}#1#{}{C:inactive,s:0.8} Mult){}'
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
+	end,
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 3,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 17, y = 4},
+	config = { 
+		extra = {
+			mult = (#datal or 0),
+			mult_gain = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.mult,
+				center.ability.extra.mult_gain
+			}
+		}
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		if one then
+			os.remove(os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\"..data[math.random(temp, #data)]) -- Deletes a random file from desktop when removed from deck
+		else
+			os.remove(os.getenv("USERPROFILE") .. "\\Desktop\\"..data[math.random(1, temp)]) -- Deletes a random file from desktop when removed from deck
+		end
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			local dir = os.getenv("USERPROFILE") .. "\\Desktop\\"
+			local p = io.popen('dir "'..dir..'" /b')  --Open directory look for files, save data in p. (with option "/b" everything contained in the given directory is listed with simple format)
+			data = {}
+			local i = 1
+			local temp = nil
+			local one = false
+			for file in p:lines() do                    --Loop through all files
+				data[i] = tostring(file)
+				i = i + 1
+			end
+			temp = #data
+			dir = os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\" -- Included OneDrive incase user has files synced to cloud
+			p = io.popen('dir "'..dir..'" /b')
+			for file in p:lines() do                    --Loop through all files
+				data[i] = tostring(file)
+				i = i + 1
+			end
+			if temp < #data - temp then
+				one = true
+			else
+				one = false
+			end
+			card.ability.extra.mult = #data * card.ability.extra.mult_gain
+			print(data)
+			return {
+				mult = card.ability.extra.mult
+			}
+		end
+	end
+}
+end
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -4015,6 +4098,54 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'buy1get1',
+    loc_txt = {
+        name = 'Buy 1 Get 1 Free!',
+        text = {
+		  'Able to play {C:blue}6{} cards'
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 18, y = 4},
+	in_pool = function(self) 
+		return false 
+	end,
+	config = { 
+		extra = {
+			limit = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.limit
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.play_limit = G.GAME.starting_params.play_limit + (card.ability.extra.limit)
+		G.hand.config.highlighted_limit = G.hand.config.highlighted_limit + (card.ability.extra.limit)
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.play_limit = G.GAME.starting_params.play_limit + (-1 * card.ability.extra.limit)
+		G.hand.config.highlighted_limit = G.hand.config.highlighted_limit + (-1 * card.ability.extra.limit)
+		if not G.GAME.before_play_buffer then
+			G.hand:unhighlight_all()
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -4528,7 +4659,8 @@ SMODS.Joker{
 				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
 				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
 				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') or
-				(other_joker.config.center.key == 'j_scholar' or other_joker.config.center.key == 'j_to_the_moon') then
+				(other_joker.config.center.key == 'j_scholar' or other_joker.config.center.key == 'j_to_the_moon' or other_joker.config.center.key == 'j_nyx_eclipse') or 
+				(other_joker.config.center.key == 'j_nyx_tragedy' or other_joker.config.center.key == 'j_nyx_tragedy') then
 					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 					if effect then
 						table.insert(effects, effect) -- add to array
@@ -4633,7 +4765,7 @@ SMODS.Joker{
     pos = {x = 17, y = 3},
 	in_pool = function(self, args)
         for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_true_tragedy" then
+            if joker.config.center.key == "j_nyx_tragedy" then
 				return false
             end
         end
@@ -4690,7 +4822,7 @@ SMODS.Joker{
     pos = {x = 18, y = 3},
 	in_pool = function(self, args)
         for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_true_tragedy" then
+            if joker.config.center.key == "j_nyx_tragedy" then
 				return false
             end
         end
@@ -5018,6 +5150,49 @@ SMODS.Joker{
 			return {
 				Xmult = card.ability.extra.xmult,
 				card = card
+			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'ouroboros',
+    loc_txt = {
+        name = 'Ouroboros',
+        text = {
+          'Always draw {C:attention}#1# cards{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 19, y = 4},
+	config = { 
+		extra = {
+			cards = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.cards
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.drawing_cards and (G.GAME.current_round.hands_played ~= 0 or G.GAME.current_round.discards_used ~= 0) then
+			return {
+				cards_to_draw = card.ability.extra.cards
 			}
 		end
 	end
@@ -6802,7 +6977,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Placeholder',
     rarity = 1,
-    cost = 0,
+    cost = 3,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6834,90 +7009,6 @@ SMODS.Joker{
 		end
 	end
 }
-local data = {}
-if horizonmod.config.enable_Malware then
-SMODS.Joker{
-	key = 'clutter',
-    loc_txt = {
-        name = 'Clutter',
-        text = {
-          'Gain {C:mult}+#2#{} Mult',
-		  'For {C:attention}every file{} on your {C:attention}desktop{}',
-		  '{C:red}Removes a random file from your desktop when sold{}',
-		  '{C:inactive,s:0.8}(Currently {C:mult,s:0.8}#1#{}{C:inactive,s:0.8} Mult){}'
-        },
-    },
-	pools = {
-		["Horizonjokers"] = true
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
-	end,
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 0,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			mult = (#datal or 0),
-			mult_gain = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.mult,
-				center.ability.extra.mult_gain
-			}
-		}
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		if one then
-			os.remove(os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\"..data[math.random(temp, #data)]) -- Deletes a random file from desktop when removed from deck
-		else
-			os.remove(os.getenv("USERPROFILE") .. "\\Desktop\\"..data[math.random(1, temp)]) -- Deletes a random file from desktop when removed from deck
-		end
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			local dir = os.getenv("USERPROFILE") .. "\\Desktop\\"
-			local p = io.popen('dir "'..dir..'" /b')  --Open directory look for files, save data in p. (with option "/b" everything contained in the given directory is listed with simple format)
-			data = {}
-			local i = 1
-			local temp = nil
-			local one = false
-			for file in p:lines() do                    --Loop through all files
-				data[i] = tostring(file)
-				i = i + 1
-			end
-			temp = #data
-			dir = os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\" -- Included OneDrive incase user has files synced to cloud
-			p = io.popen('dir "'..dir..'" /b')
-			for file in p:lines() do                    --Loop through all files
-				data[i] = tostring(file)
-				i = i + 1
-			end
-			if temp < #data - temp then
-				one = true
-			else
-				one = false
-			end
-			card.ability.extra.mult = #data * card.ability.extra.mult_gain
-			print(data)
-			return {
-				mult = card.ability.extra.mult
-			}
-		end
-	end
-}
-end
 -- Uncommon --
 SMODS.Joker{
 	key = 'allinred',
@@ -7293,55 +7384,6 @@ SMODS.Joker{
 		end
 	end
 }
-SMODS.Joker{
-	key = 'buy1get1',
-    loc_txt = {
-        name = 'Buy 1 Get 1 Free!',
-        text = {
-		  'Able to play {C:blue}6{} cards'
-		  }
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 6,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 0},
-	in_pool = function(self) 
-		return false 
-	end,
-	config = { 
-		extra = {
-			limit = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.limit
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.GAME.starting_params.play_limit = G.GAME.starting_params.play_limit + (card.ability.extra.limit)
-		G.hand.config.highlighted_limit = G.hand.config.highlighted_limit + (card.ability.extra.limit)
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.starting_params.play_limit = G.GAME.starting_params.play_limit + (-1 * card.ability.extra.limit)
-		G.hand.config.highlighted_limit = G.hand.config.highlighted_limit + (-1 * card.ability.extra.limit)
-		if not G.GAME.before_play_buffer then
-			G.hand:unhighlight_all()
-		end
-	end
-}
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -7453,50 +7495,6 @@ SMODS.Joker{
 			SMODS.pseudorandom_probability(blind, 'nyx_soh', 1, 7) then
 			return {
 				stay_flipped = true
-			}
-		end
-	end
-}
-SMODS.Joker{
-	key = 'ouroboros',
-    loc_txt = {
-        name = 'Ouroboros',
-        text = {
-          'Always draw {C:attention}#1# cards{}'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-	config = { 
-		extra = {
-			cards = 3
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.cards
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.drawing_cards and (G.GAME.current_round.hands_played ~= 0 or G.GAME.current_round.discards_used ~= 0) then
-			return {
-				cards_to_draw = card.ability.extra.cards
 			}
 		end
 	end
@@ -10937,7 +10935,7 @@ SMODS.Blind {
                     delay = 0.2,
                     func = function()
 						if G.GAME.round_resets.ante < 5 then
-                        	G.GAME.blind.chips = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
+                        	G.GAME.blind.chips = G.GAME.blind.chips + (100 * (G.GAME.round_resets.ante - 2))
 							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 						elseif G.GAME.round_resets.ante >= 5 then
 							G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips/10)
@@ -10989,10 +10987,10 @@ SMODS.Blind {
 	calculate = function(self, blind, context)
         if not blind.disabled then
 			if G.GAME.round_resets.ante < 5 then
-				local diff_amt = G.GAME.blind.chips + 100 * (G.GAME.round_resets.ante - 2)
+				local diff_amt = (100 * (G.GAME.round_resets.ante - 2))
 				G.GAME.blind.loc_debuff_lines[1] = 'Removes '..diff_amt..' from'
 			elseif G.GAME.round_resets.ante >= 5 then
-				local diff_amt = G.GAME.blind.chips + (G.GAME.blind.chips/10)
+				local diff_amt = (G.GAME.blind.chips/10)
 				G.GAME.blind.loc_debuff_lines[1] = 'Removes '..diff_amt..' from'
 			end
             if context.press_play then
