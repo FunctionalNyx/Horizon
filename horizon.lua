@@ -9878,13 +9878,10 @@ SMODS.Tag {
     min_ante = 2,
     atlas = 'Tags',
 	no_collection = true,
-    pos = { x = 1, y = 0 },
+    pos = { x = 2, y = 0 },
     loc_vars = function(self, info_queue, tag)
         info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_hnh_pack
     end,
-	in_pool = function() 
-		return false 
-	end,
 	loc_txt = {
 		name = "Heaven & Hell Tag",
 		text = {
