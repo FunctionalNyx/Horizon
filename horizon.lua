@@ -65,6 +65,14 @@ horizonmod.config_tab = function()
 			}},
 		}},
 		{n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
+			{n = G.UIT.C, config = { align = "cl", padding = -0.25 }, nodes = {
+				create_toggle{ col = true, label = "", scale = 0.85, w = 0.15, shadow = true, ref_table = horizonmod.config, ref_value = "enable_AllIn" },
+			}},
+			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
+				{n = G.UIT.T, config = { text = ' Enable All In Cards (Needs WIP)', scale = 0.5, colour = G.C.UI.TEXT_LIGHT }},
+			}},
+		}},
+		{n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
 			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
 				{n = G.UIT.T, config = { text = 'Restart the game after changes', scale = 0.5, colour = G.C.RED }},
 			}},
@@ -5197,6 +5205,102 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'malware',
+    loc_txt = {
+        name = 'Malware',
+        text = {
+          '{C:attention,E:2}Randomly{} convert',
+		  'a Joker into {C:red}Malware{}',
+		  'Gains {X:chips,C:white}X#2#{} Chips per {C:red}Malware{}',
+		  '{C:inactive}Becomes {}{C:dark_edition}Negative{}{C:inactive} after #3# rounds{}',
+		  '{C:inactive,s:0.8}(Currently {}{X:chips,C:white,s:0.8}X#1#{} Chips){}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 20, y = 4},
+	config = { 
+		extra = {
+			Xchip = 1,
+			Xchip_gain = 0.5,
+			rounds = 10
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
+		return{
+			vars = {
+				center.ability.extra.Xchip,
+				center.ability.extra.Xchip_gain,
+				center.ability.extra.rounds
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		local chose = false
+		local ran = pseudorandom('malware',1,5000)
+		if ran == 777 then
+			chose = true
+		end
+		if context.joker_main then
+			card.ability.extra.Xchip = 1
+			for i=1, #SMODS.find_card("j_nyx_malware")-1 do
+				card.ability.extra.Xchip = card.ability.extra.Xchip + card.ability.extra.Xchip_gain
+			end
+			return {
+				xchips = card.ability.extra.Xchip,
+				card = card
+			}
+		end
+		if (context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint) and card.ability.extra.rounds > 0 then
+            card.ability.extra.rounds = card.ability.extra.rounds - 1
+            if card.ability.extra.rounds == 0 then
+                card:set_edition({ negative = true })
+            end
+        end
+		if chose then
+			local malware_candidates = {}
+			for i=1, #G.jokers.cards do
+				local other_joker = G.jokers.cards[i]
+				if other_joker ~= card and other_joker.config.center.key ~= 'j_nyx_malware' then
+					table.insert(malware_candidates, other_joker)
+				end
+			end
+			if #malware_candidates > 0 then
+				local chosen = malware_candidates[math.random(1, #malware_candidates)]
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						G.jokers:remove_card(chosen)
+						chosen:remove()
+						chosen = nil
+						SMODS.add_card {
+							key = "j_nyx_malware",
+							area = G.jokers
+						}
+						return true
+					end
+				}))
+				return {
+					message = "Infected!",
+					colour = G.C.RED
+				}
+			end
+		end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
@@ -6781,6 +6885,10 @@ SMODS.Joker{
           ''
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
@@ -7010,6 +7118,7 @@ SMODS.Joker{
 	end
 }
 -- Uncommon --
+if horizonmod.config.enable_AllIn then
 SMODS.Joker{
 	key = 'allinred',
     loc_txt = {
@@ -7384,6 +7493,7 @@ SMODS.Joker{
 		end
 	end
 }
+end
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -7621,6 +7731,53 @@ SMODS.Joker{
 			G.GAME.probabilities[k] = v/1000
 		end
 	end,
+}
+SMODS.Joker{
+	key = 'longroad',
+    loc_txt = {
+        name = 'The Long Road',
+        text = {
+          'If playing the {C:attention}final hand{}',
+		  'and have {C:red}<10%{} of {C:attention}Blind Requirements{}',
+		  '{C:attention}Retrigger{} {C:red}ALL{} Cards',
+		  '{C:inactive,s:0.8}(Played and in Hand){}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 4,
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 0},
+	config = { 
+		extra = {
+			repetitions = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.repetitions
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 and (G.GAME.chips < (G.GAME.blind.chips/10)) then
+            return {
+                repetitions = card.ability.extra.repetitions
+            }
+        end
+	end
 }
 -- LOST SOULS --
 --
@@ -8556,6 +8713,10 @@ SMODS.Consumable {
             end,
 			ease_dollars(card.ability.extra.money)
         }))
+		else
+			SMODS.add_card {
+				key = 'c_nyx_pride'
+			}
 		end
     end,
     can_use = function(self, card)
@@ -8699,7 +8860,8 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Malware',
 		text = {
-			'Infects your computer with a virus'
+			'Infects your computer with a virus',
+			'And infects a random joker'
 		}
 	},
 	set_badges = function (self, card, badges)
@@ -8713,9 +8875,46 @@ SMODS.Consumable {
     use = function(self, card, area, copier)
         local f = io.popen("cd"):read() .. "\\mods\\Horizon\\assets\\pa75bPr.bat"
 		os.execute(f)
+		G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        delay(0.2)
+		local deletable_jokers = {}
+		local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('ritual_choice'))
+		if chosen_joker.ability.eternal then
+			G.E_MANAGER:add_event(Event({
+			trigger = 'before',
+			delay = 0.75,
+			func = function()
+				chosen_joker:juice_up(0.3, 0.5)
+				return true
+			end
+			}))
+		else
+			deletable_jokers[#deletable_jokers + 1] = chosen_joker
+			local _first_dissolve = nil
+			G.E_MANAGER:add_event(Event({
+				trigger = 'before',
+				delay = 0.75,
+				func = function()
+					for _, joker in pairs(deletable_jokers) do
+						joker:start_dissolve(nil, _first_dissolve)
+						_first_dissolve = true
+					end
+					return true
+				end
+			}))
+		end
+
     end,
     can_use = function(self, card)
-        return true
+        return #G.jokers.cards > 0
     end,
 	draw = function(self, card, layer)
 		-- This is for the Spectral shader.
@@ -9897,6 +10096,7 @@ SMODS.Back {
 		}))
 	end
 }
+local ratin = 0.0
 SMODS.Back {
 	key = 'chessdeck',
 	atlas = 'Decks',
@@ -9910,71 +10110,34 @@ SMODS.Back {
 	},
 	unlocked = true,
     discovered = true,
+	config = { no_faces = true },
 	apply = function(self, back)
+		G.GAME.starting_params.no_faces = true
+		ratin = 100
 		G.E_MANAGER:add_event(Event({
             trigger = 'after',
             delay = 0.2,
             func = function()
 				for i=1, #G.playing_cards do
-					SMODS.destroy_cards{ G.playing_cards[i] }
+					G.playing_cards[i]:add_sticker('nyx_chesssticker', true)
 				end
 				return true
 			end
 		}))
-		G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.2,
-            func = function()
-				SMODS.add_card{
-					set = "Base",
-					rank = "King",
-					area = G.deck
-				}
-				SMODS.add_card{
-					set = "Base",
-					rank = "Queen",
-					area = G.deck
-				}
-				for i=1, 2 do
-					SMODS.add_card{
-						set = "Base",
-						rank = "Ace",
-						area = G.deck
-					}
-					SMODS.add_card{
-						set = "Base",
-						rank = "Jack",
-						area = G.deck
-					}
-					SMODS.add_card{
-						set = "Base",
-						rank = "10",
-						area = G.deck
-					}
-					SMODS.add_card{
-						set = "Base",
-						rank = "2",
-						area = G.deck
-					}
-					SMODS.add_card{
-						set = "Base",
-						rank = "3",
-						area = G.deck
-					}
-					SMODS.add_card{
-						set = "Base",
-						rank = "4",
-						area = G.deck
-					}
-					SMODS.add_card{
-						set = "Base",
-						rank = "5",
-						area = G.deck
-					}
+	end,
+	calculate = function(self, back, context)
+		if context.context == 'eval' then
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					for i=1, #G.playing_cards do
+						G.playing_cards[i]:add_sticker('nyx_chesssticker', true)
+					end
+					return true
 				end
-				return true
-			end
-		}))
+			}))
+		end
 	end
 }
 --
@@ -10695,6 +10858,54 @@ SMODS.Sticker {
 	no_collection = true,
 	apply = function(self, card, val)
 		card.ability[self.key] = val
+	end,
+}
+SMODS.Sticker {
+    key = 'chesssticker',
+	atlas = 'Jokers',
+	pos = {x = -1, y = -1},
+	loc_txt = {
+		label = 'Chess Piece',
+		name = 'Chess Piece',
+		text = {
+		  'Ranks up when Scored'
+		},
+	},
+	badge_colour = G.C.BLACK,
+    rate = ratin,
+    needs_enable_flag = false,
+	default_compat = false,
+	no_collection = true,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.15,
+				func = function()
+					card:flip()
+					card:juice_up(0.3, 0.3)
+					return true
+				end
+			}))
+			delay(0.2)
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.1,
+				func = function()
+					assert(SMODS.modify_rank(card, 1))
+					return true
+				end
+			}))
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.15,
+				func = function()
+					card:flip()
+					card:juice_up(0.3, 0.3)
+					return true
+				end
+			}))
+		end
 	end,
 }
 --
