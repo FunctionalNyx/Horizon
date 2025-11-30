@@ -6296,6 +6296,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6349,6 +6350,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6402,6 +6404,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6455,6 +6458,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6500,6 +6504,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6553,6 +6558,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6606,6 +6612,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6674,6 +6681,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6718,6 +6726,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6762,6 +6771,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6824,6 +6834,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -6868,6 +6879,7 @@ SMODS.Joker{
 		if context.end_of_round and context.cardarea == G.jokers then
 			G.E_MANAGER:add_event(Event({
 				func = function()
+					SMODS.Stickers.eternal:apply(card, false)
 					SMODS.destroy_cards{ card }
 					return true
 				end
@@ -9005,7 +9017,7 @@ SMODS.Consumable {
     key = 'malware',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
+    pos = { x = 9, y = 0 },
 	loc_txt = {
 		name = 'Malware',
 		text = {
