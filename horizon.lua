@@ -1878,7 +1878,6 @@ SMODS.Joker{
 				one = false
 			end
 			card.ability.extra.mult = #data * card.ability.extra.mult_gain
-			print(data)
 			return {
 				mult = card.ability.extra.mult
 			}
@@ -7759,9 +7758,6 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
     atlas = 'Placeholder',
     rarity = 4,
     cost = 12,
@@ -10871,8 +10867,6 @@ SMODS.Enhancement{
 					card.ability.extra.xmult = card.ability.extra.xmult + card.ability.extra.mult_gain
 				end
 			end
-			print(check)
-			print(star)
 			return {
 				Xmult = card.ability.extra.xmult,
 				card = card
