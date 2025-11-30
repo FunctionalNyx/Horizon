@@ -219,8 +219,8 @@ SMODS.Joker{
 			return {
 				mult = card.ability.extra.mult,
 				colour = G.C.MULT,
-				chip_mod = center.ability.extra.chips,
-				message = center.ability.extra.chips..' Chips',
+				chip_mod = card.ability.extra.chips,
+				message = card.ability.extra.chips..' Chips',
 				colour = G.C.CHIP,
 				card = card
 			}
@@ -8200,6 +8200,155 @@ SMODS.Consumable {
         end
     end
 }
+SMODS.Consumable {
+    key = 'epiphany',
+    set = 'nyx_angelic',
+	atlas = 'Spectral',
+    pos = { x = 0, y = 1 },
+	loc_txt = {
+		name = 'Epiphany',
+		text = {
+			'Multiply the {C:attention}values{} of',
+			'#1# selected {C:attention}Joker{} by {C:mult}X#2#{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 6,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 1, multiplier = 1.25 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted, card.ability.multiplier } }
+    end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        delay(0.2)
+		if #G.jokers.highlighted > 0 then
+			for i = 1, #G.jokers.highlighted do
+				local exclude_extra = {"Runner","Square Joker","Wee Joker","Invisible Joker"}
+				local doExclude = false
+				for e = 1 , #exclude_extra do
+					if G.jokers.highlighted[i].ability.name == exclude_extra[e]then
+						doExclude = true
+					end
+				end
+				if G.jokers.highlighted[i].ability.name ~= "j_nyx_t"then
+					if doExclude then
+						NYX.funcs.mod_card_values(G.jokers.highlighted[i].ability,{
+							multiply = card.ability.multiplier,
+							x_protect = true,
+							unkeywords = {
+								odds = true,
+								Xmult_mod = true,
+								mult_mod = true,
+								chips_mod = true,
+								extra = true,
+								card_limit = true
+							}
+						})
+					elseif G.jokers.highlighted[i].ability.name == "Ramen" then
+						NYX.funcs.mod_card_values(G.jokers.highlighted[i].ability,{
+							multiply = card.ability.multiplier,
+							x_protect = true,
+							unkeywords = {
+								Xmult = true,
+								card_limit = true
+							}
+						})
+					elseif G.jokers.highlighted[i].ability.name == "Loyalty Card" then
+						NYX.funcs.mod_card_values(G.jokers.highlighted[i].ability,{
+							multiply = card.ability.multiplier,
+							x_protect = true,
+							unkeywords = {
+								odds = true,
+								Xmult_mod = true,
+								mult_mod = true,
+								chips_mod = true,
+								hand_add = true,
+								discard_sub = true,
+								h_mod = true,
+								loyalty_remaining = true,
+								every = true,
+								card_limit = true
+							}
+						})
+					elseif G.jokers.highlighted[i].ability.name == "Campfire" or G.jokers.highlighted[i].ability.name == "Hit the Road" then
+						NYX.funcs.mod_card_values(G.jokers.highlighted[i].ability,{
+							multiply = card.ability.multiplier,
+							x_protect = true,
+							unkeywords = {
+								odds = true,
+								Xmult = true,
+								mult_mod = true,
+								chips_mod = true,
+								hand_add = true,
+								discard_sub = true,
+								h_mod = true,
+								card_limit = true
+							}
+						})
+					else
+						NYX.funcs.mod_card_values(G.jokers.highlighted[i].ability,{
+							multiply = card.ability.multiplier,
+							x_protect = true,
+							unkeywords = {
+								odds = true,
+								Xmult_mod = true,
+								mult_mod = true,
+								chips_mod = true,
+								hand_add = true,
+								discard_sub = true,
+								h_mod = true,
+								size = true,
+								chip_mod = true,
+								h_size = true,
+								increase = true,
+								card_limit = true
+							}
+						})
+					end
+				end
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
+						return true
+					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
+			delay(0.5)
+		end
+    end,
+    can_use = function(self, card)
+        return (#G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted)
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
 -- Demonic --
 SMODS.ConsumableType {
     key = 'nyx_demonic',
@@ -8911,7 +9060,9 @@ SMODS.Consumable {
 				end
 			}))
 		end
-
+		SMODS.add_card {
+			key = 'j_nyx_malware'
+		}
     end,
     can_use = function(self, card)
         return #G.jokers.cards > 0
@@ -11529,9 +11680,9 @@ NYX = {
             local function modify_values(table_in, ref)
                 for k,v in pairs(table_in) do -- For key, value in the table
                     if type(v) == "number" then -- If it's a number
-                        if (keywords[k] or (NYX.REND.table_true_size(keywords) < 1)) and not unkeyword[k] then -- If it's in the keywords, OR there's no keywords and it isn't in the unkeywords
+                        if (keywords[k] or (NYX.T.table_true_size(keywords) < 1)) and not unkeyword[k] then -- If it's in the keywords, OR there's no keywords and it isn't in the unkeywords
                             if ref and ref[k] then -- If it exists in the reference
-                                if not (x_protect and (NYX.REND.starts_with(k,"x_") or NYX.REND.starts_with(k,"h_x_")) and ref[k] == 1) then
+                                if not (x_protect and (NYX.T.starts_with(k,"x_") or NYX.T.starts_with(k,"h_x_")) and ref[k] == 1) then
                                     table_in[k] = (ref[k] + add) * multiply -- Set it to (reference's value + add) * multiply
                                 end
                             end
