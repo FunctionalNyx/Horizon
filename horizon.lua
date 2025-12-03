@@ -4003,6 +4003,28 @@ SMODS.Joker{
 			}
 		}
 	end,
+	remove_from_deck = function(self, card, from_debuff)
+		-- Undebuff all jokers on removal
+		for i = 1, #G.jokers.cards do
+			local joker = G.jokers.cards[i]
+			local canUndebuff = true
+
+			-- Check if joker is chosen by crimson heart or has perished
+			if joker.ability.perishable then
+				if joker.ability.perish_tally <= 0 then
+					canUndebuff = false
+				end
+			end
+
+			if joker.ability.crimson_heart_chosen then
+				canUndebuff = false
+			end
+
+			if canUndebuff then
+				SMODS.debuff_card(joker, false, "discordmod")
+			end
+		end
+	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
 			return {
@@ -8425,6 +8447,204 @@ SMODS.Consumable {
         end
     end
 }
+SMODS.Consumable {
+    key = 'diligence',
+    set = 'nyx_angelic',
+	atlas = 'Spectral',
+    pos = { x = 0, y = 1 },
+	config = { 
+		extra = {
+			max_highlighted = 1,
+			seal = 'nyx_greenblue'
+		}
+	},
+	loc_txt = {
+        name = 'Diligence', --name of card
+        text = { --text of card
+            'Add a {V:1}Turquoise Seal{}',
+			'to {C:attention}1{} selected',
+			'card in your hand'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 4,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
+        return { vars = { card.ability.max_highlighted, colours = { HEX('40E0D0') } }}
+    end,
+    use = function(self, card, area, copier)
+        local conv_card = G.hand.highlighted[1]
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.1,
+            func = function()
+                conv_card:set_seal(card.ability.extra.seal, nil, true)
+                return true
+            end
+        }))
+        delay(0.5)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+                G.hand:unhighlight_all()
+                return true
+            end
+        }))
+    end,
+	can_use = function(self, card)
+        return #G.hand.highlighted == 1
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
+    key = 'patience',
+    set = 'nyx_angelic',
+	atlas = 'Spectral',
+    pos = { x = 0, y = 1 },
+	config = { 
+		extra = {
+			nsil = 0.05,
+			scale = 0.05
+		}
+	},
+	loc_txt = {
+        name = 'Patience', --name of card
+        text = { --text of card
+            'Decreases {C:attention}Blind Requirements{} by {C:attention}%#1#{}',
+			'{C:attention}Scales{} with each {C:attention}round{} this card is {C:attention}held{}',
+			'up to a maximum of {C:attention}%25{}',
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 4,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_SEALS[card.ability.extra.seal]
+        return { vars = { (card.ability.extra.nsil*100) }}
+    end,
+	calculate = function(self, card, context)
+		if context.starting_shop and card.ability.extra.nsil < 0.25 then
+			card.ability.extra.nsil = card.ability.extra.nsil + card.ability.extra.scale
+		end
+	end,
+    use = function(self, card, area, copier)
+        if G.GAME.blind then
+			G.GAME.blind.chips = G.GAME.blind.chips * (1 - card.ability.extra.nsil)
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					play_sound('tarot1')
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+		end
+    end,
+	can_use = function(self, card)
+        return G.GAME.blind.in_blind
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
+    key = 'worship',
+    set = 'nyx_angelic',
+	atlas = 'Spectral',
+    pos = { x = 0, y = 1 },
+	loc_txt = {
+		name = 'Worship',
+		text = {
+			'Create a {C:attention}Edible{} Copy',
+			'of #1# selected {C:attention}Joker{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 6,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 1, mod_conv = 'nyx_consumable' },
+    loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
+        return { vars = { card.ability.max_highlighted, card.ability.mod_conv } }
+    end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        delay(0.2)
+		if #G.jokers.highlighted > 0 then
+			for i = 1, #G.jokers.highlighted do
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
+						local temp = SMODS.add_card {
+							key = G.jokers.highlighted[i].config.center.key
+						}
+						temp:add_sticker(card.ability.mod_conv, true)
+						return true
+					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
+			delay(0.5)
+		end
+    end,
+    can_use = function(self, card)
+        return (#G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted)
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
 -- Demonic --
 SMODS.ConsumableType {
     key = 'nyx_demonic',
@@ -9049,16 +9269,15 @@ SMODS.Consumable {
     key = 'exit',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
+    pos = { x = 9, y = 1 },
 	loc_txt = {
 		name = 'exit',
 		text = {
-			'Closes the game'
+			'{C:attention}Closes{} the game'
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
 	end,
 	cost = 3,
@@ -9085,13 +9304,12 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Malware',
 		text = {
-			'Infects your computer with a virus',
-			'And infects a random joker'
+			'{C:attention}Infects{} your computer with a {C:red}virus{}',
+			'And infects a {C:attention}random{} joker'
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
 	end,
 	cost = 3,
@@ -9418,7 +9636,11 @@ SMODS.Consumable {
     set = 'Spectral',
 	atlas = 'Spectral',
     pos = { x = 0, y = 0 },
-    config = { extra = { seal = 'nyx_greenseal' }, max_highlighted = 1 },
+    config = { 
+		extra = { 
+			seal = 'nyx_greenseal' 
+		}
+		, max_highlighted = 1 },
 	loc_txt = {
         name = 'Horizon', --name of card
         text = { --text of card
@@ -9737,7 +9959,8 @@ SMODS.Seal {
 		label = 'Turquoise Seal',
 		name = 'Turquoise Seal',
 		text = {
-			'If all {C:attention}scored{} cards have a {V:1}Turquoise{} seal',
+			'If all {C:attention}scored{} cards',
+			'have a {V:1}Turquoise{} seal',
 			'Create a {C:spectral}Spectral{} card'
 		}
 	},
@@ -10319,7 +10542,6 @@ SMODS.Back {
 		}))
 	end
 }
-local ratin = 0.0
 SMODS.Back {
 	key = 'chessdeck',
 	atlas = 'Decks',
@@ -10336,7 +10558,6 @@ SMODS.Back {
 	config = { no_faces = true },
 	apply = function(self, back)
 		G.GAME.starting_params.no_faces = true
-		ratin = 100
 		G.E_MANAGER:add_event(Event({
             trigger = 'after',
             delay = 0.2,
@@ -10347,20 +10568,6 @@ SMODS.Back {
 				return true
 			end
 		}))
-	end,
-	calculate = function(self, back, context)
-		if context.context == 'eval' then
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.2,
-				func = function()
-					for i=1, #G.playing_cards do
-						G.playing_cards[i]:add_sticker('nyx_chesssticker', true)
-					end
-					return true
-				end
-			}))
-		end
 	end
 }
 --
@@ -11092,11 +11299,17 @@ SMODS.Sticker {
 		  'Ranks up when Scored'
 		},
 	},
+	sets = {
+		Base = true,
+	},
 	badge_colour = G.C.BLACK,
-    rate = ratin,
+    rate = 1.0,
     needs_enable_flag = false,
 	default_compat = false,
 	no_collection = true,
+	should_apply = function(self, card, center, area, bypass_reroll)
+        return G.GAME.selected_back and G.GAME.selected_back.effect.center.key == 'b_nyx_chessdeck'
+    end,
 	calculate = function(self,card,context)
 		if context.main_scoring and context.cardarea == G.play then
 			G.E_MANAGER:add_event(Event({
@@ -11128,6 +11341,45 @@ SMODS.Sticker {
 			}))
 		end
 	end,
+}
+SMODS.Sticker {
+    key = 'edible',
+	atlas = 'Jokers',
+	pos = {x = -1, y = -1},
+	loc_txt = {
+		label = 'Edible',
+		name = 'Edible',
+		text = {
+		  '{C:green}#1# in 4{} Chance',
+		  'to be {C:attention}Eaten{}',
+		},
+	},
+	badge_colour = G.C.FILTER,
+    rate = 0.0,
+    needs_enable_flag = false,
+	default_compat = false,
+	no_collection = true,
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	apply = function(self, card, val)
+		card.ability[self.key] = val
+	end,
+	calculate = function(self,card,context)
+		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
+			if pseudorandom('nyx_consume') < G.GAME.probabilities.normal / 4 then
+				SMODS.destroy_cards { card }
+				return {
+					message = localize('k_eaten_ex'),
+					colour = G.C.FILTER
+				}
+			end
+		end
+	end
 }
 --
 
