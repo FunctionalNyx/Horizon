@@ -37,6 +37,12 @@ SMODS.Atlas{
     px = 71, --width of one card
     py = 95 -- height of one card
 }
+SMODS.Atlas{
+    key = 'RotatedJokers', --atlas key
+    path = 'RotatedJoker.png', --atlas' path in (yourMod)/assets/1x or (yourMod)/assets/2x
+    px = 112, --width of one card
+    py = 112 -- height of one card
+}
 
 horizonmod.config_tab = function()
 	return {n = G.UIT.ROOT, config = {align = "cl", outline = 0.5, outline_colour = HEX('C3C3C3'), padding = 0.025, colour = G.C.UI.BACKGROUND_DARK, minw = 7, minh = 2}, nodes = {
@@ -3045,7 +3051,9 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
-		if G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck" then
+		local isCorruptedDeck = G.GAME.selected_back.effect.center.key == "b_nyx_corruptedDeck"
+
+		if isCorruptedDeck then
 			if not card.ability.eternal then
 				SMODS.Stickers.eternal:apply(card, true)
 			end
@@ -3079,7 +3087,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
-		if context.before then
+		if context.before and not isCorruptedDeck then
 			-- Do a random effect
 			local choiceCount = 9 -- Just an easy variable I can change on the fly with each chaos effect I add
 			local rareChoices = 18
@@ -4237,6 +4245,49 @@ SMODS.Joker{
 			return {
 				mult = card.ability.extra.mult,
 				card = card
+			}
+		end
+	end
+}
+
+SMODS.Joker{
+	key = 'rotated',
+    loc_txt = {
+        name = 'Rotated Joker',
+        text = {
+          'Swaps {C:chips}chips{} and',
+		  '{C:mult}mult{} before scoring'
+		  }
+	},
+	pools = {
+		["ModJonklers"] = true,
+		["Horizonjokers"] = true
+	},
+	display_size = {w = 112, h = 112},
+    atlas = 'RotatedJokers',
+    rarity = 2,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 0},
+	config = {
+		extra = {
+
+		}
+	},
+	loc_vars = function(self, info_queue, center)
+		
+	end,
+	calculate = function(self,card,context)
+		if context.initial_scoring_step then
+			return {
+				swap = true,
+				message = "Rotated!",
+				message_card = card,
+				colour = G.C.GREEN
 			}
 		end
 	end
