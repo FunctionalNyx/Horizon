@@ -11803,9 +11803,13 @@ SMODS.Blind {
 
 -- Nyx bullshit --
 
-local position = math.random(1,9)
+local position = math.random(1,24)
 local night = false
-if position == 9 then
+local eclipse = false
+if position == 24 then
+	position = 10
+	eclipse = true
+elseif position >= 9 then
 	position = 9
 	night = true
 else
@@ -11828,7 +11832,7 @@ SMODS.Sound({
 	volume = 1.2,
 	pitch = 1,
 	select_music_track = function()
-		return G.STAGE == G.STAGES.MAIN_MENU and night
+		return G.STAGE == G.STAGES.MAIN_MENU and (night or eclipse)
 	end,
 })
 
@@ -11839,6 +11843,9 @@ function Game:main_menu(change_context)
 	if night then
 		G.C.COLORSS = HEX("0f0c29")
 		G.C.COLORSSTHESECOND = HEX("302b63")
+	elseif eclipse then
+		G.C.COLORSS = HEX("000000")
+		G.C.COLORSSTHESECOND = HEX("434343")
 	end
 	G.C.mid_flash = 0
 	G.C.vort_time = 7
