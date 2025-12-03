@@ -4153,6 +4153,73 @@ SMODS.Joker{
 		end
 	end
 }
+
+SMODS.Joker{
+	key = 'taskmanager',
+    loc_txt = {
+        name = 'Task Manager',
+        text = {
+          '{C:mult}Destroys{} all played',
+		  '{C:attention}debuffed cards{}',
+		  'Gain {C:mult}#2# Mult{} for each',
+		  '{C:attention}debuffed card destroyed{}',
+		  '{C:inactive,s:0.8}(Currently {}{C:mult,s:0.8}+#1#{} {C:inactive,s:0.8}Mult){}',
+        },
+    },
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 21, y = 4},
+	config = { 
+		extra = {
+			mult = 0,
+			mult_gain = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return {
+			vars = {
+				center.ability.extra.mult,
+				center.ability.extra.mult_gain
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.destroy_card then
+			
+			for i = 1, #context.full_hand do
+				local car = context.full_hand[i]
+
+				if car.debuff and context.destroy_card == car then
+					card.ability.extra.mult = card.ability.extra.mult + card.ability.extra.mult_gain
+					
+					return {
+						remove = true
+					}
+				end
+			end
+		end
+
+		if context.joker_main then
+			return {
+				mult = card.ability.extra.mult,
+				card = card
+			}
+		end
+	end
+}
+
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -7505,6 +7572,7 @@ SMODS.Joker{
 	end
 }
 end
+
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
