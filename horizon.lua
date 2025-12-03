@@ -3087,7 +3087,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
-		if context.before and not isCorruptedDeck then
+		if context.before then
 			-- Do a random effect
 			local choiceCount = 9 -- Just an easy variable I can change on the fly with each chaos effect I add
 			local rareChoices = 18
