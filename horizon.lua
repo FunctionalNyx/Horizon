@@ -10320,7 +10320,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			odds = 4
@@ -10413,7 +10413,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			odds = 2,
@@ -10460,7 +10460,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			odds1 = 1,
@@ -10522,7 +10522,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			chips = 50,
@@ -10569,7 +10569,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			odds = 5,
@@ -10642,7 +10642,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	in_pool = function(self)
 		return false 
 	end,
@@ -10717,7 +10717,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			mult = 5,
@@ -10831,7 +10831,7 @@ SMODS.Enhancement{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
-	discovered = false,
+	discovered = true,
 	config = {
 		extra = {
 			xmult = 1,
