@@ -9205,7 +9205,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'exit',
 		text = {
-			'Closes the game'
+			'{C:attention}Closes{} the game'
 		}
 	},
 	set_badges = function (self, card, badges)
@@ -9236,8 +9236,8 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Malware',
 		text = {
-			'Infects your computer with a virus',
-			'And infects a random joker'
+			'{C:attention}Infects{} your computer with a {C:red}virus{}',
+			'And infects a {C:attention}random{} joker'
 		}
 	},
 	set_badges = function (self, card, badges)
