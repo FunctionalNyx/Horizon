@@ -9201,7 +9201,7 @@ SMODS.Consumable {
     key = 'exit',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
+    pos = { x = 9, y = 1 },
 	loc_txt = {
 		name = 'exit',
 		text = {
@@ -9209,8 +9209,7 @@ SMODS.Consumable {
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
 	end,
 	cost = 3,
@@ -9242,8 +9241,7 @@ SMODS.Consumable {
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('MALWARE', G.C.BLACK, G.C.WHITE, 1 )
 	end,
 	cost = 3,
