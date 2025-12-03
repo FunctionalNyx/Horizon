@@ -24,9 +24,9 @@ Currently adds (Hidden Cards not Included)
 
     96 Jokers [14 of which are Work in Progress and can be Disabled]
     -   26 [+3 WIP] Common
-    -   29 [+4 WIP] Uncommon
-    -   13 [+4 WIP] Rare
-    -   6 Legendary
+    -   31 [+4 WIP] Uncommon
+    -   15 [+4 WIP] Rare
+    -   6 [+1 WIP] Legendary
     -   10 Modded Rarity
     
     8 Enhancements
@@ -49,7 +49,7 @@ Currently adds (Hidden Cards not Included)
 
 There are currently no unlock requirements implemented
 
-Is it balanced? Probably poorly. [We strive for fun yet not crazily overpowered so criticism is welcomed!]
+Is it balanced? Probably poorly.
 
 Is it fun? We say so.
 

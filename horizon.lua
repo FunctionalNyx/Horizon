@@ -4183,7 +4183,6 @@ SMODS.Joker{
 		end
 	end
 }
-
 SMODS.Joker{
 	key = 'taskmanager',
     loc_txt = {
@@ -4249,7 +4248,6 @@ SMODS.Joker{
 		end
 	end
 }
-
 SMODS.Joker{
 	key = 'rotated',
     loc_txt = {
@@ -4269,18 +4267,10 @@ SMODS.Joker{
     cost = 5,
     unlocked = true,
     discovered = false,
-    blueprint_compat = true,
+    blueprint_compat = false,
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 0, y = 0},
-	config = {
-		extra = {
-
-		}
-	},
-	loc_vars = function(self, info_queue, center)
-		
-	end,
 	calculate = function(self,card,context)
 		if context.initial_scoring_step then
 			return {
