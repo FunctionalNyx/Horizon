@@ -1545,7 +1545,7 @@ SMODS.Joker{
 	config = {
 		extra = {
 			money = 0,
-			cost = 3,
+			cost = 4,
 			chips = 0,
 			chips_gain = 2,
 			gain = 0
@@ -4245,40 +4245,6 @@ SMODS.Joker{
 		end
 	end
 }
-SMODS.Joker{
-	key = 'rotated',
-    loc_txt = {
-        name = 'Rotated Joker',
-        text = {
-          'Swaps {C:chips}Chips{} and',
-		  '{C:mult}Mult{} before scoring'
-		  }
-	},
-	pools = {
-		["ModJonklers"] = true,
-		["Horizonjokers"] = true
-	},
-	display_size = {w = 112, h = 112},
-    atlas = 'RotatedJokers',
-    rarity = 2,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 0, y = 0},
-	calculate = function(self,card,context)
-		if context.initial_scoring_step then
-			return {
-				swap = true,
-				message = "Rotated!",
-				message_card = card,
-				colour = G.C.GREEN
-			}
-		end
-	end
-}
 
 -- Rare --
 SMODS.Joker{
@@ -5424,6 +5390,40 @@ SMODS.Joker{
 					colour = G.C.RED
 				}
 			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'rotated',
+    loc_txt = {
+        name = 'Rotated Joker',
+        text = {
+          'Swaps {C:chips}Chips{} and',
+		  '{C:mult}Mult{} before scoring'
+		  }
+	},
+	pools = {
+		["ModJonklers"] = true,
+		["Horizonjokers"] = true
+	},
+	display_size = {w = 112, h = 112},
+    atlas = 'RotatedJokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 0},
+	calculate = function(self,card,context)
+		if context.initial_scoring_step then
+			return {
+				swap = true,
+				message = "Rotated!",
+				message_card = card,
+				colour = G.C.GREEN
+			}
 		end
 	end
 }
