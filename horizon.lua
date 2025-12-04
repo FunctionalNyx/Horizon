@@ -887,8 +887,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Glutton',
         text = {
-          'Gain {C:red}+1{} Discard',
-		  'Able to discard {C:red}6{} cards',
+          'Gain {C:red}+#1#{} Discard',
+		  'Able to discard {C:red}#2#{} cards',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -914,7 +914,7 @@ SMODS.Joker{
 		return{
 			vars = {
 				center.ability.extra.discard,
-				center.ability.extra.limit
+				(5 + center.ability.extra.limit)
 			}
 		}
 	end,
@@ -1545,7 +1545,7 @@ SMODS.Joker{
 	config = {
 		extra = {
 			money = 0,
-			cost = 1,
+			cost = 4,
 			chips = 0,
 			chips_gain = 2,
 			gain = 0
@@ -4156,9 +4156,6 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 18, y = 4},
-	in_pool = function(self) 
-		return false 
-	end,
 	config = { 
 		extra = {
 			limit = 1
@@ -4244,40 +4241,6 @@ SMODS.Joker{
 			return {
 				mult = card.ability.extra.mult,
 				card = card
-			}
-		end
-	end
-}
-SMODS.Joker{
-	key = 'rotated',
-    loc_txt = {
-        name = 'Rotated Joker',
-        text = {
-          'Swaps {C:chips}chips{} and',
-		  '{C:mult}mult{} before scoring'
-		  }
-	},
-	pools = {
-		["ModJonklers"] = true,
-		["Horizonjokers"] = true
-	},
-	display_size = {w = 112, h = 112},
-    atlas = 'RotatedJokers',
-    rarity = 2,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 0, y = 0},
-	calculate = function(self,card,context)
-		if context.initial_scoring_step then
-			return {
-				swap = true,
-				message = "Rotated!",
-				message_card = card,
-				colour = G.C.GREEN
 			}
 		end
 	end
@@ -5427,6 +5390,40 @@ SMODS.Joker{
 					colour = G.C.RED
 				}
 			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'rotated',
+    loc_txt = {
+        name = 'Rotated Joker',
+        text = {
+          'Swaps {C:chips}Chips{} and',
+		  '{C:mult}Mult{} before scoring'
+		  }
+	},
+	pools = {
+		["ModJonklers"] = true,
+		["Horizonjokers"] = true
+	},
+	display_size = {w = 112, h = 112},
+    atlas = 'RotatedJokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 0},
+	calculate = function(self,card,context)
+		if context.initial_scoring_step then
+			return {
+				swap = true,
+				message = "Rotated!",
+				message_card = card,
+				colour = G.C.GREEN
+			}
 		end
 	end
 }
