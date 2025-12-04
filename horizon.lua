@@ -5835,7 +5835,7 @@ SMODS.Joker{
 	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
-    cost = 18,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -5925,7 +5925,7 @@ SMODS.Joker{
 	},
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
-    cost = 10,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6003,7 +6003,7 @@ SMODS.Joker{
 	},
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
-    cost = 10,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6133,7 +6133,7 @@ SMODS.Joker{
 	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
-    cost = 12,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6179,7 +6179,7 @@ SMODS.Joker{
 	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
-    cost = 16,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6241,7 +6241,7 @@ SMODS.Joker{
 	end,
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
-    cost = 14,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6335,7 +6335,7 @@ SMODS.Joker{
 	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
-    cost = 1,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6371,7 +6371,7 @@ SMODS.Joker{
 	end,
     atlas = 'Jokers',
     rarity = 'nyx_LostSoul',
-    cost = 1,
+    cost = 20,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -6388,6 +6388,41 @@ SMODS.Joker{
 	end
 }
 end
+SMODS.Joker {
+	key = 'aceofitself',
+	loc_txt = {
+		name = 'Ace of Itself',
+		text = {
+			'All aces {C:attention}retrigger{} an additional time',
+			'for each {C:attention}scoring ace{}',
+		},
+	},
+    atlas = 'Jokers',
+    rarity = 'nyx_LostSoul',
+    cost = 20,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 22, y = 4},
+	calculate = function(self,card,context)
+		if context.repetition and context.cardarea == G.play then
+			if context.other_card:get_id() == 14 then
+				local count = 0
+				for i = 1, #context.scoring_hand do
+					if context.scoring_hand[i]:get_id() == 14 then
+						count = count + 1
+					end
+				end
+				return {
+					repetitions = count,
+					card = card
+				}
+			end
+		end
+	end
+}
 -- MISC SHIT --
 SMODS.Atlas{
     key = 'Cards', --atlas key
