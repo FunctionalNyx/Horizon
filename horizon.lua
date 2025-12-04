@@ -887,8 +887,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Glutton',
         text = {
-          'Gain {C:red}+1{} Discard',
-		  'Able to discard {C:red}6{} cards',
+          'Gain {C:red}+#1#{} Discard',
+		  'Able to discard {C:red}#5#{} cards',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -914,7 +914,7 @@ SMODS.Joker{
 		return{
 			vars = {
 				center.ability.extra.discard,
-				center.ability.extra.limit
+				(5 + center.ability.extra.limit)
 			}
 		}
 	end,
@@ -4250,8 +4250,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Rotated Joker',
         text = {
-          'Swaps {C:chips}chips{} and',
-		  '{C:mult}mult{} before scoring'
+          'Swaps {C:chips}Chips{} and',
+		  '{C:mult}Mult{} before scoring'
 		  }
 	},
 	pools = {
