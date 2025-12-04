@@ -888,7 +888,7 @@ SMODS.Joker{
         name = 'Glutton',
         text = {
           'Gain {C:red}+#1#{} Discard',
-		  'Able to discard {C:red}#5#{} cards',
+		  'Able to discard {C:red}#2#{} cards',
 		  }
 	},
 	set_badges = function (self, card, badges)
