@@ -1545,7 +1545,7 @@ SMODS.Joker{
 	config = {
 		extra = {
 			money = 0,
-			cost = 1,
+			cost = 3,
 			chips = 0,
 			chips_gain = 2,
 			gain = 0
@@ -4156,9 +4156,6 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 18, y = 4},
-	in_pool = function(self) 
-		return false 
-	end,
 	config = { 
 		extra = {
 			limit = 1
