@@ -11950,7 +11950,7 @@ local eclipse = false
 if position == 24 then
 	position = 10
 	eclipse = true
-elseif position >= 9 then
+elseif position >= 21 then
 	position = 9
 	night = true
 else
