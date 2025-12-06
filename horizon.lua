@@ -8603,7 +8603,7 @@ SMODS.Consumable {
         text = { --text of card
             'Decreases {C:attention}Blind Requirements{} by {C:attention}%#1#{}',
 			'{C:attention}Scales{} with each {C:attention}round{} this card is {C:attention}held{}',
-			'up to a maximum of {C:attention}%25{}',
+			'up to a maximum of {C:attention}%35{}',
 		}
 	},
 	set_badges = function (self, card, badges)
@@ -8618,11 +8618,17 @@ SMODS.Consumable {
         return { vars = { (card.ability.extra.nsil*100) }}
     end,
 	calculate = function(self, card, context)
-		if context.starting_shop and card.ability.extra.nsil < 0.25 then
+		if context.starting_shop and card.ability.extra.nsil < 0.35 then
 			card.ability.extra.nsil = card.ability.extra.nsil + card.ability.extra.scale
 		end
 	end,
     use = function(self, card, area, copier)
+		if G.booster_pack then
+			SMODS.add_card {
+				key = 'c_nyx_patience'
+			}
+			return
+		end
         if G.GAME.blind then
 			G.GAME.blind.chips = G.GAME.blind.chips * (1 - card.ability.extra.nsil)
 			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
@@ -8638,7 +8644,7 @@ SMODS.Consumable {
 		end
     end,
 	can_use = function(self, card)
-        return G.GAME.blind.in_blind
+        return G.GAME.blind.in_blind or G.booster_pack
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
@@ -9218,7 +9224,13 @@ SMODS.Consumable {
 		end
 	end,
     use = function(self, card, area, copier)
-        if G.GAME.blind then
+		if G.booster_pack then
+			SMODS.add_card {
+				key = 'c_nyx_pride'
+			}
+			return
+		end
+        if G.GAME.blind.in_blind then
 			G.GAME.blind.chips = G.GAME.blind.chips * 2
 			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
 			G.E_MANAGER:add_event(Event({
@@ -9231,14 +9243,10 @@ SMODS.Consumable {
             end,
 			ease_dollars(card.ability.extra.money)
         }))
-		else
-			SMODS.add_card {
-				key = 'c_nyx_pride'
-			}
 		end
     end,
     can_use = function(self, card)
-        return G.GAME.blind.in_blind
+        return G.GAME.blind.in_blind or G.booster_pack
     end,
 	draw = function(self, card, layer)
 		-- This is for the Spectral shader.
