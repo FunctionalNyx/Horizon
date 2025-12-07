@@ -5367,7 +5367,7 @@ SMODS.Joker{
 			local malware_candidates = {}
 			for i=1, #G.jokers.cards do
 				local other_joker = G.jokers.cards[i]
-				if other_joker ~= card and other_joker.config.center.key ~= 'j_nyx_malware' then
+				if other_joker ~= card and other_joker.config.center.key ~= 'j_nyx_malware' and other_joker.config.center.key ~= 'j_nyx_err' then
 					table.insert(malware_candidates, other_joker)
 				end
 			end
