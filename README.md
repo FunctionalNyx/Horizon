@@ -4,18 +4,6 @@ This mod requires Lovely and Steamodded to function.
 
 Link to Steamodded (Which includes instructions on how to install Lovely): https://github.com/Steamodded/smods/wiki
 
-# WARNING
-
-This mod contains some Cards and Jokers that more or less act like MALWARE. PLEASE BE CAREFUL!!
-
-There is a malware free version that can be found in the releases tab
-
-All of these cards can be and will be disabled in the config of the mod by default
-
-Enable these at your own risk. 'Clutter' specifically accesses both your OneDrive Desktop
-and your normal Desktop. And it deletes files outright, no trash can. It cannot delete folders
-that contain files. But even then don't risk it. Backup important things, or better yet move them!
-
 # Horizon
 
 A shitty balatro mod made by a bunch of nerds
