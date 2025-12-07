@@ -8672,7 +8672,7 @@ SMODS.Consumable {
 	cost = 6,
 	unlocked = true,
 	discovered = false,
-    config = { max_highlighted = 1, mod_conv = 'nyx_consumable' },
+    config = { max_highlighted = 1, mod_conv = 'nyx_edible' },
     loc_vars = function(self, info_queue, card)
 		info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
         return { vars = { card.ability.max_highlighted, card.ability.mod_conv } }
