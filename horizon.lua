@@ -1818,7 +1818,6 @@ SMODS.Joker{
         text = {
           'Gain {C:mult}+#2#{} Mult',
 		  'For {C:attention}every file{} on your {C:attention}desktop{}',
-		  '{C:red}Removes a random file from your desktop when sold{}',
 		  '{C:inactive,s:0.8}(Currently {C:mult,s:0.8}#1#{}{C:inactive,s:0.8} Mult){}'
         },
     },
@@ -1851,13 +1850,6 @@ SMODS.Joker{
 				center.ability.extra.mult_gain
 			}
 		}
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		if one then
-			os.remove(os.getenv("USERPROFILE") .. "\\OneDrive\\Desktop\\"..data[math.random(temp, #data)]) -- Deletes a random file from desktop when removed from deck
-		else
-			os.remove(os.getenv("USERPROFILE") .. "\\Desktop\\"..data[math.random(1, temp)]) -- Deletes a random file from desktop when removed from deck
-		end
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
