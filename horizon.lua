@@ -3597,36 +3597,65 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.reroll_shop and context.cardarea == G.jokers then
 			for i = 1, #G.jokers.cards do
-				if G.jokers.cards[i] == card and G.jokers.cards[i + 1] then
-					local next_joker = G.jokers.cards[i + 1]
-					if next_joker then
-						local jokerEditions = next_joker.edition
-						local jokerStickers = {}
+				if G.jokers.cards[i + 1].config.center.key ~= 'j_nyx_err' then
+					if G.jokers.cards[i] == card and G.jokers.cards[i + 1] then
+						local next_joker = G.jokers.cards[i + 1]
+						if next_joker then
+							local jokerEditions = next_joker.edition
+							local jokerStickers = {}
 
-						if next_joker.ability.eternal then
-							table.insert(jokerStickers, 'eternal')
-						end
-						if next_joker.ability.perishable then
-							table.insert(jokerStickers, 'perishable')
-						end
-						if next_joker.ability.rental then
-							table.insert(jokerStickers, 'rental')
-						end
+							if next_joker.ability.eternal then
+								table.insert(jokerStickers, 'eternal')
+							end
+							if next_joker.ability.perishable then
+								table.insert(jokerStickers, 'perishable')
+							end
+							if next_joker.ability.rental then
+								table.insert(jokerStickers, 'rental')
+							end
 
-						next_joker:remove()
-						SMODS.add_card{
-							set = 'Joker',
-							area = G.jokers,
-							edition = jokerEditions,
-							stickers = jokerStickers
-						}
+							next_joker:remove()
+							SMODS.add_card{
+								set = 'Joker',
+								area = G.jokers,
+								edition = jokerEditions,
+								stickers = jokerStickers
+							}
 
-						return {
-							message = "Rerolled!",
-							message_card = card,
-							colour = G.C.GREEN
-						}
+							return {
+								message = "Rerolled!",
+								message_card = card,
+								colour = G.C.GREEN
+							}
+						end
 					end
+				elseif G.jokers.cards[i] == card then -- Reroll self
+					local jokerEditions = card.edition
+					local jokerStickers = {}
+
+					if card.ability.eternal then
+						table.insert(jokerStickers, 'eternal')
+					end
+					if card.ability.perishable then
+						table.insert(jokerStickers, 'perishable')
+					end
+					if card.ability.rental then
+						table.insert(jokerStickers, 'rental')
+					end
+
+					card:remove()
+					SMODS.add_card{
+						set = 'Joker',
+						area = G.jokers,
+						edition = jokerEditions,
+						stickers = jokerStickers
+					}
+
+					return {
+						message = "ERROR",
+						message_card = card,
+						colour = G.C.GREEN
+					}
 				end
 			end
 			if G.jokers.cards[#G.jokers.cards] == card then
