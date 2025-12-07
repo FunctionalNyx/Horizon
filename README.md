@@ -10,12 +10,12 @@ A shitty balatro mod made by a bunch of nerds
 
 Currently adds (Hidden Cards not Included)
 
-    96 Jokers [14 of which are Work in Progress and can be Disabled]
-    -   26 [+3 WIP] Common
+    97 Jokers [14 of which are Work in Progress and can be Disabled]
+    -   27 [+3 WIP] Common
     -   31 [+4 WIP] Uncommon
-    -   15 [+4 WIP] Rare
+    -   16 [+4 WIP] Rare
     -   6 [+1 WIP] Legendary
-    -   10 Modded Rarity
+    -   11 Modded Rarity
     
     8 Enhancements
     
