@@ -1243,10 +1243,8 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.repetition and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
-                return {
+            if not context.other_card:is_face() then
+				return {
                     repetitions = card.ability.extra.retrigger
                 }
             end
@@ -1323,9 +1321,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.repetition and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
+            if not context.other_card:is_face() then
                 return {
                     repetitions = card.ability.extra.retrigger
                 }
@@ -5040,9 +5036,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
+            if not context.other_card:is_face() then
                 return {
                     Xmult = card.ability.extra.xmult
                 }
@@ -6327,9 +6321,7 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.individual and context.cardarea == G.play then
-            if (context.other_card:get_id() <= 10 and
-                    context.other_card:get_id() >= 0) or
-                (context.other_card:get_id() == 14) then
+            if not context.other_card:is_face() then
                 return {
                     Xmult = card.ability.extra.xmult
                 }
@@ -11025,7 +11017,7 @@ SMODS.Enhancement{
 	config = {
 		extra = {
 			chips = -10,
-			odds = 3
+			odds = 2
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -11248,6 +11240,83 @@ SMODS.Enhancement{
 				card = card
 			}
 		end
+	end
+}
+SMODS.Enhancement{
+	key = 'degenerate',
+	atlas = 'enhancements',
+	pos = { x = 5, y = 0 },
+	loc_txt = {
+		name = 'Degenerate Card',
+		text = {
+			'Gives {X:chips,C:white}X#1#{} Chips when scored',
+			'But loses {C:red}1 Rank{}',
+			'{C:inactive,s:0.8}({C:red,s:0.8}Destroyed{}{C:inactive,s:0.8} after reaching {}{C:red,s:0.8}2{}{C:inactive,s:0.8}){}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	unlocked = true,
+	discovered = true,
+	in_pool = function(self)
+		return false 
+	end,
+	config = {
+		extra = {
+			xchips = 1.5
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xchips
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			if card:get_id() > 2 then
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						card:flip()
+						card:juice_up(0.3, 0.3)
+						return true
+					end
+				}))
+				delay(0.2)
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.05,
+					func = function()
+						assert(SMODS.modify_rank(card, -1))
+						return true
+					end
+				}))
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						card:flip()
+						card:juice_up(0.3, 0.3)
+						return true
+					end
+				}))
+				return {
+					xchips = card.ability.extra.xchips
+				}
+			end
+		end
+		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
+			if card:get_id() == 2 then
+				return {
+					remove = true
+				}
+			end
+    	end
 	end
 }
 -- 
