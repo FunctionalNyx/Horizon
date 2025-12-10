@@ -146,7 +146,23 @@ SMODS.ObjectType({
 		["j_turtle_bean"] = true,
 		["j_popcorn"] = true,
 		["j_ramen"] = true,
-		["j_diet_cola"] = true
+		["j_diet_cola"] = true,
+		['j_selzer'] = true,
+	},
+	inject = function(self)
+		SMODS.ObjectType.inject(self)
+	end,
+})
+SMODS.ObjectType({
+	key = "MathJokers",
+	default = "j_fibonacci",
+	cards = {
+		["j_fibonacci"] = true,
+		["j_even_steven"] = true,
+		["j_odd_todd"] = true,
+		["j_scholar"] = true,
+		["j_to_the_moon"] = true,
+		["j_square"] = true
 	},
 	inject = function(self)
 		SMODS.ObjectType.inject(self)
@@ -1079,7 +1095,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["MathJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 1,
@@ -1136,7 +1153,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["MathJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 1,
@@ -1217,6 +1235,9 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
+	pools = {
+		["MathJokers"] = true
+	}, 
     atlas = 'Jokers',
     rarity = 2,
     cost = 3,
@@ -1294,6 +1315,9 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
+	pools = {
+		["MathJokers"] = true
+	}, 
     atlas = 'Jokers',
     rarity = 3,
     cost = 8,
@@ -1407,7 +1431,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["MathJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 1,
@@ -1601,6 +1626,9 @@ SMODS.Joker{
 	in_pool = function(self)
 		return false 
 	end,
+	pools = {
+		["MathJokers"] = true
+	},
     atlas = 'Jokers',
     rarity = 1,
     cost = 0,
@@ -2520,7 +2548,11 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
-	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
+	pools = {
+		["ModJonklers"] = true,
+		["Horizonjokers"] = true,
+		["MathJokers"] = true
+	},
     atlas = 'Jokers',
     rarity = 2,
     cost = 4,
@@ -3703,7 +3735,10 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
-	pools = {["Horizonjokers"] = true},
+	pools = {
+		["Horizonjokers"] = true,
+		["FoodJokers"] = true
+	},
     atlas = 'Jokers',
     rarity = 2,
     cost = 5,
@@ -4719,20 +4754,31 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.end_of_round and context.cardarea == G.jokers and not context.blueprint then
 			card.ability.extra.count = card.ability.extra.count + 1
-			if card.ability.extra.count >= 5 and math.random(1, 3) == 1 then
+			if card.ability.extra.count >= 5 and pseudorandom('nyx_acension',1,3) == 1 then
 				play_sound('timpani', 0.5)
-				return {
-					card:juice_up(0.3, 0.5),
-					G.jokers:remove_card(card),
-					card:remove(),
-					card = nil,
-					SMODS.add_card {
-						set = 'Joker',
-						legendary = true,
-						area = G.jokers
-					},
-					message = "Ascended!"
-				}
+				if card.ability.extra.count > 10 then
+					return {
+						SMODS.destroy_cards{ card },
+						SMODS.add_card {
+							set = 'Joker',
+							rarity = 'nyx_LostSoul',
+							area = G.jokers
+						},
+						message = "01101110 01101001 01101100",
+						colour = G.C.BLACK
+					}
+				else
+					return {
+						SMODS.destroy_cards{ card },
+						SMODS.add_card {
+							set = 'Joker',
+							legendary = true,
+							area = G.jokers
+						},
+						message = "Ascended!",
+						colour = G.C.GOLD
+					}
+				end
 			else
 				return {
 					message = "" .. card.ability.extra.count .. "/5",
@@ -4770,17 +4816,13 @@ SMODS.Joker{
 		local effects = {}
 		for i=1, #G.jokers.cards do -- for all jokers
 			if G.jokers.cards[i] ~= card then -- not itself
-				local other_joker = G.jokers.cards[i] -- somehow this idiot forgot scholar
-				-- PREPARE THYSELF! NYX COOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOODE! I did this at midnight leave me alone im tired and none of this makes sense
-				if (other_joker.config.center.key == 'j_fibonacci' or other_joker.config.center.key == 'j_even_steven' or other_joker.config.center.key == 'j_odd_todd') or
-				(other_joker.config.center.key == 'j_nyx_end' or other_joker.config.center.key == 'j_nyx_origin' or other_joker.config.center.key == 'j_nyx_phi') or
-				(other_joker.config.center.key == 'j_nyx_nerd' or other_joker.config.center.key == 'j_nyx_fresh_start' or other_joker.config.center.key == 'j_nyx_familiar_end') or
-				(other_joker.config.center.key == 'j_nyx_integer' or other_joker.config.center.key == 'j_nyx_journey' or other_joker.config.center.key == 'j_nyx_lasting_adventure') or
-				(other_joker.config.center.key == 'j_scholar' or other_joker.config.center.key == 'j_to_the_moon' or other_joker.config.center.key == 'j_nyx_eclipse') or 
-				(other_joker.config.center.key == 'j_nyx_tragedy' or other_joker.config.center.key == 'j_nyx_tragedy') then
-					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
-					if effect then
-						table.insert(effects, effect) -- add to array
+				local other_joker = G.jokers.cards[i]
+				for i=1, #G.P_CENTER_POOLS["MathJokers"] do
+					if (other_joker.config.center.key == (G.P_CENTER_POOLS["MathJokers"][i].key)) then
+						local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
+						if effect then
+							table.insert(effects, effect) -- add to array
+						end
 					end
 				end
 			end
@@ -4869,7 +4911,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["MathJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 3,
@@ -4926,7 +4969,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["MathJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 3,
@@ -5008,7 +5052,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["MathJokers"] = true
 	}, 
     atlas = 'Jokers',
     rarity = 4,
@@ -5769,6 +5814,45 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'gourmet',
+    loc_txt = {
+        name = 'The Gourmet',
+        text = {
+          '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers',
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 15,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+	soul_pos = {x = 2, y = 1},
+    pos = {x = 0, y = 4},
+	calculate = function(self,card,context)
+		local effects = {}
+		for i=1, #G.jokers.cards do -- for all jokers
+			if G.jokers.cards[i] ~= card then -- not itself
+				local other_joker = G.jokers.cards[i]
+				for i=1, #G.P_CENTER_POOLS["FoodJokers"] do
+					if (other_joker.config.center.key == (G.P_CENTER_POOLS["FoodJokers"][i].key)) or other_joker.ability.nyx_edible then
+						local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
+						if effect then
+							table.insert(effects, effect) -- add to array
+						end
+					end
+				end
+			end
+		end
+		return SMODS.merge_effects(effects)
+	end
+}
 -- LOST SOULS --
 SMODS.Joker{
 	key = 'fate',
@@ -6011,7 +6095,8 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["ModJonklers"] = true
+		["ModJonklers"] = true,
+		["MathJokers"] = true
 	},
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
@@ -6241,48 +6326,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'gourmet',
-    loc_txt = {
-        name = 'The Gourmet',
-        text = {
-          '{C:attention}Copies{} all {E:2,C:attention}Food{} Jokers',
-		  }
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
-    atlas = 'Jokers',
-    rarity = "nyx_LostSoul",
-    cost = 20,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-	soul_pos = {x = 2, y = 1},
-    pos = {x = 0, y = 4},
-	calculate = function(self,card,context)
-		local effects = {}
-		for i=1, #G.jokers.cards do -- for all jokers
-			if G.jokers.cards[i] ~= card then -- not itself
-				-- if G.jokers.cards[i].ability.set == 'FoodJokers' then -- Doesn't work for some reason bozo please fix
-				local other_joker = G.jokers.cards[i]
-				-- NYX COOOOOOOOOOODE!
-				if (other_joker.config.center.key == 'j_gros_michel' or other_joker.config.center.key == 'j_egg' or other_joker.config.center.key == 'j_ice_cream') or
-				(other_joker.config.center.key == 'j_cavendish' or other_joker.config.center.key == 'j_turtle_bean' or other_joker.config.center.key == 'j_popcorn') or
-				(other_joker.config.center.key == 'j_popcorn' or other_joker.config.center.key == 'j_ramen' or other_joker.config.center.key == 'j_nyx_sybyrr') or
-				(other_joker.config.center.key == 'j_nyx_gummies' or other_joker.config.center.key == 'j_nyx_milk' or other_joker.config.center.key == 'j_nyx_vending') then
-					local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
-					if effect then
-						table.insert(effects, effect) -- add to array
-					end
-				end
-			end
-		end
-		return SMODS.merge_effects(effects)
-	end
-}
-SMODS.Joker{
 	key = 'tragedy',
     loc_txt = {
         name = 'A True Tragedy',
@@ -6294,6 +6337,10 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
+	pools = {
+		["ModJonklers"] = true,
+		["MathJokers"] = true
+	},
     atlas = 'Jokers',
     rarity = "nyx_LostSoul",
     cost = 20,
