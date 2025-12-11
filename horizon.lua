@@ -3617,8 +3617,8 @@ SMODS.Joker{
 	calculate = function(self,card,context)
 		if context.reroll_shop and context.cardarea == G.jokers then
 			for i = 1, #G.jokers.cards do
-				if G.jokers.cards[i + 1].config.center.key ~= 'j_nyx_err' then
-					if G.jokers.cards[i] == card and G.jokers.cards[i + 1] then
+				if G.jokers.cards[i] == card and G.jokers.cards[i + 1] then
+					if G.jokers.cards[i + 1].config.center.key ~= 'j_nyx_err' then
 						local next_joker = G.jokers.cards[i + 1]
 						if next_joker then
 							local jokerEditions = next_joker.edition
@@ -3648,44 +3648,43 @@ SMODS.Joker{
 								colour = G.C.GREEN
 							}
 						end
-					end
-				elseif G.jokers.cards[i] == card then -- Reroll self
-					local jokerEditions = card.edition
-					local jokerStickers = {}
+					elseif G.jokers.cards[i] == card then -- Reroll self
+						local jokerEditions = card.edition
+						local jokerStickers = {}
 
-					if card.ability.eternal then
-						table.insert(jokerStickers, 'eternal')
-					end
-					if card.ability.perishable then
-						table.insert(jokerStickers, 'perishable')
-					end
-					if card.ability.rental then
-						table.insert(jokerStickers, 'rental')
-					end
+						if card.ability.eternal then
+							table.insert(jokerStickers, 'eternal')
+						end
+						if card.ability.perishable then
+							table.insert(jokerStickers, 'perishable')
+						end
+						if card.ability.rental then
+							table.insert(jokerStickers, 'rental')
+						end
 
-					card:remove()
-					SMODS.add_card{
-						set = 'Joker',
-						area = G.jokers,
-						edition = jokerEditions,
-						stickers = jokerStickers
-					}
+						card:remove()
+						SMODS.add_card{
+							set = 'Joker',
+							area = G.jokers,
+							edition = jokerEditions,
+							stickers = jokerStickers
+						}
 
-					return {
-						message = "ERROR",
-						message_card = card,
-						colour = G.C.GREEN
-					}
+						return {
+							message = "ERROR",
+							message_card = card,
+							colour = G.C.GREEN
+						}
+					end
 				end
 			end
 			if G.jokers.cards[#G.jokers.cards] == card then
-				local ran = math.random(1, 20)
+				local ran = pseudorandom('nyx_dice',1, 20)
 				card:juice_up(0.5, 0.5)
 				if ran == 20 then
-					local st = 0.50
 					G.E_MANAGER:add_event(Event({
 						trigger = 'before',
-						delay = st,
+						delay = 0.5,
 						func = function()
 							card:juice_up(0.5, 0.5)
 						return true
@@ -3693,7 +3692,7 @@ SMODS.Joker{
 					}))
 					G.E_MANAGER:add_event(Event({
 						trigger = 'after',
-						delay = st/2,
+						delay = 0.25,
 						func = function()
 							card:juice_up(0.5, 0.5)
 						return true
