@@ -1211,9 +1211,17 @@ SMODS.Joker{
 							return true
 						end
 					})) 
-					SMODS.add_card{
+					local trad = SMODS.add_card{
 						key = 'j_nyx_journey'
 					}
+					local neg = false
+					if (card.edition and card.edition.key == 'e_negative') or 
+					(other_joker.edition and other_joker.edition.key == 'e_negative') then
+						neg = true
+					end
+					if (neg) then
+						trad:set_edition({ negative = true })
+					end
 					return {
 						message = "Combined!",
 						colour = G.C.RED
@@ -1291,9 +1299,18 @@ SMODS.Joker{
 							return true
 						end
 					})) 
-					SMODS.add_card{
+					local trad = SMODS.add_card{
 						key = 'j_nyx_eclipse'
 					}
+					local neg = false
+					if (card.edition and card.edition.key == 'e_negative') or 
+					(or_card.edition and or_card.edition.key == 'e_negative') or 
+					(end_card.edition and end_card.edition.key == 'e_negative') then
+						neg = true
+					end
+					if (neg) then
+						trad:set_edition({ negative = true })
+					end
 					return {
 						message = "Combined!",
 						colour = G.C.RED
@@ -5017,9 +5034,17 @@ SMODS.Joker{
 							return true
 						end
 					})) 
-					SMODS.add_card{
+					local trad = SMODS.add_card{
 						key = 'j_nyx_lasting_adventure'
 					}
+					local neg = false
+					if (card.edition and card.edition.key == 'e_negative') or 
+					(other_joker.edition and other_joker.edition.key == 'e_negative') then
+						neg = true
+					end
+					if (neg) then
+						trad:set_edition({ negative = true })
+					end
 					return {
 						message = "Combined!",
 						colour = G.C.RED
@@ -5107,9 +5132,20 @@ SMODS.Joker{
 							return true
 						end
 					})) 
-					SMODS.add_card{
+					local trad = SMODS.add_card{
 						key = 'j_nyx_tragedy'
 					}
+					local neg = false
+					local temp = nil
+					local neg = false
+					if (card.edition and card.edition.key == 'e_negative') or 
+					(odd_card.edition and odd_card.edition.key == 'e_negative') or
+					(even_card.edition and even_card.edition.key == 'e_negative') then
+						neg = true
+					end
+					if (neg) then
+						trad:set_edition({ negative = true })
+					end
 					return {
 						message = "Combined!",
 						colour = G.C.RED
