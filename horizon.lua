@@ -263,10 +263,15 @@ SMODS.Joker{
           'And thats funny'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		["DPGJokers"] = true,
+		["FoodJokers"] = true
 	},
     atlas = 'Jokers', --atlas' key
     rarity = 1, --rarity: 1 = Common, 2 = Uncommon, 3 = Rare, 4 = Legendary
@@ -310,7 +315,8 @@ SMODS.Joker{
         name = 'Asto',
         text = {
           '{C:attention}Upgrades{} {C:planet}High Card{} when played',
-		  '{C:green}#1# in 69{} Chance to be {C:red}Destroyed{} and set {C:planet}High Card{} to {C:red}1{}'
+		  '{C:green}#1# in 69{} Chance to be {C:red}Destroyed{}',
+		  'Setting {C:planet}High Card{} to {C:red}1{}'
         },
     },
 	pools = {
@@ -498,7 +504,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Printer',
         text = {
-          '{C:green}#1# in 4{} Chance to Generate a {C:attention}Consumable{}',
+          '{C:green}#1# in 4{} Chance to',
+		  'Generate a {C:attention}Consumable{}',
 		  'when using a {C:attention}Consumable{}',
 		  '{C:inactive,s:0.8}Does {}{C:red,s:0.8}NOT{}{C:inactive,s:0.8} need room{}',
 		  }
@@ -741,7 +748,8 @@ SMODS.Joker{
         name = 'Fenestration',
         text = {
           '{C:red}-#1#{} Hand size',
-		  '{C:green}#2# in #3#{} Chance to create a {C:attention}Glass Card{}',
+		  '{C:green}#2# in #3#{} Chance to',
+		  'create a {C:attention}Glass Card{}',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -953,7 +961,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Stethoscope',
         text = {
-          '{C:green}Diseased{} cards always {C:red}decay{}',
+          '{C:green}Diseased{} cards',
+		  'always {C:red}decay{}',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -1008,9 +1017,6 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 6, y = 3},
 	soul_pos = {x = 6, y = 1},
-	in_pool = function(self)
-		return false 
-	end,
 	config = { 
 		extra = {
 			odds1 = 2,
@@ -1093,6 +1099,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -1151,6 +1158,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -1242,6 +1250,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["MathJokers"] = true
@@ -1331,6 +1340,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["MathJokers"] = true
@@ -1446,6 +1456,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -1639,6 +1650,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann (Sadly)', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	in_pool = function(self)
 		return false 
@@ -1769,6 +1781,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -1832,6 +1845,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -2397,6 +2411,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["ModJonklers"] = true,
@@ -2564,6 +2579,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["ModJonklers"] = true,
@@ -3750,6 +3766,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true,
@@ -3987,6 +4004,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true,
@@ -4815,6 +4833,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -4925,6 +4944,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -4983,6 +5003,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -5074,6 +5095,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -5614,6 +5636,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["ModJonklers"] = true,
@@ -5859,6 +5882,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
     atlas = 'Jokers',
     rarity = 4,
@@ -6128,6 +6152,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["ModJonklers"] = true,
@@ -6371,6 +6396,7 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["ModJonklers"] = true,
@@ -7347,9 +7373,11 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["FoodJokers"] = true
 	}, 
     atlas = 'Placeholder',
     rarity = 1,
@@ -11607,6 +11635,9 @@ SMODS.Sticker {
 		  'to be {C:attention}Eaten{}',
 		},
 	},
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end,
 	badge_colour = G.C.FILTER,
     rate = 0.0,
     needs_enable_flag = false,
@@ -12313,6 +12344,138 @@ NYX.T.table_true_size = function(table)
 end
 --
 
+local badges = true -- Just here to hide all the badges because I hate not being able to collapse them
+if badges then
+SMODS.Joker:take_ownership('odd_todd',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('even_steven',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('scholar',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('fibonacci',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('fibonacci',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('to_the_moon',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('square',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+-- FOOD BADGES --
+SMODS.Joker:take_ownership('gros_michel',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('ice_cream',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('popcorn',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('cavendish',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('egg',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('turtle_bean',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('ramen',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('diet_cola',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+SMODS.Joker:take_ownership('selzer',
+	{
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end
+	},
+	true
+)
+end
 
 --various presets --
 
