@@ -3032,7 +3032,7 @@ end
 -- '{X:chips,C:purple}Blind{} {X:mult,C:inactive}' .. corruptedText[math.random(1, #corruptedText)] .. '{} {C:mult}mult{} after',
 -- 'every {X:mult,C:chips}' .. corruptedText[math.random(1, #corruptedText)] .. '{}'
 
-local randomWords = {'Jo  ker', 'unde fined    ', 'broken', 'SJKFSUQ   ', '   Func tional Nyx', 'ER  ROR', '-face', 'Plac   eholder', 'Misprint  ', 'MESSAGE   ', 'UNK   NOWN', '34   213551', 'meani   ng', 'TRU  E', 'FAL  SE', 'Gi  ves', '  bozo!', 'I', 'F0U ND', 'Y0U'}
+local randomWords = {'Jo  ker', 'unde fined    ', 'broken', 'SJKFSUQ   ', '   Func tional Nyx', 'ER  ROR', '-face', 'Plac   eholder', 'Misprint  ', 'MESSAGE   ', 'UNK   NOWN', '34   213551', 'meani   ng', 'TRU  E', 'FAL  SE', 'Gi  ves', '  bozo!', 'HEAV N', '  HELL'}
 local colors = {G.C.RED, G.C.GREEN, G.C.BLUE, G.C.YELLOW, G.C.PURPLE, G.C.ORANGE, G.C.PINK, G.C.BROWN} -- unused
 local suits = {'Spades', 'Hearts', 'Diamonds', 'Clubs'}
 local ranks = {'2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'}
@@ -3431,18 +3431,6 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 						local percent = 1.15 - (i-0.999)/(#context.scoring_hand-0.998)*0.3
 						G.E_MANAGER:add_event(Event({trigger = 'after',delay = 0.15,func = function() play_sound('card1', percent);context.scoring_hand[i]:juice_up(0.3, 0.3);return true end }))
 					end
-					local enhancements = {
-						'm_bonus',
-						'm_mult',
-						'm_wild',
-						'm_glass',
-						'm_steel',
-						'm_stone',
-						'm_gold',
-						'm_lucky',
-						'm_nyx_diseased',
-						'm_nyx_frozen'
-					}
 					for i=1, #context.scoring_hand do
 						if not SMODS.has_enhancement(context.scoring_hand[i]) then
 							context.scoring_hand[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
