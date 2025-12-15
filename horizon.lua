@@ -11570,6 +11570,7 @@ SMODS.Sticker {
 	},
 	sets = {
 		Base = true,
+		Joker = false
 	},
 	badge_colour = G.C.BLACK,
     rate = 1.0,
@@ -11577,7 +11578,7 @@ SMODS.Sticker {
 	default_compat = false,
 	no_collection = true,
 	should_apply = function(self, card, center, area, bypass_reroll)
-        return G.GAME.selected_back and G.GAME.selected_back.effect.center.key == 'b_nyx_chessdeck'
+        return G.GAME.selected_back and G.GAME.selected_back.effect.center.key == 'b_nyx_chessdeck' and card.config.set == 'Base'
     end,
 	calculate = function(self,card,context)
 		if context.main_scoring and context.cardarea == G.play then
