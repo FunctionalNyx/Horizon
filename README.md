@@ -17,7 +17,7 @@ Currently adds (Hidden Cards not Included)
     -   6 [+1 WIP] Legendary
     -   11 Modded Rarity
     
-    8 Enhancements
+    8 [+1 WIP] Enhancements
     
     19 Consumables
     
