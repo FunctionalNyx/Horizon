@@ -4597,7 +4597,7 @@ SMODS.Joker{
         text = {
           '{C:green}#1# in #2#{} Chance to {C:red}Multiply{}',
 		  'all {C:attention}Joker{} values by {C:red}#3#{}',
-		  '{C:red,E:2}Self Destructs{}',
+		  'At the {C:attention}end of round{}, {C:red}Self Destructs{}',
 		  '{C:inactive,s:0.8}[3:18 PM] nyx: Now I need to figure out a name for it....{}',
 		  '{C:inactive,s:0.8}[6:03 PM] bozo!: t{}',
 		  }
@@ -4707,7 +4707,6 @@ SMODS.Joker{
 									h_mod = true,
 									size = true,
 									chip_mod = true,
-									h_size = true,
 									increase = true,
 									card_limit = true
 								}
@@ -4725,11 +4724,15 @@ SMODS.Joker{
 							SMODS.destroy_cards{ _card }
 							return true
 						end
-					}))							
+					}))
+					return{
+						message = "fuck you nyx",
+					}							
+				else
+					return {
+						message = 'Blocked!'
+					}
 				end
-			return{
-				message = "fuck you nyx",
-			}
 			else
 				return{
 					message = "Nope"
@@ -8425,9 +8428,7 @@ SMODS.Consumable {
 								hand_add = true,
 								discard_sub = true,
 								h_mod = true,
-								size = true,
 								chip_mod = true,
-								h_size = true,
 								increase = true,
 								card_limit = true
 							}
@@ -12247,16 +12248,6 @@ end
 -- I have no idea how this all works but it does so dont question it
 -- This is required for the Joker that multiplies other joker values
 NYX = {
-    C = {
-        main =  HEX('6E3AA6'),
-        secondary = HEX('a36be8'),
-        credits = {
-            Lucky6 = HEX('fa5eff'),
-            canicao = HEX('4b4687'),
-            canicao_text = HEX('b9af87'),
-            uhadme = HEX('56a786')
-        }
-    },
 	funcs = {
 	--Given a `table_in` (value table or card object) and a config table, modifies the values in `table_in` depending 
 	--- on the `config` provided. `config` accepts these values:
