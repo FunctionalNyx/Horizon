@@ -10159,31 +10159,29 @@ SMODS.Seal {
 	},
 	calculate = function(self, card, context)
 		if context.after and context.cardarea == G.play then
-			if context.scoring_hand[1] == card then
-				local create = true
-				for i=1, #context.scoring_hand do
-					if context.scoring_hand[i].seal ~= "nyx_greenblue" then
-						create = false
-					end
+			local create = true
+			for i=1, #context.scoring_hand do
+				if context.scoring_hand[i].seal ~= "nyx_greenblue" then
+					create = false
 				end
-				if create then
-					if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
-						G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
-						G.E_MANAGER:add_event(Event({
-							func = (function()
-								SMODS.add_card {
-									set = 'Spectral',
-									key_append = 'nyx_turquoise'
-								}
-								G.GAME.consumeable_buffer = 0
-								return true
-							end)
-						}))
-						return {
-							message = localize('k_plus_spectral'),
-							colour = G.C.SECONDARY_SET.Spectral
-						}
-					end
+			end
+			if create then
+				if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
+					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
+					G.E_MANAGER:add_event(Event({
+						func = (function()
+							SMODS.add_card {
+								set = 'Spectral',
+								key_append = 'nyx_turquoise'
+							}
+							G.GAME.consumeable_buffer = 0
+							return true
+						end)
+					}))
+					return {
+						message = localize('k_plus_spectral'),
+						colour = G.C.SECONDARY_SET.Spectral
+					}
 				end
 			end
 		end
@@ -10385,13 +10383,11 @@ SMODS.Booster {
 }
 SMODS.Booster {
     key = "hnh_pack",
-    kind = 'HnH',
-	weight = 0.4,
-	cost = 4,
-	group_key = "k_hnh_pack",
-    draw_hand = true,
 	atlas = "Boosters",
 	pos = { x = 5, y = 0 },
+    kind = 'heaven_hell_pack',
+	cost = 4,
+    draw_hand = true,
 	loc_txt = {
         name = 'Heaven & Hell Pack',
 		group_name = 'Choose Wisely',
