@@ -11793,7 +11793,7 @@ SMODS.Blind {
                     delay = 0.2,
                     func = function()
                         for i = 1, #G.play.cards do
-							if pseudorandom('nyx_hammer') < G.GAME.probabilities.normal / 3 then
+							if pseudorandom('nyx_cross') < G.GAME.probabilities.normal / 3 then
 								G.E_MANAGER:add_event(Event({
 									func = function()
 										G.play.cards[i]:juice_up()
@@ -11851,16 +11851,25 @@ SMODS.Blind {
 	calculate = function(self, blind, context)
         if not blind.disabled then
 			G.GAME.blind.loc_debuff_lines[1] = G.GAME.probabilities.normal..' in 10 chance to'
-            if context.destroy_card and context.cardarea == G.play then
-				for i = 1, #G.play.cards do
-					if context.destroy_card == G.play.cards[i] and pseudorandom('nyx_hammer') < G.GAME.probabilities.normal / 10 then
-						return {
-							message = "Smashed!",
-							message_card = G.play.cards[i],
-							remove = true
-						}
-					end
-				end
+            if context.press_play then
+                G.E_MANAGER:add_event(Event({
+                    trigger = 'after',
+                    delay = 0.2,
+                    func = function()
+                        for i = 1, #G.play.cards do
+							if pseudorandom('nyx_hammer') < G.GAME.probabilities.normal / 10 then
+								G.E_MANAGER:add_event(Event({
+									func = function()
+										SMODS.destroy_cards { G.play.cards[i] }
+										return true
+									end,
+								}))
+								delay(0.23)
+							end
+                        end
+                        return true
+                    end
+                }))
                 blind.triggered = true
                 G.E_MANAGER:add_event(Event({
                     trigger = 'immediate',
