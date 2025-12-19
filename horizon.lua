@@ -5891,10 +5891,12 @@ SMODS.Joker{
 			if G.jokers.cards[i] ~= card then -- not itself
 				local other_joker = G.jokers.cards[i]
 				for i=1, #G.P_CENTER_POOLS["FoodJokers"] do
-					if (other_joker.config.center.key == (G.P_CENTER_POOLS["FoodJokers"][i].key)) or other_joker.ability.nyx_edible then
+					if ((other_joker.config.center.key == (G.P_CENTER_POOLS["FoodJokers"][i].key)) or other_joker.ability.nyx_edible) 
+					and other_joker.config.center.key ~= "j_nyx_gourmet" then
 						local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
 						if effect then
 							table.insert(effects, effect) -- add to array
+							break
 						end
 					end
 				end
@@ -7264,6 +7266,54 @@ SMODS.Joker{
   	end
 }
 SMODS.Joker{
+	key = 'backpack',
+    loc_txt = {
+        name = 'Backpack',
+        text = {
+		  '{C:attention}+#1#{} consumable slots'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Placeholder',
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { 
+		extra = {
+			slots = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.slots
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			G.consumeables.config.card_limit = G.consumeables.config.card_limit + card.ability.extra.slots
+			return true
+		end
+		}))
+  	end,
+  	remove_from_deck = function(self, card, from_debuff)
+   		G.consumeables.config.card_limit = G.consumeables.config.card_limit - card.ability.extra.slots
+  	end
+}
+SMODS.Joker{
 	key = 'guillotine',
     loc_txt = {
         name = 'Guillotine',
@@ -8487,7 +8537,7 @@ SMODS.Consumable {
 	discovered = false,
     config = { max_highlighted = 1, mod_conv = 'nyx_prosperous' },
     loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
+        info_queue[#info_queue + 1] = { key = "nyx_prosperous", set = "Other" }
         return { vars = { card.ability.max_highlighted } }
     end,
     use = function(self, card, area, copier)
@@ -8784,10 +8834,9 @@ SMODS.Consumable {
 	cost = 6,
 	unlocked = true,
 	discovered = false,
-    config = { max_highlighted = 1, mod_conv = 'nyx_edible' },
+    config = { max_highlighted = 1 },
     loc_vars = function(self, info_queue, card)
-		info_queue[#info_queue + 1] = G.P_CENTERS[card.ability.mod_conv]
-        return { vars = { card.ability.max_highlighted, card.ability.mod_conv } }
+        return { vars = { card.ability.max_highlighted } }
     end,
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
@@ -8810,7 +8859,7 @@ SMODS.Consumable {
 						local temp = SMODS.add_card {
 							key = G.jokers.highlighted[i].config.center.key
 						}
-						temp:add_sticker(card.ability.mod_conv, true)
+						temp:add_sticker('nyx_edible', true)
 						return true
 					end
 				}))
@@ -8971,7 +9020,8 @@ SMODS.Consumable {
     pos = { x = 3, y = 0 },
 	config = { 
 		extra = {
-			max_highlighted = 1
+			max_highlighted = 1,
+			seal = 'eternal'
 		}
 	},
 	loc_txt = {
@@ -9375,10 +9425,18 @@ SMODS.Consumable {
 	loc_txt = {
         name = 'Sacrifice', --name of card
         text = { --text of card
-			'Destroy a random {C:attention}Joker{}',
+			'Destroy a selected {C:attention}Joker{}',
 			'And create a Joker of a higher rarity'
 		}
 	},
+	config = { 
+		extra = {
+			max_highlighted = 1,
+		}
+	},
+	loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
@@ -9386,69 +9444,117 @@ SMODS.Consumable {
 	cost = 4,
 	unlocked = true,
     discovered = false,
-	loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
-    end,
     use = function(self, card, area, copier)
-		local deletable_jokers = {}
-		local chosen_joker = pseudorandom_element(G.jokers.cards, pseudoseed('ritual_choice'))
-		if chosen_joker.ability.eternal then
-			G.E_MANAGER:add_event(Event({
-			trigger = 'before',
-			delay = 0.75,
-			func = function()
-				chosen_joker:juice_up(0.3, 0.5)
-				return true
-			end
-			}))
-		else
-			deletable_jokers[#deletable_jokers + 1] = chosen_joker
-			local _first_dissolve = nil
-			G.E_MANAGER:add_event(Event({
+		if G.jokers.highlighted[1] then
+			local chosen_joker = G.jokers.highlighted[1]
+			if chosen_joker.ability.eternal then
+				G.E_MANAGER:add_event(Event({
 				trigger = 'before',
 				delay = 0.75,
 				func = function()
-					for _, joker in pairs(deletable_jokers) do
-						joker:start_dissolve(nil, _first_dissolve)
-						_first_dissolve = true
+					chosen_joker:juice_up(0.3, 0.5)
+					return true
+				end
+				}))
+			else
+				deletable_jokers[#deletable_jokers + 1] = chosen_joker
+				local _first_dissolve = nil
+				G.E_MANAGER:add_event(Event({
+					trigger = 'before',
+					delay = 0.75,
+					func = function()
+						for _, joker in pairs(deletable_jokers) do
+							joker:start_dissolve(nil, _first_dissolve)
+							_first_dissolve = true
+						end
+						return true
 					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					if chosen_joker:is_rarity(1) then
+						SMODS.add_card {
+							set = 'Joker',
+							rarity = 'Uncommon',
+						}
+					elseif chosen_joker:is_rarity(2) then
+						SMODS.add_card {
+							set = 'Joker',
+							rarity = 'Rare',
+						}
+					elseif chosen_joker:is_rarity(3) then
+						SMODS.add_card {
+							set = 'Joker',
+							rarity = 'Legendary',
+						}
+					elseif chosen_joker:is_rarity(4) then
+						SMODS.add_card {
+							set = 'Joker',
+							rarity = 'nyx_LostSoul',
+						}
+					end
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+			delay(0.6)
+    	end
+	end,
+    can_use = function(self, card)
+        return #G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
+    key = 'wrath',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+	config = { 
+		extra = {
+			max_highlighted = 1
+		}
+	},
+	loc_txt = {
+        name = 'Wrath', --name of card
+        text = { --text of card
+            '{C:dark_edition}Distorts{} a selected {C:attention}Joker{}',
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	cost = 3,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_nyx_distorted
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+		if G.jokers.highlighted[1] then
+			local chosen_joker = G.jokers.highlighted[1]
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					chosen_joker:set_edition({ nyx_distorted = true })
+					card:juice_up(0.3, 0.5)
 					return true
 				end
 			}))
 		end
-		G.E_MANAGER:add_event(Event({
-			trigger = 'after',
-			delay = 0.4,
-			func = function()
-				if chosen_joker:is_rarity(1) then
-					SMODS.add_card {
-						set = 'Joker',
-                		rarity = 'Uncommon',
-					}
-				elseif chosen_joker:is_rarity(2) then
-					SMODS.add_card {
-						set = 'Joker',
-                		rarity = 'Rare',
-					}
-				elseif chosen_joker:is_rarity(3) then
-					SMODS.add_card {
-						set = 'Joker',
-               	 		rarity = 'Legendary',
-					}
-				elseif chosen_joker:is_rarity(4) then
-					SMODS.add_card {
-						set = 'Joker',
-                		rarity = 'nyx_LostSoul',
-					}
-				end
-				card:juice_up(0.3, 0.5)
-				return true
-			end
-		}))
-		delay(0.6)
     end,
-    can_use = function(self, card)
-        return #G.jokers.cards > 0
+	can_use = function(self, card)
+        return #G.jokers.highlighted == 1
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
@@ -11641,7 +11747,7 @@ SMODS.Sticker {
 	end,
 	calculate = function(self,card,context)
 		if context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint then
-			if pseudorandom('nyx_consume') < G.GAME.probabilities.normal / 4 then
+			if pseudorandom('nyx_consume') < G.GAME.probabilities.normal / 6 then
 				SMODS.destroy_cards { card }
 				return {
 					message = localize('k_eaten_ex'),
@@ -12173,6 +12279,73 @@ SMODS.Sound({
 		return G.STAGE == G.STAGES.MAIN_MENU and (night or eclipse)
 	end,
 })
+
+SMODS.Shader {
+  key = 'distorted',
+  path = 'distorted.fs'
+}
+SMODS.Edition {
+  key = 'distorted',
+  shader = 'distorted',
+  discovered = true,
+  weight = 2,
+  in_shop = false,
+  extra_cost = 10,
+  loc_txt = {
+	name = "Distorted",
+	label = "Distorted",
+	text = {
+	  "All stats are {C:chips}doubled{}"
+	}
+  },
+  config = {
+    multiplier = 2
+  },
+  loc_vars = function(self, info_queue, card)
+    return {
+      vars = {
+        (card.edition or {}).multiplier or self.config.multiplier
+      }
+    }
+  end,
+  on_apply = function(card)
+	NYX.funcs.mod_card_values(card.ability,{
+		multiply = (card.edition or {}).multiplier or self.config.multiplier,
+		x_protect = true,
+		unkeywords = {
+			odds = true,
+			Xmult_mod = true,
+			mult_mod = true,
+			chips_mod = true,
+			hand_add = true,
+			discard_sub = true,
+			h_mod = true,
+			chip_mod = true,
+			increase = true,
+			card_limit = true
+		}
+	})
+  end,
+  on_remove = function(card)
+	NYX.funcs.mod_card_values(card.ability,{
+		multiply = 0.5,
+		x_protect = true,
+		unkeywords = {
+			odds = true,
+			Xmult_mod = true,
+			mult_mod = true,
+			chips_mod = true,
+			hand_add = true,
+			discard_sub = true,
+			h_mod = true,
+			chip_mod = true,
+			increase = true,
+			card_limit = true
+		}
+	})
+  end,
+}
+
 
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
