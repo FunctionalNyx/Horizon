@@ -12286,6 +12286,10 @@ SMODS.Shader {
   key = 'distorted',
   path = 'distorted.fs'
 }
+SMODS.Shader {
+  key = 'blur',
+  path = 'blur.fs'
+}
 SMODS.Edition {
   key = 'distorted',
   shader = 'distorted',
@@ -12331,6 +12335,68 @@ SMODS.Edition {
   on_remove = function(card)
 	NYX.funcs.mod_card_values(card.ability,{
 		multiply = 0.5,
+		x_protect = true,
+		unkeywords = {
+			odds = true,
+			Xmult_mod = true,
+			mult_mod = true,
+			chips_mod = true,
+			hand_add = true,
+			discard_sub = true,
+			h_mod = true,
+			chip_mod = true,
+			increase = true,
+			card_limit = true
+		}
+	})
+  end,
+}
+SMODS.Edition {
+  key = 'blurred',
+  shader = 'blur',
+  discovered = true,
+  weight = 1.5,
+  in_shop = false,
+  extra_cost = 10,
+  loc_txt = {
+	name = "Blurred",
+	label = "Blurred",
+	text = {
+	  "All stats are {C:chips}randomized{}"
+	}
+  },
+  config = {
+    multiplier = 2
+  },
+  loc_vars = function(self, info_queue, card)
+    return {
+      vars = {
+        (card.edition or {}).multiplier or self.config.multiplier
+      }
+    }
+  end,
+  on_apply = function(card)
+	card.edition.multiplier = pseudorandom('distorted', 0.2, 5)
+	NYX.funcs.mod_card_values(card.ability,{
+		multiply = (card.edition or {}).multiplier or self.config.multiplier,
+		x_protect = true,
+		unkeywords = {
+			odds = true,
+			Xmult_mod = true,
+			mult_mod = true,
+			chips_mod = true,
+			hand_add = true,
+			discard_sub = true,
+			h_mod = true,
+			chip_mod = true,
+			increase = true,
+			card_limit = true
+		}
+	})
+  end,
+  on_remove = function(card)
+	NYX.funcs.mod_card_values(card.ability,{
+		multiply = (1/card.edition.multiplier),
 		x_protect = true,
 		unkeywords = {
 			odds = true,
