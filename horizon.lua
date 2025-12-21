@@ -5905,6 +5905,46 @@ SMODS.Joker{
 		return SMODS.merge_effects(effects)
 	end
 }
+SMODS.Joker{
+	key = 'longroad',
+    loc_txt = {
+        name = 'The Long Road',
+        text = {
+          'If playing the {C:attention}final hand{}',
+		  'and have {C:red}<10%{} of {C:attention}Blind Requirements{}',
+		  '{C:attention}Retrigger{} {C:red}ALL{} Cards',
+		  '{C:inactive,s:0.8}(Played and in Hand){}'
+        },
+    },
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 12,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 5},
+	config = { 
+		extra = {
+			repetitions = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.repetitions
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 and (G.GAME.chips < (G.GAME.blind.chips/10)) then
+            return {
+                repetitions = card.ability.extra.repetitions
+            }
+        end
+	end
+}
 -- LOST SOULS --
 SMODS.Joker{
 	key = 'fate',
@@ -8070,50 +8110,6 @@ SMODS.Joker{
 		end
 	end,
 }
-SMODS.Joker{
-	key = 'longroad',
-    loc_txt = {
-        name = 'The Long Road',
-        text = {
-          'If playing the {C:attention}final hand{}',
-		  'and have {C:red}<10%{} of {C:attention}Blind Requirements{}',
-		  '{C:attention}Retrigger{} {C:red}ALL{} Cards',
-		  '{C:inactive,s:0.8}(Played and in Hand){}'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-    atlas = 'Placeholder',
-    rarity = 4,
-    cost = 12,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 5, y = 0},
-	config = { 
-		extra = {
-			repetitions = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.repetitions
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 and (G.GAME.chips < (G.GAME.blind.chips/10)) then
-            return {
-                repetitions = card.ability.extra.repetitions
-            }
-        end
-	end
-}
 -- LOST SOULS --
 --
 end
@@ -8381,8 +8377,7 @@ SMODS.Consumable {
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	cost = 6,
 	unlocked = true,
@@ -9144,6 +9139,74 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
+    key = 'pride',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 3, y = 1 },
+	loc_txt = {
+		name = 'Pride',
+		text = {
+			'{C:red}Double{} the current Blind {C:attention}requirements{}',
+			'But gain {C:money}$#1#{}',
+			'{C:inactive,s:0.8}(Scales with type of blind){}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    config = { 
+		extra = { 
+			money = 5 
+		}  
+	},
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.money } }
+    end,
+	calculate = function(self, card)
+		if G.GAME.blind:get_type() == "Small" then
+			card.ability.extra.money = 5
+		elseif G.GAME.blind:get_type() == "Big" then
+			card.ability.extra.money = 10
+		else
+			card.ability.extra.money = 20
+		end
+	end,
+    use = function(self, card, area, copier)
+		if G.booster_pack then
+			SMODS.add_card {
+				key = 'c_nyx_pride'
+			}
+			return
+		end
+        if G.GAME.blind.in_blind then
+			G.GAME.blind.chips = G.GAME.blind.chips * 2
+			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+			G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end,
+			ease_dollars(card.ability.extra.money)
+        }))
+		end
+    end,
+    can_use = function(self, card)
+        return G.GAME.blind.in_blind or G.booster_pack
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
+}
+SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
@@ -9340,75 +9403,6 @@ SMODS.Consumable {
     end,
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
-    end,
-	draw = function(self, card, layer)
-		-- This is for the Spectral shader.
-		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
-			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
-		end
-	end
-}
-SMODS.Consumable {
-    key = 'pride',
-    set = 'nyx_demonic',
-	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
-	loc_txt = {
-		name = 'Pride',
-		text = {
-			'{C:red}Double{} the current Blind {C:attention}requirements{}',
-			'But gain {C:money}$#1#{}',
-			'{C:inactive,s:0.8}(Scales with type of blind){}'
-		}
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	cost = 3,
-	unlocked = true,
-	discovered = false,
-    config = { 
-		extra = { 
-			money = 5 
-		}  
-	},
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.extra.money } }
-    end,
-	calculate = function(self, card)
-		if G.GAME.blind:get_type() == "Small" then
-			card.ability.extra.money = 5
-		elseif G.GAME.blind:get_type() == "Big" then
-			card.ability.extra.money = 10
-		else
-			card.ability.extra.money = 20
-		end
-	end,
-    use = function(self, card, area, copier)
-		if G.booster_pack then
-			SMODS.add_card {
-				key = 'c_nyx_pride'
-			}
-			return
-		end
-        if G.GAME.blind.in_blind then
-			G.GAME.blind.chips = G.GAME.blind.chips * 2
-			G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-			G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.4,
-            func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true
-            end,
-			ease_dollars(card.ability.extra.money)
-        }))
-		end
-    end,
-    can_use = function(self, card)
-        return G.GAME.blind.in_blind or G.booster_pack
     end,
 	draw = function(self, card, layer)
 		-- This is for the Spectral shader.
@@ -11446,7 +11440,7 @@ SMODS.Enhancement{
 SMODS.Enhancement{
 	key = 'degenerate',
 	atlas = 'enhancements',
-	pos = { x = 5, y = 0 },
+	pos = { x = 8, y = 0 },
 	loc_txt = {
 		name = 'Degenerate Card',
 		text = {
@@ -11456,8 +11450,7 @@ SMODS.Enhancement{
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	unlocked = true,
 	discovered = true,
