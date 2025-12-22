@@ -2795,19 +2795,20 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
-	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
+	pools = {["ModJonklers"] = true,["Horizonjokers"] = true,["MathJokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
     cost = 5,
     unlocked = true,
     discovered = false,
-    blueprint_compat = false,
+    blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 6, y = 2}, -- to the right of ERROR
 	calculate = function(self,card,context)
-		if context.before and context.main_eval and not context.blueprint then
+		if context.before and context.main_eval then
 			local first_card = context.scoring_hand[1]
 			local last_card = context.scoring_hand[#context.scoring_hand]
 			--Here comes some nyx code
@@ -5233,7 +5234,7 @@ SMODS.Joker{
 			}
 		end
 		if context.after and not context.blueprint then
-			if count >= 7 then
+			if count >= 4 then
 				for _, joker in ipairs(G.jokers.cards or {}) do
 					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" then
 						local card_ = joker
@@ -5783,7 +5784,7 @@ SMODS.Joker{
 			}
 		end
 		if context.after and not context.blueprint then
-			if count >= 12 then
+			if count >= 8 then
 				for _, joker in ipairs(G.jokers.cards or {}) do
 					if joker.config.center.key == "j_nyx_joe" or joker.config.center.key == "j_nyx_joe2" 
 					or joker.config.center.key == "j_nyx_joe_supreme" then
@@ -7871,7 +7872,46 @@ SMODS.Joker{
 	end
 }
 end
-
+SMODS.Joker {
+    key = "gadget",
+    loc_txt = {
+        name = 'The Gadget',
+        text = {
+          '{C:red}Detonates{} if only',
+		  'A {C:attention}3{} is played'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Placeholder',
+    rarity = 2,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = false,
+    cost = 6,
+    pos = { x = 3, y = 0 },
+    calculate = function(self, card, context)
+		if context.before and context.main_eval and not context.blueprint then
+			if #context.full_hand == 1 and context.full_hand[1]:get_id() == 3 then 
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						context.full_hand[1]:set_ability(G.P_CENTERS['m_nyx_degenerate'])
+						context.full_hand[1]:juice_up(0.3, 0.5)
+						for i=1, #G.hand.cards do
+							SMODS.destroy_cards{ G.hand.cards[i] }
+						end
+						SMODS.destroy_cards{ card }
+					return true; end,
+				}))
+			end
+		end
+    end
+}
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -11499,10 +11539,10 @@ SMODS.Enhancement{
 						return true
 					end
 				}))
-				return {
-					xchips = card.ability.extra.xchips
-				}
 			end
+			return {
+				xchips = card.ability.extra.xchips
+			}
 		end
 		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
 			if card:get_id() == 2 then
@@ -12563,6 +12603,14 @@ end
 
 local badges = true -- Just here to hide all the badges because I hate not being able to collapse them
 if badges then
+SMODS.Joker:take_ownership('joker',
+	{
+	loc_txt = {
+        name = 'Jimbo'
+    }
+	},
+	true
+)
 SMODS.Joker:take_ownership('odd_todd',
 	{
 	set_badges = function (self, card, badges)
