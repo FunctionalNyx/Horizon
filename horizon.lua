@@ -1751,6 +1751,12 @@ SMODS.Joker{
 				}
 			end
 		end
+		if context.selling_card and context.card == card then
+			if G.GAME.blind then
+				G.GAME.blind.chips = G.GAME.blind.chips * 0.5
+				G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
+			end
+		end
 	end
 }
 SMODS.Joker{
@@ -8274,6 +8280,14 @@ SMODS.Consumable {
 						return true
 					end
 				}))
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.2,
+					func = function()
+						G.jokers:unhighlight_all()
+						return true
+					end
+				}))
 			else
 				SMODS.add_card {
 					key = 'c_nyx_blessing'
@@ -9502,6 +9516,14 @@ SMODS.Consumable {
 					return true
 				end
 			}))
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
 		end
     end,
 	can_use = function(self, card)
@@ -9870,6 +9892,90 @@ SMODS.Consumable {
     end,
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+    end
+}
+SMODS.Consumable {
+    key = 'cleanse',
+    set = 'Tarot',
+	atlas = 'Placeholder',
+    pos = { x = 0, y = 0 },
+	loc_txt = {
+		name = 'Cleanse',
+		text = {
+			'Removes any {C:dark_edition}edition{}',
+			'from {C:attention}1{} selected',
+			'{C:attention}Card{} or {C:attention}Joker{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 6,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 1 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        delay(0.2)
+		if #G.jokers.highlighted > 0 then
+			for i = 1, #G.jokers.highlighted do
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
+						G.jokers.highlighted[i]:set_edition()
+						return true
+					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
+			delay(0.5)
+		end
+		if #G.hand.highlighted > 0 then
+			for i = 1, #G.hand.highlighted do
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.1,
+					func = function()
+						G.hand.highlighted[i]:juice_up(0.3, 0.3)
+						G.hand.highlighted[i]:set_edition()
+						return true
+					end
+				}))
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.hand:unhighlight_all()
+					return true
+				end
+			}))
+			delay(0.5)
+		end
+    end,
+    can_use = function(self, card)
+        return (G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted) or (#G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted)
     end
 }
 --
