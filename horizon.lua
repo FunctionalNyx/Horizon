@@ -12210,11 +12210,15 @@ SMODS.Voucher {
 		name = "Rapture",
 		text = {
 			'{V:2}Demonic{} and {V:1}Angelic{} cards',
-			'Can appear in the shop'
+			'Can appear in the shop',
+			'{C:red}Disabled{} due to no art atm'
 		},
 	},
 	atlas = 'Spectral',
     pos = { x = 1, y = 1 },
+	in_pool = function(self)
+		return false
+	end,
     config = { extra = { rate = 4, display = 2 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.display, colours = { HEX('FFD700'), HEX('880808') } } }
