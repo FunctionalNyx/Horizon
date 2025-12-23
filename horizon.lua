@@ -4198,7 +4198,7 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
     atlas = 'Jokers',
-    rarity = 1,
+    rarity = 2,
     cost = 6,
     unlocked = true,
     discovered = false,
@@ -4244,7 +4244,6 @@ SMODS.Joker{
 		end
 	end
 }
-
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -6730,9 +6729,9 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
-			local names = {'Stupid','Moron','Nerd','Asshole','Retard','Fuck Face',
+			local names = {'Stupid','Moron','Nerd','Asshole','Bozotard','Fuck Face',
 						  'Shithead','Motherfucker','Dick','Dickwad','Dickhead','Cunt',
-						  'Joe','Sogger','Logger','Ourpler','Liptard','Eurotard'}
+						  'Joer','Sogger','Logger','Ourpler','Liptard','Eurotard', 'Bozo'}
 			return {
 				message = 'You are a '..names[math.random(1, #names)],
 				message_card = card
@@ -9410,32 +9409,8 @@ SMODS.Consumable {
     use = function(self, card, area, copier)
 		if G.jokers.highlighted[1] then
 			local chosen_joker = G.jokers.highlighted[1]
-			if chosen_joker.ability.eternal then
-				G.E_MANAGER:add_event(Event({
-				trigger = 'before',
-				delay = 0.75,
-				func = function()
-					chosen_joker:juice_up(0.3, 0.5)
-					return true
-				end
-				}))
-			else
-				deletable_jokers[#deletable_jokers + 1] = chosen_joker
-				local _first_dissolve = nil
-				G.E_MANAGER:add_event(Event({
-					trigger = 'before',
-					delay = 0.75,
-					func = function()
-						for _, joker in pairs(deletable_jokers) do
-							joker:start_dissolve(nil, _first_dissolve)
-							_first_dissolve = true
-						end
-						return true
-					end
-				}))
-			end
+			SMODS.destroy_cards { chosen_joker }
 			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
 				delay = 0.4,
 				func = function()
 					if chosen_joker:is_rarity(1) then
@@ -9467,7 +9442,7 @@ SMODS.Consumable {
     	end
 	end,
     can_use = function(self, card)
-        return #G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted
+        return #G.jokers.highlighted == 1
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
