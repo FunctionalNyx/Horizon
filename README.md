@@ -56,7 +56,7 @@ Have fun
 
 Nyx - Main Coder
 
-bozo! - Rarely codes & art
+bozo! - Rarely codes & art & music
 
 Milk - Does basically all the art
 
