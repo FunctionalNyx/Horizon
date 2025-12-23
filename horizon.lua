@@ -11836,7 +11836,7 @@ SMODS.Blind {
 	boss = { min = 5 },
 	dollars = 5,
 	mult = 2,
-	boss_colour = HEX('ffffff'),
+	boss_colour = HEX('d3d3d3'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
 			G.GAME.blind.loc_debuff_lines[2] = 'a '..G.GAME.probabilities.normal..' in 3 chance to'
