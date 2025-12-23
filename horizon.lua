@@ -692,57 +692,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'rulescard',
-    loc_txt = {
-        name = 'Rules Card',
-        text = {
-          'Always start with {C:blue}#1#{} hands',
-		  '{C:red}#2#{} discards, and {C:attention}#3#{} hand size',
-		  }
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
-	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
-    atlas = 'Jokers',
-    rarity = 1,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 13, y = 2},
-	config = { 
-		extra = {
-			hands = 4,
-			discards = 3,
-			h_size = 8
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.hands,
-				center.ability.extra.discards,
-				center.ability.extra.h_size
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.setting_blind then
-			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1, func = function()
-				G.GAME.round_resets.hands = card.ability.extra.hands
-				G.GAME.current_round.hands_left = card.ability.extra.hands
-				G.GAME.round_resets.discards = card.ability.extra.discards
-				G.GAME.current_round.discards_left = card.ability.extra.discards
-				G.hand:change_size(-G.hand.config.card_limit)
-				G.hand:change_size(card.ability.extra.h_size)
-			return true end }))
-		end
-	end
-}
-SMODS.Joker{
 	key = 'fenestration',
     loc_txt = {
         name = 'Fenestration',
@@ -1103,11 +1052,12 @@ SMODS.Joker{
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		["MathJokers"] = true
+		["MathJokers"] = true,
+		['Fusable'] = true
 	}, 
     atlas = 'Jokers',
     rarity = 1,
-    cost = 3,
+    cost = 4,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -1124,7 +1074,8 @@ SMODS.Joker{
     end,
 	config = { 
 		extra = {
-			retrigger = 1
+			retrigger = 1,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -1135,6 +1086,13 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_end' then
+				card.ability.extra.can_fuse = true
+			end
+		end
 		if context.repetition and context.cardarea == G.play then
             if (context.other_card:get_id() <= 10 and
                     context.other_card:get_id() >= 0 and
@@ -1162,11 +1120,12 @@ SMODS.Joker{
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		["MathJokers"] = true
+		["MathJokers"] = true,
+		['Fusable'] = true
 	}, 
     atlas = 'Jokers',
     rarity = 1,
-    cost = 3,
+    cost = 4,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -1183,7 +1142,8 @@ SMODS.Joker{
     end,
 	config = { 
 		extra = {
-			retrigger = 1
+			retrigger = 1,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -1194,6 +1154,13 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_origin' then
+				card.ability.extra.can_fuse = true
+			end
+		end
 		if context.repetition and context.cardarea == G.play then
             if (context.other_card:get_id() <= 10 and
                     context.other_card:get_id() >= 0 and
@@ -1203,40 +1170,6 @@ SMODS.Joker{
                 }
             end
         end
-		if context.ending_shop and not context.blueprint then
-			local combine = true
-			for _, joker in ipairs(G.jokers.cards or {}) do
-				if joker.config.center.key == "j_nyx_journey" then
-					combine = false
-				end
-			end
-			for i = 1, #G.jokers.cards do
-				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_origin' and combine then
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							SMODS.destroy_cards{ card, other_joker }
-							return true
-						end
-					})) 
-					local trad = SMODS.add_card{
-						key = 'j_nyx_journey'
-					}
-					local neg = false
-					if (card.edition and card.edition.key == 'e_negative') or 
-					(other_joker.edition and other_joker.edition.key == 'e_negative') then
-						neg = true
-					end
-					if (neg) then
-						trad:set_edition({ negative = true })
-					end
-					return {
-						message = "Combined!",
-						colour = G.C.RED
-					}
-				end
-			end
-		end
 	end
 }
 SMODS.Joker{
@@ -1253,11 +1186,12 @@ SMODS.Joker{
 		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
 	pools = {
-		["MathJokers"] = true
+		["MathJokers"] = true,
+		['Fusable'] = true
 	}, 
     atlas = 'Jokers',
     rarity = 2,
-    cost = 3,
+    cost = 8,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -1266,7 +1200,8 @@ SMODS.Joker{
     pos = {x = 11, y = 3},
 	config = { 
 		extra = {
-			retrigger = 2
+			retrigger = 2,
+			can_fuse = false
 		}
 	},
 	in_pool = function(self, args)
@@ -1280,6 +1215,20 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		local origin = false
+		local _end = false
+			for i = 1, #G.jokers.cards do
+				local other_joker = G.jokers.cards[i]
+				if other_joker.config.center.key == 'j_nyx_origin' then
+					origin = true
+				elseif other_joker.config.center.key == 'j_nyx_end' then
+					_end = true
+				end
+				if origin and _end then
+					card.ability.extra.can_fuse = true
+				end
+			end
 		if context.repetition and context.cardarea == G.play then
             if not context.other_card:is_face() then
 				return {
@@ -1287,46 +1236,6 @@ SMODS.Joker{
                 }
             end
         end
-		if context.setting_blind and not context.blueprint then
-			local origin = false
-			local _end = false
-			local or_card = nil
-			local end_card = nil
-			for i = 1, #G.jokers.cards do
-				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_origin' then
-					origin = true
-					or_card = other_joker
-				elseif other_joker.config.center.key == 'j_nyx_end' then
-					_end = true
-					end_card = other_joker
-				end
-				if origin and _end then
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							SMODS.destroy_cards{ or_card, end_card, card }
-							return true
-						end
-					})) 
-					local trad = SMODS.add_card{
-						key = 'j_nyx_eclipse'
-					}
-					local neg = false
-					if (card.edition and card.edition.key == 'e_negative') or 
-					(or_card.edition and or_card.edition.key == 'e_negative') or 
-					(end_card.edition and end_card.edition.key == 'e_negative') then
-						neg = true
-					end
-					if (neg) then
-						trad:set_edition({ negative = true })
-					end
-					return {
-						message = "Combined!",
-						colour = G.C.RED
-					}
-				end
-			end
-		end
 	end
 }
 SMODS.Joker{
@@ -1347,7 +1256,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Jokers',
     rarity = 3,
-    cost = 8,
+    cost = 10,
     unlocked = true,
     discovered = false,
 	no_collection = true,
@@ -1394,7 +1303,8 @@ SMODS.Joker{
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		["DPGJokers"] = true
+		["DPGJokers"] = true,
+		['Fusable'] = true
 	}, 
 	in_pool = function(self, args)
         for _, joker in ipairs(G.jokers.cards or {}) do
@@ -1415,7 +1325,8 @@ SMODS.Joker{
     pos = {x = 3, y = 3},
 	config = { 
 		extra = {
-			odds = 3
+			odds = 3,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -1428,6 +1339,13 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_nerd' then
+				card.ability.extra.can_fuse = true
+			end
+		end
 		if context.individual and context.cardarea == G.play then
 			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
 				local funnycard = context.other_card
@@ -4816,6 +4734,63 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
+	key = 'rulescard',
+    loc_txt = {
+        name = 'Rules Card',
+        text = {
+          'Always start with {C:blue}#1#{} hands',
+		  '{C:red}#2#{} discards, and {C:attention}#3#{} hand size',
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 13, y = 2},
+	config = { 
+		extra = {
+			hands = 4,
+			discards = 3,
+			h_size = 8
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.hands,
+				center.ability.extra.discards,
+				center.ability.extra.h_size
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.using_consumeable then
+			if context.consumeable.config.center.key == 'c_ectoplasm' then
+				card.ability.extra.h_size = card.ability.extra.h_size - 1
+			end
+
+		end
+		if context.setting_blind then
+			G.E_MANAGER:add_event(Event({trigger = 'after', delay = 1, func = function()
+				G.GAME.round_resets.hands = card.ability.extra.hands
+				G.GAME.current_round.hands_left = card.ability.extra.hands
+				G.GAME.round_resets.discards = card.ability.extra.discards
+				G.GAME.current_round.discards_left = card.ability.extra.discards
+				G.hand:change_size(-G.hand.config.card_limit)
+				G.hand:change_size(card.ability.extra.h_size)
+			return true end }))
+		end
+	end
+}
+SMODS.Joker{
 	key = 'Mathboy',
     loc_txt = {
         name = 'Mathematician',
@@ -4961,7 +4936,8 @@ SMODS.Joker{
     end,
 	config = { 
 		extra = {
-			xmult = 1.5
+			xmult = 1.5,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -4972,6 +4948,13 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_familiar_end' then
+				card.ability.extra.can_fuse = true
+			end
+		end
 		if context.individual and context.cardarea == G.play then
             if (context.other_card:get_id() <= 10 and
                     context.other_card:get_id() >= 0 and
@@ -5031,38 +5014,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		if context.ending_shop and not context.blueprint then
-			local combine = true
-			for _, joker in ipairs(G.jokers.cards or {}) do
-				if joker.config.center.key == "j_nyx_lasting_adventure" then
-					combine = false
-				end
-			end
-			for i = 1, #G.jokers.cards do
-				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_fresh_start' and combine then
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							SMODS.destroy_cards { card, other_joker }
-							return true
-						end
-					})) 
-					local trad = SMODS.add_card{
-						key = 'j_nyx_lasting_adventure'
-					}
-					local neg = false
-					if (card.edition and card.edition.key == 'e_negative') or 
-					(other_joker.edition and other_joker.edition.key == 'e_negative') then
-						neg = true
-					end
-					if (neg) then
-						trad:set_edition({ negative = true })
-					end
-					return {
-						message = "Combined!",
-						colour = G.C.RED
-					}
-				end
+		card.ability.extra.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_fresh_start' then
+				card.ability.extra.can_fuse = true
 			end
 		end
 		if context.individual and context.cardarea == G.play then
@@ -5107,7 +5063,8 @@ SMODS.Joker{
 	end,
 	config = { 
 		extra = {
-			xmult = 2
+			xmult = 2,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -5118,6 +5075,20 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		local origin = false
+		local _end = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_fresh_start' then
+				origin = true
+			elseif other_joker.config.center.key == 'j_nyx_familiar_end' then
+				_end = true
+			end
+			if origin and _end then
+				card.ability.extra.can_fuse = true
+			end
+		end
 		if context.individual and context.cardarea == G.play then
             if not context.other_card:is_face() then
                 return {
@@ -5125,48 +5096,6 @@ SMODS.Joker{
                 }
             end
         end
-		if context.setting_blind and not context.blueprint then
-			local origin = false
-			local _end = false
-			local odd_card = nil
-			local even_card = nil
-			for i = 1, #G.jokers.cards do
-				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_fresh_start' then
-					origin = true
-					odd_card = other_joker
-				elseif other_joker.config.center.key == 'j_nyx_familiar_end' then
-					_end = true
-					even_card = other_joker
-				end
-				if origin and _end then
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							SMODS.destroy_cards { card, odd_card, even_card }
-							return true
-						end
-					})) 
-					local trad = SMODS.add_card{
-						key = 'j_nyx_tragedy'
-					}
-					local neg = false
-					local temp = nil
-					local neg = false
-					if (card.edition and card.edition.key == 'e_negative') or 
-					(odd_card.edition and odd_card.edition.key == 'e_negative') or
-					(even_card.edition and even_card.edition.key == 'e_negative') then
-						neg = true
-					end
-					if (neg) then
-						trad:set_edition({ negative = true })
-					end
-					return {
-						message = "Combined!",
-						colour = G.C.RED
-					}
-				end
-			end
-		end
 	end
 }
 SMODS.Joker{
@@ -6211,7 +6140,8 @@ SMODS.Joker{
     end,
 	config = { 
 		extra = {
-			retrigger = 3
+			retrigger = 3,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -6222,6 +6152,13 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.extra.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_moist' then
+				card.ability.extra.can_fuse = true
+			end
+		end
 		if context.repetition and context.cardarea == G.play then
 			if context.other_card:get_id() == 8 then
 				return {
@@ -6235,26 +6172,6 @@ SMODS.Joker{
 				if context.destroy_card == context.scoring_hand[i] and context.scoring_hand[i]:get_id() ~= 8 then
 					return {
 						remove = true
-					}
-				end
-			end
-		end
-		if context.ending_shop and not context.blueprint then
-			for i = 1, #G.jokers.cards do
-				local other_joker = G.jokers.cards[i]
-				if other_joker.config.center.key == 'j_nyx_moist' then
-					G.E_MANAGER:add_event(Event({
-						func = function()
-							SMODS.destroy_cards{ card , other_joker }
-							return true
-						end
-					})) 
-					SMODS.add_card{
-						key = 'j_nyx_penis'
-					}
-					return {
-						message = "Combined!",
-						colour = G.C.RED
 					}
 				end
 			end
@@ -12569,7 +12486,7 @@ NYX = {
                 return
             end
             modify_values(table_in, reference)
-        end,
+        end
 	}
 }
 NYX.T = {}
@@ -12606,7 +12523,10 @@ if badges then
 SMODS.Joker:take_ownership('joker',
 	{
 	loc_txt = {
-        name = 'Jimbo'
+        name = 'Jimbo',
+		text = {
+		  '{C:mult}+#1#{} Mult'
+		}
     }
 	},
 	true
@@ -12742,6 +12662,131 @@ SMODS.Joker:take_ownership('selzer',
 )
 end
 
+-- Fuse --
+local oddNeven = {'j_nyx_origin','j_nyx_end','j_nyx_origin','j_nyx_fresh_start','j_nyx_familiar_end','j_nyx_fresh_start'}
+
+function Card:fusion() -- This was a nightmare
+	local edition = self.edition
+	local count = 0
+	if self.config.center.key ~= 'j_nyx_lasting_adventure' or self.config.center.key ~= 'j_nyx_journey' or self.config.center.key ~= 'j_nyx_nerd' or self.config.center.key ~= 'j_nyx_moist' then
+		for i=1,#oddNeven do
+			if self.config.center.key == oddNeven[i] then
+				count = i
+				for i=1, #G.jokers.cards do
+					if G.jokers.cards[i].config.center.key == oddNeven[count+1] then
+						SMODS.destroy_cards{ self }
+						SMODS.destroy_cards{ G.jokers.cards[i] }
+						if count < 3 then
+							SMODS.add_card { set = 'Joker', key = 'j_nyx_journey', edition = edition  }
+						elseif count > 3 then
+							SMODS.add_card { set = 'Joker', key = 'j_nyx_lasting_adventure', edition = edition }
+						end
+						return
+					end
+				end
+			end
+		end
+	end
+	if self.config.center.key == 'j_nyx_journey' then
+		local check = false
+		local temp = nil
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_nyx_origin' then
+				check = true
+				temp = i
+
+				break
+			end
+		end
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_nyx_end' and check then
+				SMODS.destroy_cards{ self }
+				SMODS.destroy_cards{ G.jokers.cards[i] }
+				SMODS.destroy_cards{ G.jokers.cards[temp] }
+				SMODS.add_card { set = 'Joker', key = 'j_nyx_eclipse', edition = edition }
+				return
+			end
+		end
+	elseif self.config.center.key == 'j_nyx_lasting_adventure' then
+		local check = false
+		local temp = nil
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_nyx_fresh_start' then
+				check = true
+				temp = i
+				break
+			end
+		end
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_nyx_familiar_end' and check then
+				SMODS.destroy_cards{ self }
+				SMODS.destroy_cards{ G.jokers.cards[i] }
+				SMODS.destroy_cards{ G.jokers.cards[temp] }
+				SMODS.add_card { set = 'Joker', key = 'j_nyx_tragedy', edition = edition }
+				return
+			end
+		end
+	elseif self.config.center.key == 'j_nyx_nerd' then
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_nyx_moist' then
+				SMODS.destroy_cards{ self }
+				SMODS.destroy_cards{ G.jokers.cards[i] }
+				SMODS.add_card { set = 'Joker', key = 'j_nyx_penis', edition = edition }
+				return
+			end
+		end
+	elseif self.config.center.key == 'j_nyx_moist' then
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_nyx_nerd' then
+				SMODS.destroy_cards{ self }
+				SMODS.destroy_cards{ G.jokers.cards[i] }
+				SMODS.add_card { set = 'Joker', key = 'j_nyx_penis', edition = edition }
+				return
+			end
+		end
+	end
+end
+
+G.FUNCS.fuse_card = function(e)
+    local card = e.config.ref_table
+	card:fusion()
+end
+
+G.FUNCS.can_fuse_card = function(e)
+	local card = e.config.ref_table
+    if card.ability.extra.can_fuse then
+        e.config.colour = G.C.GOLD
+        e.config.button = 'fuse_card'
+    else
+      	e.config.colour = G.C.UI.BACKGROUND_INACTIVE
+      	e.config.button = nil
+    end
+end
+
+local use_and_sell_buttonsref = G.UIDEF.use_and_sell_buttons
+function G.UIDEF.use_and_sell_buttons(card)
+	local retval = use_and_sell_buttonsref(card)
+
+	if card.ability.set == 'Joker' and card.ability and card.ability.extra and (card.ability.extra.can_fuse or not card.ability.extra.can_fuse)
+	and card.config.center.key ~= 'j_nyx_tragedy' and card.config.center.key ~= 'j_nyx_penis' and card.config.center.key ~= 'j_nyx_eclipse' then
+		local fuse =
+		{n=G.UIT.C, config={align = "cr",}, nodes={
+		  {n=G.UIT.C, config={ref_table = card, align = "cm",maxw = 1.25, padding = 0.15, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.GOLD, button = 'fuse_card', func = 'can_fuse_card'}, nodes={
+			{n=G.UIT.B, config = {w=0.1,h=0.4}},
+			{n=G.UIT.C, config={align = "tm"}, nodes={
+				{n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
+					{n=G.UIT.T, config={text = 'Fuse',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
+				}},
+			}}
+		  }},
+		}}
+		retval.nodes[1].nodes = retval.nodes[1].nodes or {}
+		table.insert(retval.nodes[1].nodes, fuse)
+		return retval
+	end
+
+	return retval
+end
 --various presets --
 
 --[[ Joker thingy
