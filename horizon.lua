@@ -4797,48 +4797,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'Mathboy',
-    loc_txt = {
-        name = 'Mathematician',
-        text = {
-          '{C:attention}Copies{} all {E:2,C:dark_edition}Math{} Jokers',
-		  }
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Jokers',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 12, y = 3},
-	calculate = function(self,card,context)
-		local effects = {}
-		for i=1, #G.jokers.cards do -- for all jokers
-			if G.jokers.cards[i] ~= card then -- not itself
-				local other_joker = G.jokers.cards[i]
-				for i=1, #G.P_CENTER_POOLS["MathJokers"] do
-					if (other_joker.config.center.key == (G.P_CENTER_POOLS["MathJokers"][i].key)) then
-						local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
-						if effect then
-							table.insert(effects, effect) -- add to array
-						end
-					end
-				end
-			end
-		end
-		return SMODS.merge_effects(effects) -- Do
-	end
-}
-SMODS.Joker{
 	key = 'sleep_schedule',
     loc_txt = {
         name = 'Sleep Schedule',
@@ -5879,6 +5837,45 @@ SMODS.Joker{
                 repetitions = card.ability.extra.repetitions
             }
         end
+	end
+}
+SMODS.Joker{
+	key = 'Mathboy',
+    loc_txt = {
+        name = 'Mathematician',
+        text = {
+          '{C:attention}Copies{} all {E:2,C:dark_edition}Math{} Jokers',
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end,
+    atlas = 'Jokers',
+    rarity = 4,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 12, y = 3},
+	calculate = function(self,card,context)
+		local effects = {}
+		for i=1, #G.jokers.cards do -- for all jokers
+			if G.jokers.cards[i] ~= card then -- not itself
+				local other_joker = G.jokers.cards[i]
+				for i=1, #G.P_CENTER_POOLS["MathJokers"] do
+					if (other_joker.config.center.key == (G.P_CENTER_POOLS["MathJokers"][i].key)) then
+						local effect = SMODS.blueprint_effect(card, other_joker, context) -- get effect
+						if effect then
+							table.insert(effects, effect) -- add to array
+						end
+					end
+				end
+			end
+		end
+		return SMODS.merge_effects(effects) -- Do
 	end
 }
 -- LOST SOULS --
@@ -12310,18 +12307,22 @@ SMODS.Blind {
 --
 
 -- VOUCHERS --
+if horizonmod.config.enable_WIP_cards then
 SMODS.Voucher {
     key = 'rapture',
 	loc_txt = {
 		name = "Rapture",
 		text = {
 			'{V:2}Demonic{} and {V:1}Angelic{} cards',
-			'Can appear in the shop',
-			'{C:red}Disabled{} due to no art atm'
+			'Can appear in the shop'
 		},
 	},
 	atlas = 'Spectral',
     pos = { x = 1, y = 1 },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
 	in_pool = function(self)
 		return false
 	end,
@@ -12339,6 +12340,7 @@ SMODS.Voucher {
         }))
     end
 }
+end
 --
 
 -- EDITIONS --
