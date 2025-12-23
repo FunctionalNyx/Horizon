@@ -1073,9 +1073,9 @@ SMODS.Joker{
         return true
     end,
 	config = { 
+		can_fuse = true,
 		extra = {
 			retrigger = 1,
-			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -1086,11 +1086,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
 			if other_joker.config.center.key == 'j_nyx_end' then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.repetition and context.cardarea == G.play then
@@ -1141,9 +1141,9 @@ SMODS.Joker{
         return true
     end,
 	config = { 
+		can_fuse = true,
 		extra = {
 			retrigger = 1,
-			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -1154,11 +1154,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
 			if other_joker.config.center.key == 'j_nyx_origin' then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.repetition and context.cardarea == G.play then
@@ -1199,9 +1199,9 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 11, y = 3},
 	config = { 
+		can_fuse = true,
 		extra = {
 			retrigger = 2,
-			can_fuse = false
 		}
 	},
 	in_pool = function(self, args)
@@ -1215,7 +1215,7 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		local origin = false
 		local _end = false
 			for i = 1, #G.jokers.cards do
@@ -1226,7 +1226,7 @@ SMODS.Joker{
 					_end = true
 				end
 				if origin and _end then
-					card.ability.extra.can_fuse = true
+					card.ability.can_fuse = true
 				end
 			end
 		if context.repetition and context.cardarea == G.play then
@@ -1324,9 +1324,9 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 3, y = 3},
 	config = { 
+		can_fuse = true,
 		extra = {
-			odds = 3,
-			can_fuse = false
+			odds = 3
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -1339,11 +1339,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
 			if other_joker.config.center.key == 'j_nyx_nerd' then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.individual and context.cardarea == G.play then
@@ -4899,9 +4899,9 @@ SMODS.Joker{
         return true
     end,
 	config = { 
+		can_fuse = true,
 		extra = {
-			xmult = 1.5,
-			can_fuse = false
+			xmult = 1.5
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -4912,11 +4912,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
 			if other_joker.config.center.key == 'j_nyx_familiar_end' then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.individual and context.cardarea == G.play then
@@ -4966,6 +4966,7 @@ SMODS.Joker{
         return true
     end,
 	config = { 
+		can_fuse = true,
 		extra = {
 			xmult = 1.5
 		}
@@ -4978,11 +4979,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
 			if other_joker.config.center.key == 'j_nyx_fresh_start' then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.individual and context.cardarea == G.play then
@@ -5026,9 +5027,9 @@ SMODS.Joker{
 		return false 
 	end,
 	config = { 
+		can_fuse = true,
 		extra = {
-			xmult = 2,
-			can_fuse = false
+			xmult = 2
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -5039,7 +5040,7 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		local origin = false
 		local _end = false
 		for i = 1, #G.jokers.cards do
@@ -5050,7 +5051,7 @@ SMODS.Joker{
 				_end = true
 			end
 			if origin and _end then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.individual and context.cardarea == G.play then
@@ -6142,9 +6143,9 @@ SMODS.Joker{
         return true
     end,
 	config = { 
+		can_fuse = true,
 		extra = {
 			retrigger = 3,
-			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -6155,11 +6156,11 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		card.ability.extra.can_fuse = false
+		card.ability.can_fuse = false
 		for i = 1, #G.jokers.cards do
 			local other_joker = G.jokers.cards[i]
 			if other_joker.config.center.key == 'j_nyx_moist' then
-				card.ability.extra.can_fuse = true
+				card.ability.can_fuse = true
 			end
 		end
 		if context.repetition and context.cardarea == G.play then
@@ -12896,7 +12897,7 @@ end
 
 G.FUNCS.can_fuse_card = function(e)
 	local card = e.config.ref_table
-    if card.ability.extra.can_fuse then
+    if card.ability.can_fuse then
         e.config.colour = G.C.GOLD
         e.config.button = 'fuse_card'
     else
@@ -12909,7 +12910,7 @@ local use_and_sell_buttonsref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
 	local retval = use_and_sell_buttonsref(card)
 
-	if card.ability.set == 'Joker' and card.ability and card.ability.extra and (card.ability.extra.can_fuse == false or card.ability.extra.can_fuse == true) then
+	if card.ability.set == 'Joker' and (card.ability.can_fuse == false or card.ability.can_fuse == true) then
 		local fuse =
 		{n=G.UIT.C, config={align = "cr",}, nodes={
 		  {n=G.UIT.C, config={ref_table = card, align = "cm",maxw = 1.25, padding = 0.15, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.GOLD, button = 'fuse_card', func = 'can_fuse_card'}, nodes={
