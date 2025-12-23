@@ -4748,7 +4748,7 @@ SMODS.Joker{
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 3,
-    cost = 4,
+    cost = 8,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -12203,42 +12203,35 @@ SMODS.Blind {
 }
 --
 
-
--- Nyx bullshit --
-
-local position = math.random(1,24)
-local night = false
-local eclipse = false
-if position == 24 then
-	position = 10
-	eclipse = true
-elseif position >= 21 then
-	position = 9
-	night = true
-else
-	position = 8
-end
-SMODS.Joker{
-	key = 'frontcard',
-    atlas = 'Jokers',
-    unlocked = true,
-    discovered = true,
-	no_collection = true,
-    pos = {x = position, y = 1},
-	in_pool = function(self) 
-		return false 
-	end
+-- VOUCHERS --
+SMODS.Voucher {
+    key = 'rapture',
+	loc_txt = {
+		name = "Rapture",
+		text = {
+			'{V:2}Demonic{} and {V:1}Angelic{} cards',
+			'Can appear in the shop'
+		},
+	},
+	atlas = 'Spectral',
+    pos = { x = 1, y = 1 },
+    config = { extra = { rate = 4, display = 2 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.display, colours = { HEX('FFD700'), HEX('880808') } } }
+    end,
+    redeem = function(self, card)
+        G.E_MANAGER:add_event(Event({
+            func = function()
+                G.GAME.nyx_demonic_rate = card.ability.extra.rate
+				G.GAME.nyx_angelic_rate = card.ability.extra.rate
+                return true
+            end
+        }))
+    end
 }
-SMODS.Sound({
-	key = "music_cursed",
-	path = "music_cursed.ogg",
-	volume = 1.2,
-	pitch = 1,
-	select_music_track = function()
-		return G.STAGE == G.STAGES.MAIN_MENU and (night or eclipse)
-	end,
-})
+--
 
+-- EDITIONS --
 SMODS.Shader {
   key = 'distorted',
   path = 'distorted.fs'
@@ -12370,6 +12363,43 @@ SMODS.Edition {
 	})
   end,
 }
+--
+
+
+-- Nyx bullshit --
+
+local position = math.random(1,24)
+local night = false
+local eclipse = false
+if position == 24 then
+	position = 10
+	eclipse = true
+elseif position >= 21 then
+	position = 9
+	night = true
+else
+	position = 8
+end
+SMODS.Joker{
+	key = 'frontcard',
+    atlas = 'Jokers',
+    unlocked = true,
+    discovered = true,
+	no_collection = true,
+    pos = {x = position, y = 1},
+	in_pool = function(self) 
+		return false 
+	end
+}
+SMODS.Sound({
+	key = "music_cursed",
+	path = "music_cursed.ogg",
+	volume = 1.2,
+	pitch = 1,
+	select_music_track = function()
+		return G.STAGE == G.STAGES.MAIN_MENU and (night or eclipse)
+	end,
+})
 
 
 local game_main_menu_ref = Game.main_menu
