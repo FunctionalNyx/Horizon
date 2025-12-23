@@ -816,7 +816,7 @@ SMODS.Joker{
     loc_txt = {
         name = 'Dead Ringer',
         text = {
-          'Will {E:2}almost{} always prevent Death',
+          'Will always prevent Death',
 		  '{C:red}Self destructs{} and {C:attention}Doubles{} all blinds',
 		  }
 	},
@@ -835,7 +835,7 @@ SMODS.Joker{
     pos = {x = 1, y = 3},
 	calculate = function(self,card,context)
 		 if context.end_of_round and context.game_over and context.main_eval then
-            if G.GAME.chips / G.GAME.blind.chips >= 0.0000000000000000001 then -- Prevents death most of the time but like wont save you on ante 39
+            if to_big(G.GAME.chips / G.GAME.blind.chips) >= to_big(0.0000000000000000001) then -- Prevents death most of the time but like wont save you on ante 39
                 G.E_MANAGER:add_event(Event({
                     func = function()
                         G.hand_text_area.blind_chips:juice_up()
@@ -848,7 +848,7 @@ SMODS.Joker{
 				G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
                 return {
                     message = 'Death Feigned!',
-					saved = 'Saved by Dead Ringer', -- Causes 'Error' to be displayed for some reason
+					saved = 'Saved by Dead Ringer',
                     colour = G.C.RED
                 }
             end
