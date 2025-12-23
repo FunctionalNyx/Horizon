@@ -8,6 +8,8 @@ Link to Steamodded (Which includes instructions on how to install Lovely): https
 
 A shitty balatro mod made by a bunch of nerds
 
+![Example jokers](assets/thing.png)
+
 Currently adds (Hidden Cards not Included)
 
     97 Jokers [14 of which are Work in Progress and can be Disabled]
