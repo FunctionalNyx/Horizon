@@ -10573,7 +10573,7 @@ SMODS.Booster {
         ease_background_colour_blind(HEX("FFD700"))
     end,
     create_card = function(self, card, i)
-		if math.random() < 0.5 then
+		if pseudorandom('nyx_hnh') < 0.5 then
 			return {
 				set = 'nyx_angelic',
 				area = G.pack_cards,
