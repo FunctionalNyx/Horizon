@@ -12299,9 +12299,6 @@ SMODS.Voucher {
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
-	in_pool = function(self)
-		return false
-	end,
     config = { extra = { rate = 4, display = 2 } },
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.extra.display, colours = { HEX('FFD700'), HEX('880808') } } }
