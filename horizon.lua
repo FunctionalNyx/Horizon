@@ -1022,7 +1022,7 @@ SMODS.Joker{
 				}
 			end
 		end
-		if context.buying_card then
+		if context.buying_card and context.card ~= card then
 			if pseudorandom('nyx_goose') < G.GAME.probabilities.normal / card.ability.extra.odds2 and not card.ability.eternal then
 				G.E_MANAGER:add_event(Event({
 					func = function()
@@ -12462,7 +12462,7 @@ local eclipse = false
 if position == 24 then
 	position = 10
 	eclipse = true
-elseif position >= 21 then
+elseif position >= 18 then
 	position = 9
 	night = true
 else
@@ -12484,12 +12484,37 @@ SMODS.Sound({
 	path = "music_cursed.ogg",
 	volume = 1.2,
 	pitch = 1,
-	select_music_track = function()
+	select_music_track = function(self)
 		return G.STAGE == G.STAGES.MAIN_MENU and (night or eclipse)
 	end,
 })
-
-
+SMODS.Sound({
+	key = "music_collapse",
+	path = "collapse.ogg",
+	volume = 1,
+	pitch = 1,
+	select_music_track = function(self)
+		return G.GAME and G.GAME.blind and (G.GAME.blind.in_blind and G.GAME.blind.config.blind.key == "bl_nyx_cross")
+	end,
+})
+SMODS.Sound({
+	key = "music_neon",
+	path = "neon.ogg",
+	volume = 1,
+	pitch = 1,
+	select_music_track = function(self)
+		return G.GAME and G.GAME.blind and (G.GAME.blind.in_blind and G.GAME.blind.config.blind.key == "bl_nyx_hammer")
+	end,
+})
+SMODS.Sound({
+	key = "music_nohope",
+	path = "nohope.ogg",
+	volume = 1,
+	pitch = 1,
+	select_music_track = function(self)
+		return G.GAME and G.GAME.blind and (G.GAME.blind.in_blind and G.GAME.blind.config.blind.key == "bl_nyx_mirage_boss")
+	end,
+})
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
 	G.C.COLORSS = HEX("be93d4")
