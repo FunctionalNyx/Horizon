@@ -12283,7 +12283,12 @@ SMODS.Blind {
 --
 
 -- VOUCHERS --
-if horizonmod.config.enable_WIP_cards then
+SMODS.Atlas{
+	key = 'Vouchers',
+	path = 'Vouchers.png',
+	px = 71,
+	py = 95
+}
 SMODS.Voucher {
     key = 'rapture',
 	loc_txt = {
@@ -12293,11 +12298,10 @@ SMODS.Voucher {
 			'Can appear in the shop'
 		},
 	},
-	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
+	atlas = 'Vouchers',
+    pos = { x = 0, y = 0 },
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
     config = { extra = { rate = 4, display = 2 } },
     loc_vars = function(self, info_queue, card)
@@ -12313,7 +12317,6 @@ SMODS.Voucher {
         }))
     end
 }
-end
 --
 
 -- EDITIONS --
