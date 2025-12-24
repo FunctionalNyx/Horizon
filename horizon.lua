@@ -3564,7 +3564,7 @@ SMODS.Joker{
 		if context.reroll_shop and context.cardarea == G.jokers then
 			for i = 1, #G.jokers.cards do
 				if G.jokers.cards[i] == card and G.jokers.cards[i + 1] then
-					if G.jokers.cards[i + 1].config.center.key ~= 'j_nyx_err' then
+					if G.jokers.cards[i + 1].config.center and G.jokers.cards[i + 1].config.center.key ~= 'j_nyx_err' then
 						local next_joker = G.jokers.cards[i + 1]
 						if next_joker then
 							local jokerEditions = next_joker.edition
@@ -3649,10 +3649,13 @@ SMODS.Joker{
 						delay = 2,
 						func = function()
 							SMODS.destroy_cards{card}
-							SMODS.add_card {
-								key = 'j_nyx_loadeddice',
-								area = G.jokers
-							}
+							return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						delay = 0.1,
+						func = function()
+							SMODS.add_card({ key = "j_nyx_loaded"})
 							return true
 						end
 					}))
@@ -8034,7 +8037,7 @@ SMODS.Joker{
 }
 -- Legendary --
 SMODS.Joker{
-	key = 'loadeddice',
+	key = 'loaded',
     loc_txt = {
         name = 'Loaded Dice',
         text = {
@@ -8051,7 +8054,6 @@ SMODS.Joker{
     cost = 12,
     unlocked = true,
     discovered = false,
-	no_collection = true,
     blueprint_compat = false,
     eternal_compat = true,
     perishable_compat = true,
