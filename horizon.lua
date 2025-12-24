@@ -12325,6 +12325,12 @@ SMODS.Shader {
   key = 'blur',
   path = 'blur.fs'
 }
+SMODS.Sound({
+	key = "distorted",
+	path = "distorted.ogg",
+	volume = 1,
+	pitch = 1,
+})
 SMODS.Edition {
   key = 'distorted',
   shader = 'distorted',
@@ -12332,6 +12338,11 @@ SMODS.Edition {
   weight = 2,
   in_shop = false,
   extra_cost = 10,
+  sound = {
+		sound = "nyx_distorted",
+		per = 1,
+		vol = 1,
+	},
   loc_txt = {
 	name = "Distorted",
 	label = "Distorted",
@@ -12512,6 +12523,7 @@ SMODS.Sound({
 		return G.GAME and G.GAME.blind and (G.GAME.blind.in_blind and G.GAME.blind.config.blind.key == "bl_nyx_mirage_boss")
 	end,
 })
+
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
 	G.C.COLORSS = HEX("be93d4")
@@ -12580,7 +12592,7 @@ function Game:main_menu(change_context)
 	return ret
 end
 -- I have no idea how this all works but it does so dont question it
--- This is required for the Joker that multiplies other joker values
+-- This is required for multiplying joker values
 NYX = {
 	funcs = {
 	--Given a `table_in` (value table or card object) and a config table, modifies the values in `table_in` depending 
