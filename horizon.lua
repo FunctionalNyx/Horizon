@@ -7234,7 +7234,7 @@ SMODS.Joker{
     loc_txt = {
         name = 'Backpack',
         text = {
-		  '{C:attention}+#1#{} consumable slots'
+		  '{C:attention}+2{} consumable slots'
         },
     },
 	set_badges = function (self, card, badges)
@@ -7253,28 +7253,16 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			slots = 2
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.slots
-			}
-		}
-	end,
 	add_to_deck = function(self, card, from_debuff)
 		G.E_MANAGER:add_event(Event({
 		func = function()
-			G.consumeables.config.card_limit = G.consumeables.config.card_limit + card.ability.extra.slots
+			G.consumeables.config.card_limit = G.consumeables.config.card_limit + 2
 			return true
 		end
 		}))
   	end,
   	remove_from_deck = function(self, card, from_debuff)
-   		G.consumeables.config.card_limit = G.consumeables.config.card_limit - card.ability.extra.slots
+   		G.consumeables.config.card_limit = G.consumeables.config.card_limit - 2
   	end
 }
 SMODS.Joker{
@@ -9018,6 +9006,14 @@ SMODS.Consumable {
 					return true
 				end
 			}))
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
 		end
     end,
 	can_use = function(self, card)
@@ -9441,6 +9437,14 @@ SMODS.Consumable {
 				end
 			}))
 			delay(0.6)
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
     	end
 	end,
     can_use = function(self, card)
@@ -9472,7 +9476,7 @@ SMODS.Consumable {
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
-	cost = 3,
+	cost = 4,
 	unlocked = true,
     discovered = false,
     loc_vars = function(self, info_queue, card)
@@ -9886,7 +9890,7 @@ SMODS.Consumable {
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
-	cost = 6,
+	cost = 3,
 	unlocked = true,
 	discovered = false,
     config = { max_highlighted = 1 },
@@ -10106,6 +10110,59 @@ SMODS.Consumable {
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
     end
+}
+SMODS.Consumable {
+    key = 'Glaucoma',
+    set = 'Spectral',
+	atlas = 'Placeholder',
+    pos = { x = 1, y = 0 },
+	config = { 
+		extra = {
+			max_highlighted = 1
+		}
+	},
+	loc_txt = {
+        name = 'Glaucoma', --name of card
+        text = { --text of card
+            '{C:dark_edition}Blurs{} a selected {C:attention}Joker{}',
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	cost = 5,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_nyx_blurred
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+		if G.jokers.highlighted[1] then
+			local chosen_joker = G.jokers.highlighted[1]
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					chosen_joker:set_edition({ nyx_blurred = true })
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
+		end
+    end,
+	can_use = function(self, card)
+        return #G.jokers.highlighted == 1
+    end,
 }
 SMODS.Consumable {
     key = 'lostsoul',
@@ -12347,7 +12404,7 @@ SMODS.Edition {
 		sound = "nyx_distorted",
 		per = 1,
 		vol = 1,
-	},
+  },
   loc_txt = {
 	name = "Distorted",
 	label = "Distorted",
@@ -12418,6 +12475,11 @@ SMODS.Edition {
   },
   config = {
     multiplier = 2
+  },
+  sound = {
+		sound = "nyx_distorted",
+		per = 1,
+		vol = 1,
   },
   loc_vars = function(self, info_queue, card)
     return {
