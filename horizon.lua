@@ -1862,6 +1862,48 @@ SMODS.Joker{
 	end
 }
 end
+SMODS.Joker{
+	key = 'tinyjimbo',
+    atlas = 'Jokers',
+    unlocked = true,
+    discovered = true,
+    pos = {x = 22, y = 1},
+	loc_txt = {
+		name = "Tiny Jimbo",
+		text = {
+			'{C:chips}+#1# Chips{}',
+			'{s:0.5}Hes stronger than you think{}'
+		},
+	},
+	rarity = 1,
+	cost = 1,
+	in_pool = function(self) 
+		return false 
+	end,
+	config = {
+		extra = { 
+			chips = 1,
+			scale = 1.5
+		}
+	},
+	loc_vars = function(self, info_queue, card)
+		return {
+			vars = {
+				math.floor(card.ability.extra.chips + 0.5)
+			}
+		}
+	end,
+	calculate = function(self, card, context)
+		if context.joker_main then
+			card.ability.extra.chips = card.ability.extra.chips*card.ability.extra.scale
+			return {
+				chip_mod = math.floor(card.ability.extra.chips + 0.5),
+				message = math.floor(card.ability.extra.chips+0.5)..' Chips',
+				colour = G.C.CHIP
+			}
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -5310,7 +5352,6 @@ SMODS.Joker{
           '{C:attention,E:2}Randomly{} convert',
 		  'a Joker into {C:red}Malware{}',
 		  'Gains {X:chips,C:white}X#2#{} Chips per {C:red}Malware{}',
-		  '{C:inactive}Becomes {}{C:dark_edition}Negative{}{C:inactive} after #3# rounds{}',
 		  '{C:inactive,s:0.8}(Currently {}{X:chips,C:white,s:0.8}X#1#{} Chips){}'
         },
     },
@@ -5341,8 +5382,7 @@ SMODS.Joker{
 		return{
 			vars = {
 				center.ability.extra.Xchip,
-				center.ability.extra.Xchip_gain,
-				center.ability.extra.rounds
+				center.ability.extra.Xchip_gain
 			}
 		}
 	end,
@@ -5362,12 +5402,6 @@ SMODS.Joker{
 				card = card
 			}
 		end
-		if (context.end_of_round and context.game_over == false and context.main_eval and not context.blueprint) and card.ability.extra.rounds > 0 then
-            card.ability.extra.rounds = card.ability.extra.rounds - 1
-            if card.ability.extra.rounds == 0 then
-                card:set_edition({ negative = true })
-            end
-        end
 		if chose then
 			local malware_candidates = {}
 			for i=1, #G.jokers.cards do
@@ -8803,19 +8837,21 @@ SMODS.Consumable {
         }))
         delay(0.2)
 		if #G.jokers.highlighted > 0 then
-			for i = 1, #G.jokers.highlighted do
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.1,
-					func = function()
-						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
-						local temp = SMODS.add_card {
-							key = G.jokers.highlighted[i].config.center.key
-						}
-						temp:add_sticker('nyx_edible', true)
-						return true
-					end
-				}))
+			if #G.jokers.cards < G.jokers.config.card_limit then
+				for i = 1, #G.jokers.highlighted do
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							G.jokers.highlighted[i]:juice_up(0.3, 0.3)
+							local temp = SMODS.add_card {
+								key = G.jokers.highlighted[i].config.center.key
+							}
+							temp:add_sticker('nyx_edible', true)
+							return true
+						end
+					}))
+				end
 			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
@@ -9411,29 +9447,41 @@ SMODS.Consumable {
 			G.E_MANAGER:add_event(Event({
 				delay = 0.4,
 				func = function()
-					if chosen_joker:is_rarity(1) then
-						SMODS.add_card {
-							set = 'Joker',
-							rarity = 'Uncommon',
-						}
-					elseif chosen_joker:is_rarity(2) then
-						SMODS.add_card {
-							set = 'Joker',
-							rarity = 'Rare',
-						}
-					elseif chosen_joker:is_rarity(3) then
-						SMODS.add_card {
-							set = 'Joker',
-							rarity = 'Legendary',
-						}
-					elseif chosen_joker:is_rarity(4) then
-						SMODS.add_card {
-							set = 'Joker',
-							rarity = 'nyx_LostSoul',
-						}
+					if (#G.jokers.cards-1) < G.jokers.config.card_limit then
+						if chosen_joker.ability.eternal and #G.jokers.cards == G.jokers.config.card_limit then
+							card:juice_up(0.3, 0.5)
+							return true
+						else
+							if chosen_joker:is_rarity(1) then
+								SMODS.add_card {
+									set = 'Joker',
+									rarity = 'Uncommon',
+								}
+							elseif chosen_joker:is_rarity(2) then
+								SMODS.add_card {
+									set = 'Joker',
+									rarity = 'Rare',
+								}
+							elseif chosen_joker:is_rarity(3) then
+								SMODS.add_card {
+									set = 'Joker',
+									rarity = 'Legendary',
+								}
+							elseif chosen_joker:is_rarity(4) then
+								SMODS.add_card {
+									set = 'Joker',
+									rarity = 'nyx_LostSoul',
+								}
+							elseif chosen_joker:is_rarity('nyx_LostSoul') then
+								SMODS.add_card {
+									set = 'Joker',
+									key = 'j_nyx_tinyjimbo'
+								}
+							end
+							card:juice_up(0.3, 0.5)
+							return true
+						end
 					end
-					card:juice_up(0.3, 0.5)
-					return true
 				end
 			}))
 			delay(0.6)
@@ -9464,13 +9512,15 @@ SMODS.Consumable {
     pos = { x = 1, y = 1 },
 	config = { 
 		extra = {
-			max_highlighted = 1
+			max_highlighted = 1,
+			slots = -1
 		}
 	},
 	loc_txt = {
         name = 'Wrath', --name of card
         text = { --text of card
             '{C:dark_edition}Distorts{} a selected {C:attention}Joker{}',
+			'{C:red}#2#{} Joker Slots'
 		}
 	},
 	set_badges = function (self, card, badges)
@@ -9481,7 +9531,7 @@ SMODS.Consumable {
     discovered = false,
     loc_vars = function(self, info_queue, card)
         info_queue[#info_queue + 1] = G.P_CENTERS.e_nyx_distorted
-        return { vars = { card.ability.max_highlighted } }
+        return { vars = { card.ability.max_highlighted, card.ability.extra.slots } }
     end,
     use = function(self, card, area, copier)
 		if G.jokers.highlighted[1] then
@@ -9491,6 +9541,9 @@ SMODS.Consumable {
 				delay = 0.4,
 				func = function()
 					chosen_joker:set_edition({ nyx_distorted = true })
+					if G.jokers then
+						G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
+					end
 					card:juice_up(0.3, 0.5)
 					return true
 				end
@@ -9914,7 +9967,6 @@ SMODS.Consumable {
 					trigger = 'after',
 					delay = 0.1,
 					func = function()
-						G.jokers.highlighted[i]:juice_up(0.3, 0.3)
 						G.jokers.highlighted[i]:set_edition()
 						return true
 					end
@@ -9936,7 +9988,6 @@ SMODS.Consumable {
 					trigger = 'after',
 					delay = 0.1,
 					func = function()
-						G.hand.highlighted[i]:juice_up(0.3, 0.3)
 						G.hand.highlighted[i]:set_edition()
 						return true
 					end
@@ -11268,7 +11319,14 @@ SMODS.Enhancement{
 			}
 		end
 		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
-			if (pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds) and (not SMODS.find_card('j_nyx_moist') or not SMODS.find_card('j_nyx_penis')) then
+			local moist = false
+			for i, v in ipairs(G.jokers.cards) do
+				if v.config.center.key == 'j_nyx_moist' or v.config.center.key == 'j_nyx_penis' then
+					moist = true
+					break
+				end
+			end
+			if (pseudorandom('nyx_wet') < G.GAME.probabilities.normal / card.ability.extra.odds) and not moist then
 				G.E_MANAGER:add_event(Event({
                 	trigger = 'after',
                 	delay = 0.1,
@@ -12409,7 +12467,7 @@ SMODS.Edition {
 	name = "Distorted",
 	label = "Distorted",
 	text = {
-	  "All stats are {C:chips}doubled{}"
+	  "All stats are increased by {C:chips}2{}"
 	}
   },
   config = {
@@ -12442,7 +12500,7 @@ SMODS.Edition {
   end,
   on_remove = function(card)
 	NYX.funcs.mod_card_values(card.ability,{
-		multiply = 0.5,
+		multiply = (1/card.edition.multiplier),
 		x_protect = true,
 		unkeywords = {
 			odds = true,
@@ -12478,7 +12536,7 @@ SMODS.Edition {
   },
   sound = {
 		sound = "nyx_distorted",
-		per = 1,
+		per = 1.2,
 		vol = 1,
   },
   loc_vars = function(self, info_queue, card)
@@ -12489,7 +12547,7 @@ SMODS.Edition {
     }
   end,
   on_apply = function(card)
-	card.edition.multiplier = pseudorandom('distorted', 0.2, 5)
+	card.edition.multiplier = pseudorandom('distorted', 0.1, 5)
 	NYX.funcs.mod_card_values(card.ability,{
 		multiply = (card.edition or {}).multiplier or self.config.multiplier,
 		x_protect = true,
