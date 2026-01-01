@@ -11568,9 +11568,6 @@ SMODS.Enhancement{
 	end,
 	unlocked = true,
 	discovered = true,
-	in_pool = function(self)
-		return false 
-	end,
 	config = {
 		extra = {
 			xchips = 1.5
