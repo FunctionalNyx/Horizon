@@ -7429,11 +7429,11 @@ SMODS.Joker{
         },
     },
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.RED, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 2,
     cost = 4,
     unlocked = true,
@@ -7441,14 +7441,15 @@ SMODS.Joker{
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = false,
-    pos = {x = 3, y = 0},
+    pos = {x = 1, y = 5},
 	set_ability = function(self, card, initial)
 		card:set_eternal(true)
 	end,
 	config = { 
 		extra = {
 			Xmult = 8,
-			count = 1
+			count = 1,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -7460,6 +7461,23 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		local count_jokers = 0
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinblack' then
+				count_jokers = 1
+			end
+		end
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allingreen' and count_jokers > 0 then
+				count_jokers = 2
+			end
+		end
+		if count_jokers == 2 then
+			card.ability.can_fuse = true
+		end
 		if context.joker_main then
 			if #G.jokers.cards < G.jokers.config.card_limit then
 				local temp = nil
@@ -7518,13 +7536,13 @@ SMODS.Joker{
         name = '{C:black,E:1}All In{}',
         text = {
           '{X:mult,C:white}X#1#{} Mult',
-		  '{C:blue}+3{} Hands and Discards',
-		  'Hand {C:attention}size{} is set to 1'
+		  'Ante scaling is halved',
+		  'Joker {C:attention}slots{} are set to 1'
         },
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
@@ -7541,9 +7559,87 @@ SMODS.Joker{
 	end,
 	config = { 
 		extra = {
+			Xmult = 10,
+			joker_slots = 1,
+			can_fuse = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult,
+				center.ability.extra.joker_slots
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		card.ability.extra.joker_slots = G.jokers.config.card_limit
+		G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.joker_slots + 1
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
+	end,
+	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		local count_jokers = 0
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinred' then
+				count_jokers = 1
+			end
+		end
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allingreen' and count_jokers > 0 then
+				count_jokers = 2
+			end
+		end
+		if count_jokers == 2 then
+			card.ability.can_fuse = true
+		end
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.Xmult,
+				card = card
+			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'allingreen',
+    loc_txt = {
+        name = '{C:green,E:1}All In{}',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  '{C:blue}+#2#{} Hands and Discards',
+		  'Hand {C:attention}size{} is set to #3#'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.GREEN, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    pos = {x = 2, y = 5},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
+	config = { 
+		extra = {
 			Xmult = 6, -- Logger
 			hand_size = 1,
-			hands = 3
+			hands = 3,
+			can_fuse = false
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -7563,6 +7659,23 @@ SMODS.Joker{
 		G.hand:change_size(card.ability.extra.hand_size - 1)
 	end,
 	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		local count_jokers = 0
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinred' then
+				count_jokers = 1
+			end
+		end
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinblack' and count_jokers > 0 then
+				count_jokers = 2
+			end
+		end
+		if count_jokers == 2 then
+			card.ability.can_fuse = true
+		end
 		if context.joker_main then
 			return {
 				Xmult = card.ability.extra.Xmult,
@@ -7585,65 +7698,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'allingreen',
-    loc_txt = {
-        name = '{C:green,E:1}All In{}',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult',
-		  'Ante scaling is halved',
-		  'Joker {C:attention}slots{} are set to 1'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = false,
-    pos = {x = 3, y = 0},
-	set_ability = function(self, card, initial)
-		card:set_eternal(true)
-	end,
-	config = { 
-		extra = {
-			Xmult = 10,
-			joker_slots = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult,
-				center.ability.extra.joker_slots
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		card.ability.extra.joker_slots = G.jokers.config.card_limit
-		G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.joker_slots + 1
-		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
-		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.Xmult,
-				card = card
-			}
-		end
-	end
-}
-SMODS.Joker{
 	key = 'allin',
     loc_txt = {
         name = '{C:edition,s:1.2,E:2}All in{}',
@@ -7657,7 +7711,7 @@ SMODS.Joker{
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.EDITION, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
     atlas = 'Placeholder',
@@ -7697,7 +7751,7 @@ SMODS.Joker{
 		card.ability.extra.hand_size = G.hand.config.card_limit
 		G.hand:change_size(-card.ability.extra.hand_size + 1)
 		card.ability.extra.joker_slots = G.jokers.config.card_limit
-		G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.joker_slots + 1
+		G.jokers.config.card_limit = 1
 		local deletable_jokers = {}
 		local hasError = false
 		for k, v in pairs(G.jokers.cards) do
@@ -7719,14 +7773,23 @@ SMODS.Joker{
 						_first_dissolve = true
 					end
 				end
+				G.jokers.config.card_limit = 1
 				return true
 			end,
 		}))
+		G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 1,
+			func = function()
+				G.jokers.config.card_limit = 1
+			return true
+			end
+		})) 
 	end,
 	remove_from_deck = function(self, card, from_debuff)
 		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
 		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
-		G.hand:change_size(card.ability.extra.hand_size - 1)
+		G.hand:change_size(-G.hand.config.card_limit - 1)
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
@@ -7740,6 +7803,7 @@ SMODS.Joker{
 					temp:set_edition('e_negative',true)
 					temp:add_sticker("perishable",true)
 					card:juice_up(0.3, 0.5)
+					G.hand.config.card_limit = 1
 					return true
 				end
 			}))
@@ -7753,6 +7817,7 @@ SMODS.Joker{
             G.E_MANAGER:add_event(Event({
                 func = function()
 					ease_discard(card.ability.extra.discards)
+					G.hand.config.card_limit = 1
                     SMODS.calculate_effect(
                         { message = localize { type = 'variable', key = 'a_discards', vars = { card.ability.extra.discards } } },
                         context.blueprint_card or card)
@@ -7777,7 +7842,7 @@ SMODS.Joker{
 			})) 
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 1.5,
+				delay = 1.2,
 				func = function()
 					G.shop:remove()
 					G.shop = nil
@@ -12457,6 +12522,12 @@ SMODS.Sound({
 	volume = 1,
 	pitch = 1,
 })
+SMODS.Sound({
+	key = "blurred",
+	path = "blurred.ogg",
+	volume = 1,
+	pitch = 1,
+})
 SMODS.Edition {
   key = 'distorted',
   shader = 'distorted',
@@ -12543,8 +12614,8 @@ SMODS.Edition {
     multiplier = 2
   },
   sound = {
-		sound = "nyx_distorted",
-		per = 1.2,
+		sound = "nyx_blurred",
+		per = 1,
 		vol = 1,
   },
   loc_vars = function(self, info_queue, card)
@@ -12996,6 +13067,7 @@ end
 
 -- Fuse --
 local oddNeven = {'j_nyx_origin','j_nyx_end','j_nyx_origin','j_nyx_fresh_start','j_nyx_familiar_end','j_nyx_fresh_start'}
+local allin = {'j_nyx_allinblack','j_nyx_allinred','j_nyx_allingreen','j_nyx_allinred','j_nyx_allingreen','j_nyx_allinblack','j_nyx_allingreen','j_nyx_allinblack','j_nyx_allinred'}
 
 function Card:fusion() -- This was a nightmare
 	local edition = self.edition
@@ -13095,6 +13167,66 @@ function Card:fusion() -- This was a nightmare
 				SMODS.add_card { set = 'Joker', key = 'j_nyx_integer', edition = edition }
 				return
 			end
+		end
+	end
+
+	if self.config.center.key == 'j_nyx_allinblack' or self.config.center.key == 'j_nyx_allinred' or self.config.center.key == 'j_nyx_allingreen' then
+		if self.config.center.key == allin[1] then
+			local temp = nil
+			for i=1,#G.jokers.cards do
+				if G.jokers.cards[i].config.center.key == allin[2] then
+					temp = i
+					break
+				end
+			end
+			for i=1,#G.jokers.cards do
+				if G.jokers.cards[i].config.center.key == allin[3] and temp then
+					SMODS.destroy_cards{ self }
+					SMODS.destroy_cards{ G.jokers.cards[i] }
+					SMODS.destroy_cards{ G.jokers.cards[temp] }
+					SMODS.add_card { set = 'Joker', key = 'j_nyx_allin', edition = edition }
+					return
+				end
+			end
+			G.hand.config.card_limit = 1
+		end
+		if self.config.center.key == allin[2] then
+			local temp = nil
+			for i=1,#G.jokers.cards do
+				if G.jokers.cards[i].config.center.key == allin[5] then
+					temp = i
+					break
+				end
+			end
+			for i=1,#G.jokers.cards do
+				if G.jokers.cards[i].config.center.key == allin[6] and temp then
+					SMODS.destroy_cards{ self }
+					SMODS.destroy_cards{ G.jokers.cards[i] }
+					SMODS.destroy_cards{ G.jokers.cards[temp] }
+					SMODS.add_card { set = 'Joker', key = 'j_nyx_allin', edition = edition }
+					return
+				end
+			end
+			G.hand.config.card_limit = 1
+		end
+		if self.config.center.key == allin[3] then
+			local temp = nil
+			for i=1,#G.jokers.cards do
+				if G.jokers.cards[i].config.center.key == allin[8] then
+					temp = i
+					break
+				end
+			end
+			for i=1,#G.jokers.cards do
+				if G.jokers.cards[i].config.center.key == allin[9] and temp then
+					SMODS.destroy_cards{ self }
+					SMODS.destroy_cards{ G.jokers.cards[i] }
+					SMODS.destroy_cards{ G.jokers.cards[temp] }
+					SMODS.add_card { set = 'Joker', key = 'j_nyx_allin', edition = edition }
+					return
+				end
+			end
+			G.hand.config.card_limit = 1
 		end
 	end
 end
