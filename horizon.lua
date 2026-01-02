@@ -5208,7 +5208,7 @@ SMODS.Joker{
     pos = {x = 13, y = 4},
 	config = { 
 		extra = {
-			xmult = 4,
+			xmult = 2,
 			hand = false
 		}
 	},
