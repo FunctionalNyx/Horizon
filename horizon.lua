@@ -10966,6 +10966,53 @@ SMODS.Back {
 		}))
 	end
 }
+SMODS.Back {
+	key = 'barcode',
+	atlas = 'Decks',
+	pos = { x = 5, y = 0 },
+	loc_txt = {
+		name = "Barcode Deck",
+		text = {
+			'Start with 3 random {C:attention}Vouchers{}',
+			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
+		}
+	},
+	unlocked = true,
+    discovered = true,
+	apply = function(self, back)
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				if G.jokers then
+					for i = 1, 3 do
+						local voucher_pool = get_current_pool('Voucher')
+						local selected_voucher = pseudorandom_element(voucher_pool, 'modprefix_seed')
+						local it = 1
+						while selected_voucher == 'UNAVAILABLE' do
+							it = it + 1
+							selected_voucher = pseudorandom_element(voucher_pool, 'modprefix_seed' .. it)
+						end
+						local voucher_card = SMODS.create_card({ area = G.play, key = selected_voucher }) -- Ignore the previous code and just use a key for a prefined voucher
+						voucher_card:start_materialize()
+						voucher_card.cost = 0
+						G.play:emplace(voucher_card)
+						delay(0.8)
+						voucher_card:redeem()
+
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.5,
+							func = function()
+								voucher_card:start_dissolve()
+								return true
+							end
+						}))
+					end
+				return true
+				end
+			end,
+		}))
+	end
+}
 --
 
 -- ENHANCEMENTS --
