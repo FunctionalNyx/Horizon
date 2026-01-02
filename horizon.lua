@@ -6090,13 +6090,12 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.individual and context.cardarea == G.play then
-			local xMult = card.ability.extra.xmultIG
 			-- Upgrade the xMult if not blueprint
 			if not context.blueprint then
-				xMult = card.ability.extra.xmultIG + card.ability.extra.xMult_gain
+				card.ability.extra.xmultIG = card.ability.extra.xmultIG + card.ability.extra.xMult_gain
 			end
 			return {
-				Xmult = xMult,
+				Xmult = card.ability.extra.xmultIG,
 				card = card
 			}
 		end
@@ -12554,7 +12553,7 @@ SMODS.Edition {
     }
   end,
   on_apply = function(card)
-	card.edition.multiplier = pseudorandom('distorted', 0.1, 5)
+	card.edition.multiplier = pseudorandom('distorted', 0.1, 3)
 	NYX.funcs.mod_card_values(card.ability,{
 		multiply = (card.edition or {}).multiplier or self.config.multiplier,
 		x_protect = true,
