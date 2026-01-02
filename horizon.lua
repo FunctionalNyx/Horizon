@@ -10136,6 +10136,7 @@ SMODS.Consumable {
         name = 'Glaucoma', --name of card
         text = { --text of card
             '{C:dark_edition}Blurs{} a selected {C:attention}Joker{}',
+			'{C:red}Doubles{} {C:attention}blind{} requirements'
 		}
 	},
 	set_badges = function (self, card, badges)
@@ -10157,6 +10158,7 @@ SMODS.Consumable {
 				delay = 0.4,
 				func = function()
 					chosen_joker:set_edition({ nyx_blurred = true })
+					G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
 					card:juice_up(0.3, 0.5)
 					return true
 				end
