@@ -1051,7 +1051,7 @@ SMODS.Joker{
         return true
     end,
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			retrigger = 1,
 		}
@@ -1119,7 +1119,7 @@ SMODS.Joker{
         return true
     end,
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			retrigger = 1,
 		}
@@ -1177,7 +1177,7 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 11, y = 3},
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			retrigger = 2,
 		}
@@ -1302,7 +1302,7 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 3, y = 3},
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			odds = 3
 		}
@@ -4269,6 +4269,451 @@ SMODS.Joker{
 		end
 	end
 }
+if horizonmod.config.enable_AllIn then
+SMODS.Joker{
+	key = 'allinred',
+    loc_txt = {
+        name = '{C:red,E:1}All In{}',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  'Generates random perishable {C:attention}Jokers{}',
+		  'Never see a {C:attention}shop{} again'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.RED, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    pos = {x = 1, y = 5},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
+	config = { 
+		extra = {
+			Xmult = 8,
+			count = 1,
+			can_fuse = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult,
+				center.ability.extra.count
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		local count_jokers = 0
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinblack' then
+				count_jokers = 1
+			end
+		end
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allingreen' and count_jokers > 0 then
+				count_jokers = 2
+			end
+		end
+		if count_jokers == 2 then
+			card.ability.can_fuse = true
+		end
+		if context.joker_main then
+			if #G.jokers.cards < G.jokers.config.card_limit then
+				local temp = nil
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.4,
+					func = function()
+						play_sound('timpani')
+						temp = SMODS.add_card({ set = 'Joker' })
+						temp:add_sticker("perishable",true)
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			end
+			card.ability.extra.count = 1
+			return {
+				Xmult = card.ability.extra.Xmult,
+				card = card
+			}
+		end
+		if G.shop and card.ability.extra.count == 1 then
+			card.ability.extra.count = card.ability.extra.count + 1
+			for i = 1, #G.jokers.cards do
+				G.jokers.cards[i]:calculate_joker({ending_shop = true})
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 1,
+				func = function()
+					G.shop.alignment.offset.y = G.ROOM.T.y + 29
+					G.SHOP_SIGN.alignment.offset.y = -15
+				return true
+				end
+			})) 
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 1.5,
+				func = function()
+					G.shop:remove()
+					G.shop = nil
+					G.SHOP_SIGN:remove()
+					G.SHOP_SIGN = nil
+					G.STATE_COMPLETE = false
+					G.STATE = G.STATES.BLIND_SELECT
+					G.CONTROLLER.locks.toggle_shop = nil
+					return true
+				end
+			}))
+		end
+	end
+}
+SMODS.Joker{
+	key = 'allinblack',
+    loc_txt = {
+        name = '{C:black,E:1}All In{}',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  'Ante scaling is halved',
+		  'Joker {C:attention}slots{} are set to #2#'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    pos = {x = 3, y = 5},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
+	config = { 
+		extra = {
+			Xmult = 10,
+			joker_slots = 1,
+			can_fuse = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult,
+				center.ability.extra.joker_slots
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		card.ability.extra.joker_slots = G.jokers.config.card_limit
+		G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.joker_slots + 1
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
+	end,
+	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		local count_jokers = 0
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinred' then
+				count_jokers = 1
+			end
+		end
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allingreen' and count_jokers > 0 then
+				count_jokers = 2
+			end
+		end
+		if count_jokers == 2 then
+			card.ability.can_fuse = true
+		end
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.Xmult,
+				card = card
+			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'allingreen',
+    loc_txt = {
+        name = '{C:green,E:1}All In{}',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  '{C:blue}+#3#{} Hands and Discards',
+		  'Hand {C:attention}size{} is set to 1'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.GREEN, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    pos = {x = 2, y = 5},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
+	config = { 
+		extra = {
+			Xmult = 6, -- Logger
+			hand_size = 1,
+			hands = 3,
+			can_fuse = false
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult,
+				center.ability.extra.hand_size,
+				center.ability.extra.hands
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		card.ability.extra.hand_size = G.hand.config.card_limit
+		G.hand:change_size(-card.ability.extra.hand_size + 1)
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.hand:change_size(card.ability.extra.hand_size - 1)
+	end,
+	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		local count_jokers = 0
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinred' then
+				count_jokers = 1
+			end
+		end
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_allinblack' and count_jokers > 0 then
+				count_jokers = 2
+			end
+		end
+		if count_jokers == 2 then
+			card.ability.can_fuse = true
+		end
+		if context.joker_main then
+			return {
+				Xmult = card.ability.extra.Xmult,
+				card = card
+			}
+		end
+		if context.setting_blind then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+					ease_discard(card.ability.extra.hands)
+                    ease_hands_played(card.ability.extra.hands)
+                    SMODS.calculate_effect(
+                        { message = localize { type = 'variable', key = 'a_hands', vars = { card.ability.extra.hands } } },
+                        context.blueprint_card or card)
+					SMODS.calculate_effect(
+                        { message = localize { type = 'variable', key = 'a_discards', vars = { card.ability.extra.hands } } },
+                        context.blueprint_card or card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
+        end
+	end
+}
+SMODS.Joker{
+	key = 'allin',
+    loc_txt = {
+        name = '{C:edition,s:1.2,E:2}All in{}',
+        text = {
+          '{X:mult,C:white}X#1#{} Mult',
+		  'Contains all the previous effects',
+		  '{C:red}There is no shop{}',
+		  '{C:red}Only one card{}',
+		  '{C:red}Only one Joker{}',
+		  '{C:inactive,s:0.8}It came to me in a {}{C:dark_edition,s:0.8}Dream{}{C:inactive,s:0.8} - Milk{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.EDITION, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    pos = {x = 4, y = 5},
+	set_ability = function(self, card, initial)
+		card:set_eternal(true)
+	end,
+	config = { 
+		extra = {
+			Xmult = 30,
+			hand_size = 1,
+			joker_slots = 1,
+			discards = 5,
+			count = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.Xmult,
+				center.ability.extra.hand_size,
+				center.ability.extra.joker_slots,
+				center.ability.extra.discards,
+				center.ability.extra.count
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
+		card.ability.extra.hand_size = G.hand.config.card_limit
+		G.hand:change_size(-card.ability.extra.hand_size + 1)
+		card.ability.extra.joker_slots = G.jokers.config.card_limit
+		G.jokers.config.card_limit = 1
+		local deletable_jokers = {}
+		local hasError = false
+		for k, v in pairs(G.jokers.cards) do
+			deletable_jokers[#deletable_jokers + 1] = v
+
+			-- Check if the joker is an ERROR
+			if v.config.center.key == 'j_nyx_err' then
+				hasError = true
+			end
+		end
+		local _first_dissolve = nil
+		G.E_MANAGER:add_event(Event({
+			trigger = "before",
+			delay = 0.75,
+			func = function()
+				if not hasError then
+					for k, v in pairs(deletable_jokers) do
+						v:start_dissolve(nil, _first_dissolve)
+						_first_dissolve = true
+					end
+				end
+				G.jokers.config.card_limit = 1
+				return true
+			end,
+		}))
+		G.E_MANAGER:add_event(Event({
+			trigger = 'after',
+			delay = 1,
+			func = function()
+				G.jokers.config.card_limit = 1
+			return true
+			end
+		})) 
+	end,
+	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
+		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
+		G.hand:change_size(-G.hand.config.card_limit - 1)
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			local temp = nil
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					play_sound('timpani')
+					temp = SMODS.add_card({ set = 'Joker', edition = 'e_negative' })
+					temp:set_edition('e_negative',true)
+					temp:add_sticker("perishable",true)
+					card:juice_up(0.3, 0.5)
+					G.hand.config.card_limit = 1
+					return true
+				end
+			}))
+			card.ability.extra.count = 1
+			return {
+				Xmult = card.ability.extra.Xmult,
+				card = card
+			}
+		end
+		if context.setting_blind then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+					ease_discard(card.ability.extra.discards)
+					G.hand.config.card_limit = 1
+                    SMODS.calculate_effect(
+                        { message = localize { type = 'variable', key = 'a_discards', vars = { card.ability.extra.discards } } },
+                        context.blueprint_card or card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
+        end
+		if G.shop and card.ability.extra.count == 1 then
+			card.ability.extra.count = card.ability.extra.count + 1
+			for i = 1, #G.jokers.cards do
+				G.jokers.cards[i]:calculate_joker({ending_shop = true})
+			end
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 1,
+				func = function()
+					G.shop.alignment.offset.y = G.ROOM.T.y + 29
+					G.SHOP_SIGN.alignment.offset.y = -15
+				return true
+				end
+			})) 
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 1.2,
+				func = function()
+					G.shop:remove()
+					G.shop = nil
+					G.SHOP_SIGN:remove()
+					G.SHOP_SIGN = nil
+					G.STATE_COMPLETE = false
+					G.STATE = G.STATES.BLIND_SELECT
+					G.CONTROLLER.locks.toggle_shop = nil
+					return true
+				end
+			}))
+		end
+	end
+}
+end
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -4924,7 +5369,7 @@ SMODS.Joker{
         return true
     end,
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			xmult = 1.33
 		}
@@ -4991,7 +5436,7 @@ SMODS.Joker{
         return true
     end,
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			xmult = 1.33
 		}
@@ -5052,7 +5497,7 @@ SMODS.Joker{
 		return false 
 	end,
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			xmult = 2
 		}
@@ -5359,7 +5804,6 @@ SMODS.Joker{
 		}
 	},
 	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.e_negative
 		return{
 			vars = {
 				center.ability.extra.Xchip,
@@ -5373,11 +5817,13 @@ SMODS.Joker{
 		if ran == 777 then
 			chose = true
 		end
+		card.ability.extra.Xchip = 1
+		for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_malware" then
+                card.ability.extra.Xchip = card.ability.extra.Xchip + card.ability.extra.Xchip_gain
+            end
+        end
 		if context.joker_main then
-			card.ability.extra.Xchip = 1
-			for i=1, #SMODS.find_card("j_nyx_malware")-1 do
-				card.ability.extra.Xchip = card.ability.extra.Xchip + card.ability.extra.Xchip_gain
-			end
 			return {
 				xchips = card.ability.extra.Xchip,
 				card = card
@@ -6158,7 +6604,7 @@ SMODS.Joker{
         return true
     end,
 	config = { 
-		can_fuse = true,
+		can_fuse = false,
 		extra = {
 			retrigger = 3,
 		}
@@ -7417,447 +7863,6 @@ SMODS.Joker{
 	end
 }
 -- Uncommon --
-if horizonmod.config.enable_AllIn then
-SMODS.Joker{
-	key = 'allinred',
-    loc_txt = {
-        name = '{C:red,E:1}All In{}',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult',
-		  'Generates random perishable {C:attention}Jokers{}',
-		  'Never see a {C:attention}shop{} again'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.RED, 1 )
-	end,
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Jokers',
-    rarity = 2,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = false,
-    pos = {x = 1, y = 5},
-	set_ability = function(self, card, initial)
-		card:set_eternal(true)
-	end,
-	config = { 
-		extra = {
-			Xmult = 8,
-			count = 1,
-			can_fuse = false
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult,
-				center.ability.extra.count
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		card.ability.can_fuse = false
-		local count_jokers = 0
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_allinblack' then
-				count_jokers = 1
-			end
-		end
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_allingreen' and count_jokers > 0 then
-				count_jokers = 2
-			end
-		end
-		if count_jokers == 2 then
-			card.ability.can_fuse = true
-		end
-		if context.joker_main then
-			if #G.jokers.cards < G.jokers.config.card_limit then
-				local temp = nil
-				G.E_MANAGER:add_event(Event({
-					trigger = 'after',
-					delay = 0.4,
-					func = function()
-						play_sound('timpani')
-						temp = SMODS.add_card({ set = 'Joker' })
-						temp:add_sticker("perishable",true)
-						card:juice_up(0.3, 0.5)
-						return true
-					end
-				}))
-			end
-			card.ability.extra.count = 1
-			return {
-				Xmult = card.ability.extra.Xmult,
-				card = card
-			}
-		end
-		if G.shop and card.ability.extra.count == 1 then
-			card.ability.extra.count = card.ability.extra.count + 1
-			for i = 1, #G.jokers.cards do
-				G.jokers.cards[i]:calculate_joker({ending_shop = true})
-			end
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 1,
-				func = function()
-					G.shop.alignment.offset.y = G.ROOM.T.y + 29
-					G.SHOP_SIGN.alignment.offset.y = -15
-				return true
-				end
-			})) 
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 1.5,
-				func = function()
-					G.shop:remove()
-					G.shop = nil
-					G.SHOP_SIGN:remove()
-					G.SHOP_SIGN = nil
-					G.STATE_COMPLETE = false
-					G.STATE = G.STATES.BLIND_SELECT
-					G.CONTROLLER.locks.toggle_shop = nil
-					return true
-				end
-			}))
-		end
-	end
-}
-SMODS.Joker{
-	key = 'allinblack',
-    loc_txt = {
-        name = '{C:black,E:1}All In{}',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult',
-		  'Ante scaling is halved',
-		  'Joker {C:attention}slots{} are set to 1'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = false,
-    pos = {x = 3, y = 0},
-	set_ability = function(self, card, initial)
-		card:set_eternal(true)
-	end,
-	config = { 
-		extra = {
-			Xmult = 10,
-			joker_slots = 1,
-			can_fuse = false
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult,
-				center.ability.extra.joker_slots
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		card.ability.extra.joker_slots = G.jokers.config.card_limit
-		G.jokers.config.card_limit = G.jokers.config.card_limit - card.ability.extra.joker_slots + 1
-		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
-		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
-	end,
-	calculate = function(self,card,context)
-		card.ability.can_fuse = false
-		local count_jokers = 0
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_allinred' then
-				count_jokers = 1
-			end
-		end
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_allingreen' and count_jokers > 0 then
-				count_jokers = 2
-			end
-		end
-		if count_jokers == 2 then
-			card.ability.can_fuse = true
-		end
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.Xmult,
-				card = card
-			}
-		end
-	end
-}
-SMODS.Joker{
-	key = 'allingreen',
-    loc_txt = {
-        name = '{C:green,E:1}All In{}',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult',
-		  '{C:blue}+#2#{} Hands and Discards',
-		  'Hand {C:attention}size{} is set to #3#'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.GREEN, 1 )
-	end,
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Jokers',
-    rarity = 2,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = false,
-    pos = {x = 2, y = 5},
-	set_ability = function(self, card, initial)
-		card:set_eternal(true)
-	end,
-	config = { 
-		extra = {
-			Xmult = 6, -- Logger
-			hand_size = 1,
-			hands = 3,
-			can_fuse = false
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult,
-				center.ability.extra.hand_size,
-				center.ability.extra.hands
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		card.ability.extra.hand_size = G.hand.config.card_limit
-		G.hand:change_size(-card.ability.extra.hand_size + 1)
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		G.hand:change_size(card.ability.extra.hand_size - 1)
-	end,
-	calculate = function(self,card,context)
-		card.ability.can_fuse = false
-		local count_jokers = 0
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_allinred' then
-				count_jokers = 1
-			end
-		end
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_allinblack' and count_jokers > 0 then
-				count_jokers = 2
-			end
-		end
-		if count_jokers == 2 then
-			card.ability.can_fuse = true
-		end
-		if context.joker_main then
-			return {
-				Xmult = card.ability.extra.Xmult,
-				card = card
-			}
-		end
-		if context.setting_blind then
-            G.E_MANAGER:add_event(Event({
-                func = function()
-					ease_discard(card.ability.extra.hands)
-                    ease_hands_played(card.ability.extra.hands)
-                    SMODS.calculate_effect(
-                        { message = localize { type = 'variable', key = 'a_hands', vars = { card.ability.extra.hands } } },
-                        context.blueprint_card or card)
-                    return true
-                end
-            }))
-            return nil, true -- This is for Joker retrigger purposes
-        end
-	end
-}
-SMODS.Joker{
-	key = 'allin',
-    loc_txt = {
-        name = '{C:edition,s:1.2,E:2}All in{}',
-        text = {
-          '{X:mult,C:white}X#1#{} Mult',
-		  'Contains all the previous effects',
-		  '{C:red}There is no shop{}',
-		  '{C:red}Only one card{}',
-		  '{C:red}Only one Joker{}'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('ALL IN', G.C.WHITE, G.C.EDITION, 1 )
-	end,
-	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
-    rarity = 2,
-    cost = 4,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = false,
-    pos = {x = 3, y = 0},
-	set_ability = function(self, card, initial)
-		card:set_eternal(true)
-	end,
-	config = { 
-		extra = {
-			Xmult = 30,
-			hand_size = 1,
-			joker_slots = 1,
-			discards = 5,
-			count = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.Xmult,
-				center.ability.extra.hand_size,
-				center.ability.extra.joker_slots,
-				center.ability.extra.discards,
-				center.ability.extra.count
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)/2
-		card.ability.extra.hand_size = G.hand.config.card_limit
-		G.hand:change_size(-card.ability.extra.hand_size + 1)
-		card.ability.extra.joker_slots = G.jokers.config.card_limit
-		G.jokers.config.card_limit = 1
-		local deletable_jokers = {}
-		local hasError = false
-		for k, v in pairs(G.jokers.cards) do
-			deletable_jokers[#deletable_jokers + 1] = v
-
-			-- Check if the joker is an ERROR
-			if v.config.center.key == 'j_nyx_err' then
-				hasError = true
-			end
-		end
-		local _first_dissolve = nil
-		G.E_MANAGER:add_event(Event({
-			trigger = "before",
-			delay = 0.75,
-			func = function()
-				if not hasError then
-					for k, v in pairs(deletable_jokers) do
-						v:start_dissolve(nil, _first_dissolve)
-						_first_dissolve = true
-					end
-				end
-				G.jokers.config.card_limit = 1
-				return true
-			end,
-		}))
-		G.E_MANAGER:add_event(Event({
-			trigger = 'after',
-			delay = 1,
-			func = function()
-				G.jokers.config.card_limit = 1
-			return true
-			end
-		})) 
-	end,
-	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.starting_params.ante_scaling = (G.GAME.starting_params.ante_scaling or 1)*2
-		G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.joker_slots - 1
-		G.hand:change_size(-G.hand.config.card_limit - 1)
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			local temp = nil
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.4,
-				func = function()
-					play_sound('timpani')
-					temp = SMODS.add_card({ set = 'Joker', edition = 'e_negative' })
-					temp:set_edition('e_negative',true)
-					temp:add_sticker("perishable",true)
-					card:juice_up(0.3, 0.5)
-					G.hand.config.card_limit = 1
-					return true
-				end
-			}))
-			card.ability.extra.count = 1
-			return {
-				Xmult = card.ability.extra.Xmult,
-				card = card
-			}
-		end
-		if context.setting_blind then
-            G.E_MANAGER:add_event(Event({
-                func = function()
-					ease_discard(card.ability.extra.discards)
-					G.hand.config.card_limit = 1
-                    SMODS.calculate_effect(
-                        { message = localize { type = 'variable', key = 'a_discards', vars = { card.ability.extra.discards } } },
-                        context.blueprint_card or card)
-                    return true
-                end
-            }))
-            return nil, true -- This is for Joker retrigger purposes
-        end
-		if G.shop and card.ability.extra.count == 1 then
-			card.ability.extra.count = card.ability.extra.count + 1
-			for i = 1, #G.jokers.cards do
-				G.jokers.cards[i]:calculate_joker({ending_shop = true})
-			end
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 1,
-				func = function()
-					G.shop.alignment.offset.y = G.ROOM.T.y + 29
-					G.SHOP_SIGN.alignment.offset.y = -15
-				return true
-				end
-			})) 
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 1.2,
-				func = function()
-					G.shop:remove()
-					G.shop = nil
-					G.SHOP_SIGN:remove()
-					G.SHOP_SIGN = nil
-					G.STATE_COMPLETE = false
-					G.STATE = G.STATES.BLIND_SELECT
-					G.CONTROLLER.locks.toggle_shop = nil
-					return true
-				end
-			}))
-		end
-	end
-}
-end
 SMODS.Joker {
     key = "gadget",
     loc_txt = {
