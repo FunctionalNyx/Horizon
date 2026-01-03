@@ -4358,7 +4358,7 @@ SMODS.Joker{
 			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 1,
+				delay = 0.1,
 				func = function()
 					G.shop.alignment.offset.y = G.ROOM.T.y + 29
 					G.SHOP_SIGN.alignment.offset.y = -15
@@ -4367,7 +4367,7 @@ SMODS.Joker{
 			})) 
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 1.5,
+				delay = 0.1,
 				func = function()
 					G.shop:remove()
 					G.shop = nil
@@ -4689,7 +4689,7 @@ SMODS.Joker{
 			end
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 1,
+				delay = 0.1,
 				func = function()
 					G.shop.alignment.offset.y = G.ROOM.T.y + 29
 					G.SHOP_SIGN.alignment.offset.y = -15
@@ -4698,7 +4698,7 @@ SMODS.Joker{
 			})) 
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
-				delay = 1.2,
+				delay = 0.1,
 				func = function()
 					G.shop:remove()
 					G.shop = nil
