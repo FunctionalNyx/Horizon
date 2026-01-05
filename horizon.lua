@@ -4331,6 +4331,30 @@ SMODS.Joker{
 			card.ability.can_fuse = true
 		end
 		if context.joker_main then
+			if pseudorandom('nyx_allinred') < 0.5 then
+				local voucher_pool = get_current_pool('Voucher')
+				local selected_voucher = pseudorandom_element(voucher_pool, 'modprefix_seed')
+				local it = 1
+				while selected_voucher == 'UNAVAILABLE' do
+					it = it + 1
+					selected_voucher = pseudorandom_element(voucher_pool, 'modprefix_seed' .. it)
+				end
+				local voucher_card = SMODS.create_card({ area = G.play, key = selected_voucher }) -- Ignore the previous code and just use a key for a prefined voucher
+				voucher_card:start_materialize()
+				voucher_card.cost = 0
+				G.play:emplace(voucher_card)
+				delay(0.8)
+				voucher_card:redeem()
+
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.5,
+					func = function()
+						voucher_card:start_dissolve()
+						return true
+					end
+				}))
+			end
 			if #G.jokers.cards < G.jokers.config.card_limit then
 				local temp = nil
 				G.E_MANAGER:add_event(Event({
@@ -4649,6 +4673,30 @@ SMODS.Joker{
 	end,
 	calculate = function(self,card,context)
 		if context.joker_main then
+			if pseudorandom('nyx_allinred') < 0.5 then
+				local voucher_pool = get_current_pool('Voucher')
+				local selected_voucher = pseudorandom_element(voucher_pool, 'modprefix_seed')
+				local it = 1
+				while selected_voucher == 'UNAVAILABLE' do
+					it = it + 1
+					selected_voucher = pseudorandom_element(voucher_pool, 'modprefix_seed' .. it)
+				end
+				local voucher_card = SMODS.create_card({ area = G.play, key = selected_voucher }) -- Ignore the previous code and just use a key for a prefined voucher
+				voucher_card:start_materialize()
+				voucher_card.cost = 0
+				G.play:emplace(voucher_card)
+				delay(0.8)
+				voucher_card:redeem()
+
+				G.E_MANAGER:add_event(Event({
+					trigger = 'after',
+					delay = 0.5,
+					func = function()
+						voucher_card:start_dissolve()
+						return true
+					end
+				}))
+			end
 			local temp = nil
 			G.E_MANAGER:add_event(Event({
 				trigger = 'after',
