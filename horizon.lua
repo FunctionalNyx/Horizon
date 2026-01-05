@@ -13256,7 +13256,7 @@ local use_and_sell_buttonsref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
 	local retval = use_and_sell_buttonsref(card)
 
-	if card.ability.set == 'Joker' and (card.ability.can_fuse == false or card.ability.can_fuse == true) then
+	if card.ability.set == 'Joker' and (card.ability.can_fuse == false or card.ability.can_fuse == true) and card.area == G.jokers then
 		local fuse =
 		{n=G.UIT.C, config={align = "cr",}, nodes={
 		  {n=G.UIT.C, config={ref_table = card, align = "cm",maxw = 1.25, padding = 0.15, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.GOLD, button = 'fuse_card', func = 'can_fuse_card'}, nodes={
@@ -13275,6 +13275,7 @@ function G.UIDEF.use_and_sell_buttons(card)
 
 	return retval
 end
+
 --various presets --
 
 --[[ Joker thingy
