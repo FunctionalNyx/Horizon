@@ -1809,6 +1809,53 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'shoppingmall',
+    loc_txt = {
+        name = 'Shopping Mall',
+        text = {
+          '{C:attention}+#1#{} card slot available in shop'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 5},
+	config = { 
+		extra = {
+			slots = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.slots
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			change_shop_size(card.ability.extra.slots)
+			return true
+		end
+		}))
+  	end,
+  	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
+  	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -7638,54 +7685,6 @@ SMODS.Joker{
 if horizonmod.config.enable_WIP_cards then
 -- Common --
 SMODS.Joker{
-	key = 'shoppingmall',
-    loc_txt = {
-        name = 'Shopping Mall',
-        text = {
-          '{C:attention}+#1#{} card slot available in shop'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			slots = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.slots
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			change_shop_size(card.ability.extra.slots)
-			return true
-		end
-		}))
-  	end,
-  	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
-  	end
-}
-SMODS.Joker{
 	key = 'backpack',
     loc_txt = {
         name = 'Backpack',
@@ -9554,7 +9553,8 @@ SMODS.Consumable {
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	cost = 4,
 	unlocked = true,
@@ -10195,8 +10195,8 @@ SMODS.Consumable {
 SMODS.Consumable {
     key = 'Glaucoma',
     set = 'Spectral',
-	atlas = 'Placeholder',
-    pos = { x = 1, y = 0 },
+	atlas = 'Spectral',
+    pos = { x = 4, y = 1 },
 	config = { 
 		extra = {
 			max_highlighted = 1

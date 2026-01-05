@@ -12,32 +12,32 @@ A shitty balatro mod made by a bunch of nerds
 
 Currently adds (Hidden Cards not Included)
 
-    103 Jokers [13 of which are Work in Progress and can be Disabled]
-    -   25 [+4 WIP] Common
-    -   31 [+5 WIP] Uncommon
+    104 Jokers [9 of which are Work in Progress and can be Disabled]
+    -   26 [+3 WIP] Common
+    -   35 [+1 WIP] Uncommon
     -   16 [+4 WIP] Rare
     -   8 [+1 WIP] Legendary
     -   10 Modded Rarity
     
     9 Enhancements
     
-    25 Consumables
+    26 Consumables
     
     -   3 [+1 WIP] Tarots
-    -   3 Spectrals
+    -   4 Spectrals
     -   Rest are custom [9 are Work in Progress]
     
     2 Seals
     
     6 Booster packs
     
-    5 Decks
+    6 Decks
     
     3 Tags
     
     8 Blinds
 
-    1 WIP Voucher
+    1 Voucher
 
 There are currently no unlock requirements implemented
 
@@ -61,3 +61,5 @@ bozo! - Rarely codes & art & music
 Milk - Does basically all the art
 
 Asto - who?
+
+Moist - Pending Artist
