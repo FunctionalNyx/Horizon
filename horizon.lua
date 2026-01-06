@@ -11742,6 +11742,61 @@ SMODS.Enhancement{
     	end
 	end
 }
+SMODS.Enhancement{
+	key = 'whiteknight',
+	atlas = 'knight_lc',
+	pos = { x = 0, y = 4 },
+	loc_txt = {
+		name = 'White Knight',
+		text = {
+			'{C:white,X:chips}X#1#{} Chips when scored',
+			'{C:attention}Scales{} when in {C:blue}hand{}',
+			'Cannot be {C:red}Debuffed{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	unlocked = true,
+	discovered = true,
+	replace_base_card = true,
+	overrides_base_rank = true,
+	any_suit = true,
+	always_scores = true,
+	config = {
+		extra = {
+			xchips = 1,
+			scale = 0.1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xchips
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			return {
+				xchips = card.ability.extra.xchips
+			}
+		end
+		if context.cardarea == G.hand and context.other_card == card then
+			SMODS.scale_card(card, {
+				ref_table = card.ability.extra,
+				ref_value = "xchips",
+				scalar_value = "scale",
+				message_colour = G.C.CHIPS,
+			})
+		end
+	end
+}
+SMODS.current_mod.set_debuff = function(card)
+    if SMODS.has_enhancement(card, "m_nyx_whiteknight") then
+        return 'prevent_debuff'
+    end
+end
 -- 
 
 -- STICKERS
@@ -12671,6 +12726,124 @@ SMODS.Edition {
   end,
 }
 --
+
+-- RANKS --
+SMODS.Atlas {
+  key = 'knight_lc',
+  path = 'knights_lc.png',
+  px = 71,
+  py = 95
+}
+SMODS.Atlas {
+  key = 'knight_hc',
+  path = 'knights_hc.png',
+  px = 71,
+  py = 95
+}
+SMODS.Rank {
+  key = 'Knight',
+  card_key = 'Knight',
+  shorthand = 'N',
+  loc_txt = {
+	name = 'Knight'
+  },
+  set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+  lc_atlas = 'knight_lc',
+  hc_atlas = 'knight_hc',
+  pos = { x = 0 },
+
+  straight_edge = false,
+  next = {},
+  nominal = 12,
+  face = true,
+  strength_effect = { ignore = true },
+
+  suit_map = {
+    Hearts = 0,
+    Clubs = 1,
+    Diamonds = 2,
+    Spades = 3,
+  },
+
+  in_pool = function(self, args)
+    return false
+  end
+}
+-- TEMPLAR --
+SMODS.PokerHandPart{
+    key = 'knights',
+    func = function(hand)
+		if #hand < 5 then return {} end
+		local knight = true
+		local ret = {}
+        for i = 1, #hand do
+            local rank = SMODS.Ranks[hand[i].base.value]
+            if rank.key ~= 'nyx_Knight' then
+				knight = false
+			else
+				table.insert(ret, {hand[i]})
+			end
+        end
+        if knight then 
+			return {ret} 
+		end
+        return {}
+    end,
+}
+SMODS.PokerHand {
+    key = "Templar",
+	loc_txt = {
+		name = "Templar",
+		description = {
+			'5 Knights'
+		}
+	},
+    visible = false,
+    mult = 20,
+    chips = 180,
+    l_mult = 4,
+    l_chips = 50,
+    example = {
+        { 'S_nyx_Knight', true },
+        { 'H_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'C_nyx_Knight', true },
+        { 'D_nyx_Knight', true }
+    },
+    evaluate = function(parts, hand)
+		if not next(parts._5) or not next(parts.nyx_knights) then return {} end
+		return { SMODS.merge_lists(parts._5, parts.nyx_knights) }
+    end
+}
+SMODS.PokerHand {
+    key = "Crusade",
+	loc_txt = {
+		name = "Crusade",
+		description = {
+			'5 Knights of the same Suit'
+		}
+	},
+    visible = false,
+    mult = 22,
+    chips = 200,
+    l_mult = 5,
+    l_chips = 60,
+    example = {
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true }
+    },
+    evaluate = function(parts, hand)
+		if not next(parts._5) or not next(parts.nyx_knights) or not next(parts._flush) then return {} end
+		return { SMODS.merge_lists(parts._5, parts.nyx_knights, parts._flush) }
+    end
+}
+--
+
 
 
 -- Nyx bullshit --
