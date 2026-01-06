@@ -12771,7 +12771,13 @@ SMODS.Rank {
     return false
   end
 }
--- TEMPLAR --
+-- POKER HANDS & PLANETS --
+--[[SMODS.Atlas {
+  key = 'Planets',
+  path = 'Planets.png',
+  px = 71,
+  py = 95
+}]]
 SMODS.PokerHandPart{
     key = 'knights',
     func = function(hand)
