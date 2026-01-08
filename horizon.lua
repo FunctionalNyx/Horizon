@@ -12565,6 +12565,43 @@ SMODS.Voucher {
         }))
     end
 }
+SMODS.Voucher {
+    key = 'rapture2',
+	loc_txt = {
+		name = "Rapture but its not lol",
+		text = {
+			'After beating a Boss Blind',
+			'Adds a Free {V:1}Heaven{} & {V:2}Hell{} Pack',
+		},
+	},
+	atlas = 'Vouchers',
+    pos = { x = 0, y = 0 },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+    config = {
+		triggered = false
+	},
+    loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_hnh_pack
+        return { vars = { colours = { HEX('FFD700'), HEX('880808') } } }
+    end,
+    calculate = function(self, card, context)
+		if context.starting_shop and card.ability.triggered then
+		card.ability.triggered = false
+		G.E_MANAGER:add_event(Event {
+			func = function()
+				local booster = SMODS.add_booster_to_shop('p_nyx_hnh_pack')
+				booster.ability.couponed = true
+				booster:set_cost()
+				return true
+			end})
+		end
+		if context.end_of_round and context.main_eval and G.GAME.blind.boss then
+			card.ability.triggered = true
+		end
+	end
+}
 --
 
 -- EDITIONS --
@@ -12772,12 +12809,12 @@ SMODS.Rank {
   end
 }
 -- POKER HANDS & PLANETS --
---[[SMODS.Atlas {
+SMODS.Atlas {
   key = 'Planets',
   path = 'Planets.png',
   px = 71,
   py = 95
-}]]
+}
 SMODS.PokerHandPart{
     key = 'knights',
     func = function(hand)
@@ -12846,6 +12883,62 @@ SMODS.PokerHand {
     evaluate = function(parts, hand)
 		if not next(parts._5) or not next(parts.nyx_knights) or not next(parts._flush) then return {} end
 		return { SMODS.merge_lists(parts._5, parts.nyx_knights, parts._flush) }
+    end
+}
+SMODS.Consumable {
+    key = "templar_planet",
+    set = "Planet",
+    cost = 3,
+	atlas = 'Planets',
+    pos = { x = 0, y = 0 },
+    config = { hand_type = 'nyx_Templar', softlock = true },
+    loc_txt = {
+		name = "Templar Planet",
+		text = {
+			"({V:1}lvl.#1#{}) Level up",
+			"{C:attention}#2#{}",
+			"{C:mult}+#3#{} Mult and",
+			"{C:chips}+#4#{} chips",
+		},
+	},
+	loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                G.GAME.hands[card.ability.hand_type].level,
+                localize(card.ability.hand_type, 'poker_hands'),
+                G.GAME.hands[card.ability.hand_type].l_mult,
+                G.GAME.hands[card.ability.hand_type].l_chips,
+                colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
+            }
+        }
+    end
+}
+SMODS.Consumable {
+    key = "crusade_planet",
+    set = "Planet",
+    cost = 3,
+	atlas = 'Planets',
+    pos = { x = 0, y = 0 },
+    config = { hand_type = 'nyx_Crusade', softlock = true },
+    loc_txt = {
+		name = "Crusade Planet",
+		text = {
+			"({V:1}lvl.#1#{}) Level up",
+			"{C:attention}#2#{}",
+			"{C:mult}+#3#{} Mult and",
+			"{C:chips}+#4#{} chips",
+		},
+	},
+	loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                G.GAME.hands[card.ability.hand_type].level,
+                localize(card.ability.hand_type, 'poker_hands'),
+                G.GAME.hands[card.ability.hand_type].l_mult,
+                G.GAME.hands[card.ability.hand_type].l_chips,
+                colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
+            }
+        }
     end
 }
 --
