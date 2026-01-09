@@ -56,7 +56,7 @@ Have fun
 
 Nyx - Main Coder
 
-bozo! - Rarely codes & art & music
+bozo! - Rarely codes & art & music (I didn't make music FOR the mod nyx is just a dirty thief :3 -bozo)
 
 Milk - Does basically all the art
 
