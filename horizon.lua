@@ -1809,6 +1809,53 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'shoppingmall',
+    loc_txt = {
+        name = 'Shopping Mall',
+        text = {
+          '{C:attention}+#1#{} card slot available in shop'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 5, y = 5},
+	config = { 
+		extra = {
+			slots = 1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.slots
+			}
+		}
+	end,
+	add_to_deck = function(self, card, from_debuff)
+		G.E_MANAGER:add_event(Event({
+		func = function()
+			change_shop_size(card.ability.extra.slots)
+			return true
+		end
+		}))
+  	end,
+  	remove_from_deck = function(self, card, from_debuff)
+		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
+  	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -7638,54 +7685,6 @@ SMODS.Joker{
 if horizonmod.config.enable_WIP_cards then
 -- Common --
 SMODS.Joker{
-	key = 'shoppingmall',
-    loc_txt = {
-        name = 'Shopping Mall',
-        text = {
-          '{C:attention}+#1#{} card slot available in shop'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			slots = 1
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.slots
-			}
-		}
-	end,
-	add_to_deck = function(self, card, from_debuff)
-		G.E_MANAGER:add_event(Event({
-		func = function()
-			change_shop_size(card.ability.extra.slots)
-			return true
-		end
-		}))
-  	end,
-  	remove_from_deck = function(self, card, from_debuff)
-		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
-  	end
-}
-SMODS.Joker{
 	key = 'backpack',
     loc_txt = {
         name = 'Backpack',
@@ -9554,7 +9553,8 @@ SMODS.Consumable {
 		}
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	cost = 4,
 	unlocked = true,
@@ -10195,8 +10195,8 @@ SMODS.Consumable {
 SMODS.Consumable {
     key = 'Glaucoma',
     set = 'Spectral',
-	atlas = 'Placeholder',
-    pos = { x = 1, y = 0 },
+	atlas = 'Spectral',
+    pos = { x = 4, y = 1 },
 	config = { 
 		extra = {
 			max_highlighted = 1
@@ -11742,6 +11742,61 @@ SMODS.Enhancement{
     	end
 	end
 }
+SMODS.Enhancement{
+	key = 'whiteknight',
+	atlas = 'knight_lc',
+	pos = { x = 0, y = 4 },
+	loc_txt = {
+		name = 'White Knight',
+		text = {
+			'{C:white,X:chips}X#1#{} Chips when scored',
+			'{C:attention}Scales{} when in {C:blue}hand{}',
+			'Cannot be {C:red}Debuffed{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	unlocked = true,
+	discovered = true,
+	replace_base_card = true,
+	overrides_base_rank = true,
+	any_suit = true,
+	always_scores = true,
+	config = {
+		extra = {
+			xchips = 1,
+			scale = 0.1
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.xchips
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			return {
+				xchips = card.ability.extra.xchips
+			}
+		end
+		if context.cardarea == G.hand and context.other_card == card then
+			SMODS.scale_card(card, {
+				ref_table = card.ability.extra,
+				ref_value = "xchips",
+				scalar_value = "scale",
+				message_colour = G.C.CHIPS,
+			})
+		end
+	end
+}
+SMODS.current_mod.set_debuff = function(card)
+    if SMODS.has_enhancement(card, "m_nyx_whiteknight") then
+        return 'prevent_debuff'
+    end
+end
 -- 
 
 -- STICKERS
@@ -12510,6 +12565,43 @@ SMODS.Voucher {
         }))
     end
 }
+SMODS.Voucher {
+    key = 'rapture2',
+	loc_txt = {
+		name = "Rapture but its not lol",
+		text = {
+			'After beating a Boss Blind',
+			'Adds a Free {V:1}Heaven{} & {V:2}Hell{} Pack',
+		},
+	},
+	atlas = 'Vouchers',
+    pos = { x = 0, y = 0 },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+    config = {
+		triggered = false
+	},
+    loc_vars = function(self, info_queue, card)
+		info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_hnh_pack
+        return { vars = { colours = { HEX('FFD700'), HEX('880808') } } }
+    end,
+    calculate = function(self, card, context)
+		if context.starting_shop and card.ability.triggered then
+		card.ability.triggered = false
+		G.E_MANAGER:add_event(Event {
+			func = function()
+				local booster = SMODS.add_booster_to_shop('p_nyx_hnh_pack')
+				booster.ability.couponed = true
+				booster:set_cost()
+				return true
+			end})
+		end
+		if context.end_of_round and context.main_eval and G.GAME.blind.boss then
+			card.ability.triggered = true
+		end
+	end
+}
 --
 
 -- EDITIONS --
@@ -12671,6 +12763,186 @@ SMODS.Edition {
   end,
 }
 --
+
+-- RANKS --
+SMODS.Atlas {
+  key = 'knight_lc',
+  path = 'knights_lc.png',
+  px = 71,
+  py = 95
+}
+SMODS.Atlas {
+  key = 'knight_hc',
+  path = 'knights_hc.png',
+  px = 71,
+  py = 95
+}
+SMODS.Rank {
+  key = 'Knight',
+  card_key = 'Knight',
+  shorthand = 'N',
+  loc_txt = {
+	name = 'Knight'
+  },
+  set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+  lc_atlas = 'knight_lc',
+  hc_atlas = 'knight_hc',
+  pos = { x = 0 },
+
+  straight_edge = false,
+  next = {},
+  nominal = 12,
+  face = true,
+  strength_effect = { ignore = true },
+
+  suit_map = {
+    Hearts = 0,
+    Clubs = 1,
+    Diamonds = 2,
+    Spades = 3,
+  },
+
+  in_pool = function(self, args)
+    return false
+  end
+}
+-- POKER HANDS & PLANETS --
+SMODS.Atlas {
+  key = 'Planets',
+  path = 'Planets.png',
+  px = 71,
+  py = 95
+}
+SMODS.PokerHandPart{
+    key = 'knights',
+    func = function(hand)
+		if #hand < 5 then return {} end
+		local knight = true
+		local ret = {}
+        for i = 1, #hand do
+            local rank = SMODS.Ranks[hand[i].base.value]
+            if rank.key ~= 'nyx_Knight' then
+				knight = false
+			else
+				table.insert(ret, {hand[i]})
+			end
+        end
+        if knight then 
+			return {ret} 
+		end
+        return {}
+    end,
+}
+SMODS.PokerHand {
+    key = "Templar",
+	loc_txt = {
+		name = "Templar",
+		description = {
+			'5 Knights'
+		}
+	},
+    visible = false,
+    mult = 20,
+    chips = 180,
+    l_mult = 4,
+    l_chips = 50,
+    example = {
+        { 'S_nyx_Knight', true },
+        { 'H_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'C_nyx_Knight', true },
+        { 'D_nyx_Knight', true }
+    },
+    evaluate = function(parts, hand)
+		if not next(parts._5) or not next(parts.nyx_knights) then return {} end
+		return { SMODS.merge_lists(parts._5, parts.nyx_knights) }
+    end
+}
+SMODS.PokerHand {
+    key = "Crusade",
+	loc_txt = {
+		name = "Crusade",
+		description = {
+			'5 Knights of the same Suit'
+		}
+	},
+    visible = false,
+    mult = 22,
+    chips = 200,
+    l_mult = 5,
+    l_chips = 60,
+    example = {
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true },
+        { 'S_nyx_Knight', true }
+    },
+    evaluate = function(parts, hand)
+		if not next(parts._5) or not next(parts.nyx_knights) or not next(parts._flush) then return {} end
+		return { SMODS.merge_lists(parts._5, parts.nyx_knights, parts._flush) }
+    end
+}
+SMODS.Consumable {
+    key = "templar_planet",
+    set = "Planet",
+    cost = 3,
+	atlas = 'Planets',
+    pos = { x = 0, y = 0 },
+    config = { hand_type = 'nyx_Templar', softlock = true },
+    loc_txt = {
+		name = "Templar Planet",
+		text = {
+			"({V:1}lvl.#1#{}) Level up",
+			"{C:attention}#2#{}",
+			"{C:mult}+#3#{} Mult and",
+			"{C:chips}+#4#{} chips",
+		},
+	},
+	loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                G.GAME.hands[card.ability.hand_type].level,
+                localize(card.ability.hand_type, 'poker_hands'),
+                G.GAME.hands[card.ability.hand_type].l_mult,
+                G.GAME.hands[card.ability.hand_type].l_chips,
+                colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
+            }
+        }
+    end
+}
+SMODS.Consumable {
+    key = "crusade_planet",
+    set = "Planet",
+    cost = 3,
+	atlas = 'Planets',
+    pos = { x = 0, y = 0 },
+    config = { hand_type = 'nyx_Crusade', softlock = true },
+    loc_txt = {
+		name = "Crusade Planet",
+		text = {
+			"({V:1}lvl.#1#{}) Level up",
+			"{C:attention}#2#{}",
+			"{C:mult}+#3#{} Mult and",
+			"{C:chips}+#4#{} chips",
+		},
+	},
+	loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                G.GAME.hands[card.ability.hand_type].level,
+                localize(card.ability.hand_type, 'poker_hands'),
+                G.GAME.hands[card.ability.hand_type].l_mult,
+                G.GAME.hands[card.ability.hand_type].l_chips,
+                colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
+            }
+        }
+    end
+}
+--
+
 
 
 -- Nyx bullshit --
@@ -13256,7 +13528,7 @@ local use_and_sell_buttonsref = G.UIDEF.use_and_sell_buttons
 function G.UIDEF.use_and_sell_buttons(card)
 	local retval = use_and_sell_buttonsref(card)
 
-	if card.ability.set == 'Joker' and (card.ability.can_fuse == false or card.ability.can_fuse == true) then
+	if card.ability.set == 'Joker' and (card.ability.can_fuse == false or card.ability.can_fuse == true) and card.area == G.jokers then
 		local fuse =
 		{n=G.UIT.C, config={align = "cr",}, nodes={
 		  {n=G.UIT.C, config={ref_table = card, align = "cm",maxw = 1.25, padding = 0.15, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.GOLD, button = 'fuse_card', func = 'can_fuse_card'}, nodes={
@@ -13275,6 +13547,7 @@ function G.UIDEF.use_and_sell_buttons(card)
 
 	return retval
 end
+
 --various presets --
 
 --[[ Joker thingy
