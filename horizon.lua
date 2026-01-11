@@ -12886,14 +12886,14 @@ SMODS.PokerHand {
     end
 }
 SMODS.Consumable {
-    key = "templar_planet",
+    key = "ganymede",
     set = "Planet",
     cost = 3,
 	atlas = 'Planets',
-    pos = { x = 0, y = 0 },
+    pos = { x = 1, y = 0 },
     config = { hand_type = 'nyx_Templar', softlock = true },
     loc_txt = {
-		name = "Templar Planet",
+		name = "Ganymede",
 		text = {
 			"({V:1}lvl.#1#{}) Level up",
 			"{C:attention}#2#{}",
@@ -12914,14 +12914,14 @@ SMODS.Consumable {
     end
 }
 SMODS.Consumable {
-    key = "crusade_planet",
+    key = "callisto",
     set = "Planet",
     cost = 3,
 	atlas = 'Planets',
     pos = { x = 0, y = 0 },
     config = { hand_type = 'nyx_Crusade', softlock = true },
     loc_txt = {
-		name = "Crusade Planet",
+		name = "Callisto",
 		text = {
 			"({V:1}lvl.#1#{}) Level up",
 			"{C:attention}#2#{}",
