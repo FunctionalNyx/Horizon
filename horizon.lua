@@ -12575,6 +12575,7 @@ SMODS.Voucher {
 		},
 	},
 	atlas = 'Vouchers',
+	requires = { 'v_nyx_rapture' },
     pos = { x = 0, y = 0 },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
