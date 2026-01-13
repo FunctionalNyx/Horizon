@@ -319,6 +319,9 @@ SMODS.Joker{
 		  'Setting {C:planet}High Card{} to {C:red}1{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: ♠Dread♠', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
@@ -1274,6 +1277,7 @@ SMODS.Joker{
         text = {
           '{C:green}#2# in #1#{} Chance to',
 		  '{C:blue}Moisturize{} scoring cards',
+		  '{C:inactive,s:0.8}(Prevents {}{C:red,s:0.8}Drying){}',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -1855,6 +1859,93 @@ SMODS.Joker{
   	remove_from_deck = function(self, card, from_debuff)
 		G.GAME.shop.joker_max = G.GAME.shop.joker_max - card.ability.extra.slots
   	end
+}
+SMODS.Joker{
+	key = 'guillotine',
+    loc_txt = {
+        name = 'Guillotine',
+        text = {
+        	'When discarding {C:attention}Face{} cards',
+			'{C:green}#2# in #1#{} chance to {C:red}Behead{} it instead',
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Dread', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 6, y = 5},
+	config = {
+		extra = {
+			odds = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.discard and not context.blueprint then
+			if  (context.other_card:get_id() == 11 or
+				context.other_card:get_id() == 12 or
+				context.other_card:get_id() == 13) then
+				if pseudorandom('guillotine') < G.GAME.probabilities.normal / card.ability.extra.odds then
+					local beheadedcard = context.other_card
+					local suit = beheadedcard.base.suit
+					if context.other_card:get_id() == 13 then
+						local ran = math.random(3, 10)
+						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
+						local card2 = SMODS.add_card({set = 'Base', area = G.deck})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								copy_card(beheadedcard, card1)
+								SMODS.change_base(card1, suit, ""..ran.."")
+								copy_card(beheadedcard, card2)
+								SMODS.change_base(card2, suit, ""..(context.other_card:get_id()-ran).."")
+								SMODS.destroy_cards{ beheadedcard }
+								return true
+							end
+						}))
+					else
+						local ran = math.random(2, 10)
+						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
+						local card2 = SMODS.add_card({set = 'Base', area = G.deck})
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								copy_card(beheadedcard, card1)
+								SMODS.change_base(card1, suit, ""..ran.."")
+								copy_card(beheadedcard, card2)
+								SMODS.change_base(card2, suit, ""..(context.other_card:get_id()-ran).."")
+								SMODS.destroy_cards{ beheadedcard }
+								return true
+							end
+						}))
+					end
+					return {
+						message = "Beheaded!",
+						message_card = card
+					}
+				end
+			end
+		end
+	end
 }
 -- Uncommon --
 SMODS.Joker{
@@ -5962,20 +6053,68 @@ SMODS.Joker{
     perishable_compat = true,
     pos = {x = 14, y = 4},
 	calculate = function(self,card,context)
-		if context.before and context.main_eval and not context.blueprint then
+		if context.before and context.main_eval then
 			local last_card = context.scoring_hand[#context.scoring_hand]
 			local con = tonumber(last_card:get_id())
 			for i=1, #context.scoring_hand do
 				if context.scoring_hand[i] ~= context.scoring_hand[#context.scoring_hand] then
 					local _card = context.scoring_hand[i]
 					if tonumber(_card:get_id()) > con then
-						SMODS.modify_rank(_card, -1)
-						_card:juice_up(0.3, 0.4)
-						play_sound('card1')
+						G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
+					delay(0.2)
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.modify_rank(_card, -1))
+							return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
 					elseif tonumber(_card:get_id()) < con then
-						SMODS.modify_rank(_card, 1)
-						_card:juice_up(0.3, 0.4)
-						play_sound('card1')
+						G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
+					delay(0.2)
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.modify_rank(_card, 1))
+							return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
 					end
 				end
 			end
@@ -7721,94 +7860,6 @@ SMODS.Joker{
   	end
 }
 SMODS.Joker{
-	key = 'guillotine',
-    loc_txt = {
-        name = 'Guillotine',
-        text = {
-        	'When discarding {C:attention}Face{} cards',
-			'{C:green}#2# in #1#{} chance to {C:red}Behead{} it instead',
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = {
-		extra = {
-			odds = 2
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.odds,
-				(G.GAME and G.GAME.probabilities.normal or 1)
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.discard and not context.blueprint then
-			if  (context.other_card:get_id() == 11 or
-				context.other_card:get_id() == 12 or
-				context.other_card:get_id() == 13) then
-				if pseudorandom('guillotine') < G.GAME.probabilities.normal / card.ability.extra.odds then
-					local beheadedcard = context.other_card
-					local suit = beheadedcard.base.suit
-					if context.other_card:get_id() == 13 then
-						local ran = math.random(3, 10)
-						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
-						local card2 = SMODS.add_card({set = 'Base', area = G.deck})
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.1,
-							func = function()
-								copy_card(beheadedcard, card1)
-								SMODS.change_base(card1, suit, ""..ran.."")
-								copy_card(beheadedcard, card2)
-								SMODS.change_base(card2, suit, ""..(context.other_card:get_id()-ran).."")
-								SMODS.destroy_cards{ beheadedcard }
-								return true
-							end
-						}))
-					else
-						local ran = math.random(2, 10)
-						local card1 = SMODS.add_card({set = 'Base', area = G.deck})
-						local card2 = SMODS.add_card({set = 'Base', area = G.deck})
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.1,
-							func = function()
-								copy_card(beheadedcard, card1)
-								SMODS.change_base(card1, suit, ""..ran.."")
-								copy_card(beheadedcard, card2)
-								SMODS.change_base(card2, suit, ""..(context.other_card:get_id()-ran).."")
-								SMODS.destroy_cards{ beheadedcard }
-								return true
-							end
-						}))
-					end
-					return {
-						message = "Beheaded!",
-						message_card = card
-					}
-				end
-			end
-		end
-	end
-}
-SMODS.Joker{
 	key = 'bagofchips',
     loc_txt = {
         name = 'Bag of Chips',
@@ -7902,6 +7953,101 @@ SMODS.Joker {
 		end
     end
 }
+SMODS.Joker{
+	key = 'dif',
+    loc_txt = {
+        name = '',
+        text = {
+		  	'Playing a {C:attention}Straight{}',
+			"Increases all scored cards by {C:attention}1{}",
+			'Aces become {C:attention}Knights{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		return false
+	end,
+    atlas = 'Placeholder',
+    rarity = 2,
+    cost = 6,
+	no_collection = true,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	calculate = function(self,card,context)
+		if context.before and context.main_eval and next(context.poker_hands["Straight"]) then
+			for i=1, #context.scoring_hand do
+				local _card = context.scoring_hand[i]
+				if context.scoring_hand[i]:get_id() == 14 then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
+					delay(0.2)
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.change_base(_card, nil, 'nyx_Knight'))
+							return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
+				else
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
+					delay(0.2)
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.modify_rank(_card, 1))
+							return true
+						end
+					}))
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							_card:flip()
+							_card:juice_up(0.3, 0.3)
+							return true
+						end
+					}))
+				end
+			end
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
 	key = 'p2w',
@@ -7932,7 +8078,7 @@ SMODS.Joker{
     pos = {x = 4, y = 0},
 	config = { 
 		extra = {
-			mult = 1.5,
+			mult = 2,
 			money = 2,
 			mult_gain = 1.5,
 			money_gain = 2,
@@ -8043,7 +8189,7 @@ SMODS.Joker{
 	end,
     atlas = 'Placeholder',
     rarity = 3,
-    cost = 4,
+    cost = 8,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -8080,7 +8226,7 @@ SMODS.Joker{
 	end,
     atlas = 'Placeholder',
     rarity = 3,
-    cost = 4,
+    cost = 8,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -8098,6 +8244,55 @@ SMODS.Joker{
 					message = localize('k_upgrade_ex'),
 					colour = G.C.MULT
 				}
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'nil',
+    loc_txt = {
+        name = '',
+        text = {
+        	''
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		for _, playing_card in ipairs(G.playing_cards or {}) do
+            if playing_card:get_id() == 'nyx_Knight' then
+                return true
+            end
+        end
+        return false
+	end,
+    atlas = 'Placeholder',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 4, y = 0},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_whiteknight']
+    end,
+	calculate = function(self,card,context)
+		if context.destroy_card and (next(context.poker_hands["nyx_Templar"]) or next(context.poker_hands["nyx_Crusade"])) then
+			for i = 1, #context.scoring_hand do
+				local _card = context.scoring_hand[i]
+				if i == 1 then
+					_card:set_ability(G.P_CENTERS['m_nyx_whiteknight'])
+				elseif not SMODS.has_enhancement(_card, 'm_nyx_whiteknight') then
+					SMODS.destroy_cards{ _card }
+				end
 			end
 		end
 	end
@@ -11759,10 +11954,14 @@ SMODS.Enhancement{
 	end,
 	unlocked = true,
 	discovered = true,
+	no_collection = true,
 	replace_base_card = true,
 	overrides_base_rank = true,
 	any_suit = true,
 	always_scores = true,
+	in_pool = function(self)
+		return false 
+	end,
 	config = {
 		extra = {
 			xchips = 1,
@@ -11782,7 +11981,7 @@ SMODS.Enhancement{
 				xchips = card.ability.extra.xchips
 			}
 		end
-		if context.cardarea == G.hand and context.other_card == card then
+		if context.playing_card_end_of_round and context.cardarea == G.hand then
 			SMODS.scale_card(card, {
 				ref_table = card.ability.extra,
 				ref_value = "xchips",
@@ -13350,6 +13549,12 @@ local allin = {'j_nyx_allinblack','j_nyx_allinred','j_nyx_allingreen','j_nyx_all
 function Card:fusion() -- This was a nightmare
 	local edition = self.edition
 	local count = 0
+	G.E_MANAGER:add_event(Event({
+		func = function()
+			ease_dollars(-self.sell_cost,true)
+			return true
+		end
+	}))
 	if self.config.center.key ~= 'j_nyx_lasting_adventure' or self.config.center.key ~= 'j_nyx_journey' or self.config.center.key ~= 'j_nyx_nerd' or self.config.center.key ~= 'j_nyx_moist' then
 		for i=1,#oddNeven do
 			if self.config.center.key == oddNeven[i] then
@@ -13530,22 +13735,17 @@ function G.UIDEF.use_and_sell_buttons(card)
 	local retval = use_and_sell_buttonsref(card)
 
 	if card.ability.set == 'Joker' and (card.ability.can_fuse == false or card.ability.can_fuse == true) and card.area == G.jokers then
-		local fuse =
-		{n=G.UIT.C, config={align = "cr",}, nodes={
-		  {n=G.UIT.C, config={ref_table = card, align = "cm",maxw = 1.25, padding = 0.15, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.GOLD, button = 'fuse_card', func = 'can_fuse_card'}, nodes={
-			{n=G.UIT.B, config = {w=0.1,h=0.4}},
-			{n=G.UIT.C, config={align = "tm"}, nodes={
-				{n=G.UIT.R, config={align = "cm", maxw = 1.25}, nodes={
-					{n=G.UIT.T, config={text = 'Fuse',colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
-				}},
-			}}
-		  }},
-		}}
-		retval.nodes[1].nodes = retval.nodes[1].nodes or {}
-		table.insert(retval.nodes[1].nodes, fuse)
-		return retval
-	end
-
+		if retval and retval.nodes[1] and retval.nodes[1].nodes[2] then
+			table.insert(retval.nodes[1].nodes[2].nodes, 
+				{n=G.UIT.C, config={align = "cr"}, nodes={
+					{n=G.UIT.C, config={ref_table = card, align = "tm", maxw = 1.25, padding = 0.15, r=0.08, minw = 1.25, hover = true, shadow = true, colour = G.C.UI.BACKGROUND_INACTIVE, one_press = true, button = 'fuse_card', func = 'can_fuse_card'}, nodes={
+						{n=G.UIT.B, config = {w=0.1,h=0.6}},
+						{n=G.UIT.T, config={text = 'Fuse\n $'..card.sell_cost,colour = G.C.UI.TEXT_LIGHT, scale = 0.4, shadow = true}}
+					}}
+				}}
+			)
+		end
+    end
 	return retval
 end
 
@@ -13590,9 +13790,8 @@ SMODS.Joker{
 		end
 	end
 }
-]]
 
---[[ Delete card thingy
+Delete card thingy
 			G.E_MANAGER:add_event(Event({
                 func = function()
                     SMODS.destroy_cards{ card }

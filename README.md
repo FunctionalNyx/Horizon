@@ -12,8 +12,8 @@ A shitty balatro mod made by a bunch of nerds
 
 Currently adds (Hidden Cards not Included)
 
-    104 Jokers [9 of which are Work in Progress and can be Disabled]
-    -   26 [+3 WIP] Common
+    104 Jokers [8 of which are Work in Progress and can be Disabled]
+    -   27 [+2 WIP] Common
     -   35 [+1 WIP] Uncommon
     -   16 [+4 WIP] Rare
     -   8 [+1 WIP] Legendary
@@ -37,7 +37,7 @@ Currently adds (Hidden Cards not Included)
     
     8 Blinds
 
-    1 Voucher
+    1 [+1 WIP] Vouchers
 
 There are currently no unlock requirements implemented
 
@@ -54,12 +54,12 @@ Have fun
 
 ## About the Nerds
 
-Nyx - Main Coder
+### Coders
+    Nyx - Main Coder
+    bozo! - Occasionally Helps (Also does art)
 
-bozo! - Does NOTHING (Cunt -Nyx)
-
-Milk - Does basically all the art
-
-Asto - who?
-
-Moist - Pending Artist
+### Artists
+    Milk Mann
+    Astololofo
+    Moist
+    Dread
