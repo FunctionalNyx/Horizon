@@ -1773,7 +1773,7 @@ SMODS.Joker{
 	key = 'tinyjimbo',
     atlas = 'Jokers',
     unlocked = true,
-    discovered = true,
+    discovered = false,
     pos = {x = 22, y = 1},
 	loc_txt = {
 		name = "Tiny Jimbo",
