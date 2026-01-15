@@ -9433,6 +9433,104 @@ SMODS.Consumable {
 	end
 }
 SMODS.Consumable {
+    key = 'insanity',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 8, y = 1 },
+	loc_txt = {
+		name = 'Insanity',
+		text = {
+			'Completely {C:attention}randomize{}',
+			'up to #1# selected {C:attention}cards{}'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	cost = 3,
+	unlocked = true,
+	discovered = false,
+    config = { max_highlighted = 1 },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.max_highlighted } }
+    end,
+    use = function(self, card, area, copier)
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.4,
+            func = function()
+                play_sound('tarot1')
+                card:juice_up(0.3, 0.5)
+                return true
+            end
+        }))
+        for i = 1, #G.hand.highlighted do
+            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('card1', percent)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        delay(0.2)
+        for i = 1, #G.hand.highlighted do
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.1,
+                func = function()
+					assert(SMODS.change_base(G.hand.highlighted[i], suits[math.random(1, #suits)], ranks[math.random(1, #ranks)]))
+                    if math.random(1, #editions+1) ~= 1 then
+						G.hand.highlighted[i]:set_edition(editions[math.random(2, #editions)])
+					end
+					if math.random(1, #enhancements+1) ~= 1 then
+						G.hand.highlighted[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
+					end
+					if math.random(1, #seals+1) ~= 1 then
+						G.hand.highlighted[i]:set_seal(seals[math.random(1, #seals)], nil, true)
+					end
+					return true
+                end
+            }))
+        end
+        for i = 1, #G.hand.highlighted do
+            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
+            G.E_MANAGER:add_event(Event({
+                trigger = 'after',
+                delay = 0.15,
+                func = function()
+                    G.hand.highlighted[i]:flip()
+                    play_sound('tarot2', percent, 0.6)
+                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
+                    return true
+                end
+            }))
+        end
+        G.E_MANAGER:add_event(Event({
+            trigger = 'after',
+            delay = 0.2,
+            func = function()
+                G.hand:unhighlight_all()
+                return true
+            end
+        }))
+        delay(0.5)
+    end,
+    can_use = function(self, card)
+        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
+    end,
+	draw = function(self, card, layer)
+		-- This is for the Spectral shader.
+		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+		end
+	end
+}
+SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
@@ -9530,105 +9628,6 @@ SMODS.Consumable {
     can_use = function(self, card)
         return G.hand and #G.hand.highlighted >= card.ability.min_highlighted and
             #G.hand.highlighted <= card.ability.max_highlighted
-    end,
-	draw = function(self, card, layer)
-		-- This is for the Spectral shader.
-		if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
-			card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
-		end
-	end
-}
-SMODS.Consumable {
-    key = 'insanity',
-    set = 'nyx_demonic',
-	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
-	loc_txt = {
-		name = 'Insanity',
-		text = {
-			'Completely {C:attention}randomize{}',
-			'up to #1# selected {C:attention}cards{}'
-		}
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	cost = 3,
-	unlocked = true,
-	discovered = false,
-    config = { max_highlighted = 1 },
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.max_highlighted } }
-    end,
-    use = function(self, card, area, copier)
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.4,
-            func = function()
-                play_sound('tarot1')
-                card:juice_up(0.3, 0.5)
-                return true
-            end
-        }))
-        for i = 1, #G.hand.highlighted do
-            local percent = 1.15 - (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.15,
-                func = function()
-                    G.hand.highlighted[i]:flip()
-                    play_sound('card1', percent)
-                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
-                    return true
-                end
-            }))
-        end
-        delay(0.2)
-        for i = 1, #G.hand.highlighted do
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.1,
-                func = function()
-					assert(SMODS.change_base(G.hand.highlighted[i], suits[math.random(1, #suits)], ranks[math.random(1, #ranks)]))
-                    if math.random(1, #editions+1) ~= 1 then
-						G.hand.highlighted[i]:set_edition(editions[math.random(2, #editions)])
-					end
-					if math.random(1, #enhancements+1) ~= 1 then
-						G.hand.highlighted[i]:set_ability(G.P_CENTERS[enhancements[math.random(1, #enhancements)]])
-					end
-					if math.random(1, #seals+1) ~= 1 then
-						G.hand.highlighted[i]:set_seal(seals[math.random(1, #seals)], nil, true)
-					end
-					return true
-                end
-            }))
-        end
-        for i = 1, #G.hand.highlighted do
-            local percent = 0.85 + (i - 0.999) / (#G.hand.highlighted - 0.998) * 0.3
-            G.E_MANAGER:add_event(Event({
-                trigger = 'after',
-                delay = 0.15,
-                func = function()
-                    G.hand.highlighted[i]:flip()
-                    play_sound('tarot2', percent, 0.6)
-                    G.hand.highlighted[i]:juice_up(0.3, 0.3)
-                    return true
-                end
-            }))
-        end
-        G.E_MANAGER:add_event(Event({
-            trigger = 'after',
-            delay = 0.2,
-            func = function()
-                G.hand:unhighlight_all()
-                return true
-            end
-        }))
-        delay(0.5)
-    end,
-    can_use = function(self, card)
-        return G.hand and #G.hand.highlighted > 0 and #G.hand.highlighted <= card.ability.max_highlighted
     end,
 	draw = function(self, card, layer)
 		-- This is for the Spectral shader.
@@ -12841,7 +12840,7 @@ SMODS.Edition {
 	name = "Distorted",
 	label = "Distorted",
 	text = {
-	  "All stats are increased by {C:chips}2{}"
+	  "All stats are increased by {C:chips}X2{}"
 	}
   },
   config = {
@@ -13111,6 +13110,9 @@ SMODS.Consumable {
                 colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
             }
         }
+    end,
+	set_card_type_badge = function(self, card, badges)
+        badges[#badges + 1] = create_badge('Moon', get_type_colour(card.config.center or card.config, card), SMODS.ConsumableTypes.Planet.text_colour, 1.2 )
     end
 }
 SMODS.Consumable {
@@ -13139,6 +13141,9 @@ SMODS.Consumable {
                 colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
             }
         }
+    end,
+	set_card_type_badge = function(self, card, badges)
+        badges[#badges + 1] = create_badge('Moon', get_type_colour(card.config.center or card.config, card), SMODS.ConsumableTypes.Planet.text_colour, 1.2 )
     end
 }
 --
