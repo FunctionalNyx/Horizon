@@ -1947,6 +1947,58 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'bagofchips',
+    loc_txt = {
+        name = 'Bag of Chips',
+        text = {
+          'When {C:attention}selling{} a card gain {C:red}X#2#{}',
+		  'Its {C:money}sell value{} as {C:chips}Chips{}',
+		  '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}#1#{}{C:inactive,s:0.8} Chips){}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Dread', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["FoodJokers"] = true
+	}, 
+    atlas = 'Jokers',
+    rarity = 1,
+    cost = 4,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 7, y = 5},
+	config = { 
+		extra = {
+			chips = 0,
+			mult = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.chips,
+				center.ability.extra.mult
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				chips = card.ability.extra.chips
+			}
+		end
+		if context.selling_card then
+			card.ability.extra.chips = (context.card.sell_cost*2) + card.ability.extra.chips
+		end
+	end
+}
 -- Uncommon --
 SMODS.Joker{
 	key = 'dopi',
@@ -2493,6 +2545,9 @@ SMODS.Joker{
           '{C:red,E:2}You are unlucky{}'
         },
     },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true
@@ -7858,59 +7913,6 @@ SMODS.Joker{
   	remove_from_deck = function(self, card, from_debuff)
    		G.consumeables.config.card_limit = G.consumeables.config.card_limit - 2
   	end
-}
-SMODS.Joker{
-	key = 'bagofchips',
-    loc_txt = {
-        name = 'Bag of Chips',
-        text = {
-          'When {C:attention}selling{} a card gain {C:red}X#2#{}',
-		  'Its {C:money}sell value{} as {C:chips}Chips{}',
-		  '{C:inactive,s:0.8}(Currently {C:chips,s:0.8}#1#{}{C:inactive,s:0.8} Chips){}'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-		badges[#badges+1] = create_badge('Food', G.C.FILTER, G.C.WHITE, 0.8 )
-	end,
-	pools = {
-		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		["FoodJokers"] = true
-	}, 
-    atlas = 'Placeholder',
-    rarity = 1,
-    cost = 3,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 2, y = 0},
-	config = { 
-		extra = {
-			chips = 0,
-			mult = 3
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.chips,
-				center.ability.extra.mult
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.joker_main then
-			return {
-				chips = card.ability.extra.chips
-			}
-		end
-		if context.selling_card then
-			card.ability.extra.chips = (context.card.sell_cost*2) + card.ability.extra.chips
-		end
-	end
 }
 -- Uncommon --
 SMODS.Joker {

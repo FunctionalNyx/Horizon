@@ -1,7 +1,7 @@
 {
     "id": "Horizon",
     "name": "Horizon",
-    "author": ["nyx","bozo!","Milk Mann","astololofo"],
+    "author": ["nyx","bozo!","Milk Mann"],
     "description": "Collection of dumb ideas and bad design",
     "prefix": "nyx",
     "main_file": "horizon.lua",
