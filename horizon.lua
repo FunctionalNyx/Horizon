@@ -2990,6 +2990,9 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
+	in_pool = function(self)
+		return false 
+	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3080,6 +3083,9 @@ SMODS.Joker{
 				end
 			end
 		end
+	end,
+	update = function(self, card, dt)
+		
 	end
 }
 
@@ -3177,7 +3183,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
-		if context.cardarea == G.jokers then
+		--[[if context.cardarea == G.jokers then
 			-- Debuff stop sign if it is in front of ERROR
 			local stopIndex = 0
 			for i = 1, #G.jokers.cards do
@@ -3203,7 +3209,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 					end
 				end
 			end
-		end
+		end]]
 
 		if context.before then
 			-- Do a random effect
@@ -4207,6 +4213,9 @@ SMODS.Joker{
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
+	in_pool = function(self)
+		return false 
+	end,
     atlas = 'Jokers',
     rarity = 2,
     cost = 6,
@@ -7571,6 +7580,9 @@ SMODS.Joker{
 	},
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	in_pool = function(self)
+		return false 
 	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
