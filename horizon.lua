@@ -6797,6 +6797,7 @@ SMODS.Joker{
 						func = function()
 							card:juice_up(0.1, 0.2)
 							play_sound(voice)
+							card.ability.extra.xmultIG = 1.05
 							return true
 						end
 					}))
