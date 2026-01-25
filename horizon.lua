@@ -1271,80 +1271,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'moist',
-    loc_txt = {
-        name = 'Moist',
-        text = {
-          '{C:green}#2# in #1#{} Chance to',
-		  '{C:blue}Moisturize{} scoring cards',
-		  '{C:inactive,s:0.8}(Prevents {}{C:red,s:0.8}Drying){}',
-		  }
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
-	pools = {
-		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		["DPGJokers"] = true,
-		['Fusable'] = true
-	}, 
-	in_pool = function(self, args)
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_penis" then
-				return false
-            end
-        end
-        return true
-    end,
-    atlas = 'Jokers',
-    rarity = 1,
-    cost = 5,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 3, y = 3},
-	config = { 
-		can_fuse = false,
-		extra = {
-			odds = 3
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_wet']
-		return{
-			vars = {
-				center.ability.extra.odds,
-				(G.GAME and G.GAME.probabilities.normal or 1)
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		card.ability.can_fuse = false
-		for i = 1, #G.jokers.cards do
-			local other_joker = G.jokers.cards[i]
-			if other_joker.config.center.key == 'j_nyx_nerd' then
-				card.ability.can_fuse = true
-			end
-		end
-		if context.individual and context.cardarea == G.play then
-			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				local funnycard = context.other_card
-				if not SMODS.has_enhancement(funnycard, 'm_nyx_wet') then
-					funnycard:set_ability(G.P_CENTERS.m_nyx_wet)
-					return {
-						message = "Moisturized!",
-						message_card = card,
-						colour = G.C.BLUE,
-						card = card
-					}
-				end
-			end
-		end
-	end
-}
-SMODS.Joker{
 	key = 'overkill',
     loc_txt = {
         name = 'Overkill',
@@ -2907,6 +2833,80 @@ SMODS.Joker{
 						message = 'Already at 8',
 						card = card,
 						colour = G.C.PURPLE
+					}
+				end
+			end
+		end
+	end
+}
+SMODS.Joker{
+	key = 'moist',
+    loc_txt = {
+        name = 'Moist',
+        text = {
+          '{C:green}#2# in #1#{} Chance to',
+		  '{C:blue}Moisturize{} scoring cards',
+		  '{C:inactive,s:0.8}(Prevents {}{C:red,s:0.8}Drying){}',
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		["DPGJokers"] = true,
+		['Fusable'] = true
+	}, 
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_penis" then
+				return false
+            end
+        end
+        return true
+    end,
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 3, y = 3},
+	config = { 
+		can_fuse = false,
+		extra = {
+			odds = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_wet']
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		card.ability.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_nyx_nerd' then
+				card.ability.can_fuse = true
+			end
+		end
+		if context.individual and context.cardarea == G.play then
+			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				local funnycard = context.other_card
+				if not SMODS.has_enhancement(funnycard, 'm_nyx_wet') then
+					funnycard:set_ability(G.P_CENTERS.m_nyx_wet)
+					return {
+						message = "Moisturized!",
+						message_card = card,
+						colour = G.C.BLUE,
+						card = card
 					}
 				end
 			end
@@ -4752,6 +4752,23 @@ SMODS.Joker{
             }))
             return nil, true -- This is for Joker retrigger purposes
         end
+		if context.setting_blind and not context.blueprint and context.blind.boss and G.GAME.round_resets.blind_choices.Boss == "bl_psychic" then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.GAME.blind:disable()
+                            play_sound('timpani')
+                            delay(0.4)
+                            return true
+                        end
+                    }))
+                    SMODS.calculate_effect({ message = localize('ph_boss_disabled') }, card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
+        end
 	end
 }
 SMODS.Joker{
@@ -4913,6 +4930,23 @@ SMODS.Joker{
 				end
 			}))
 		end
+		if context.setting_blind and not context.blueprint and context.blind.boss and G.GAME.round_resets.blind_choices.Boss == "bl_psychic" then
+            G.E_MANAGER:add_event(Event({
+                func = function()
+                    G.E_MANAGER:add_event(Event({
+                        func = function()
+                            G.GAME.blind:disable()
+                            play_sound('timpani')
+                            delay(0.4)
+                            return true
+                        end
+                    }))
+                    SMODS.calculate_effect({ message = localize('ph_boss_disabled') }, card)
+                    return true
+                end
+            }))
+            return nil, true -- This is for Joker retrigger purposes
+        end
 	end
 }
 end
