@@ -9587,7 +9587,7 @@ SMODS.Consumable {
 	loc_txt = {
 		name = 'Transmission',
 		text = {
-			'Tranfer {C:attention}everything{} but rank and suit',
+			'Transfer {C:attention}everything{} but rank and suit',
 			'From the {C:attention}right{} card to the {C:attention}left{} card',
 			'{C:red}Destroys the right card{}'
 		}
