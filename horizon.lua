@@ -6219,6 +6219,43 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'shootingstar',
+    loc_txt = {
+        name = 'Shooting Star',
+        text = {
+        	'All {C:attention}Star-Crossed{} cards',
+			'{C:attention}Increment{} when scored'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		for _, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_nyx_starcrossed') then
+                return true
+            end
+        end
+        return false
+	end,
+    atlas = 'Jokers',
+	pos = {x = 8, y = 5},
+	soul_pos = {x = 7, y = 1},
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
+    end,
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
@@ -8211,43 +8248,6 @@ SMODS.Joker{
 			}
 		end
 	end
-}
-SMODS.Joker{
-	key = 'shootingstar',
-    loc_txt = {
-        name = 'Shooting Star',
-        text = {
-        	'All {C:attention}Star-Crossed{} cards',
-			'{C:attention}Increment{} when scored'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-	in_pool = function(self)
-		for _, playing_card in ipairs(G.playing_cards or {}) do
-            if SMODS.has_enhancement(playing_card, 'm_nyx_starcrossed') then
-                return true
-            end
-        end
-        return false
-	end,
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
-    end,
 }
 SMODS.Joker{
 	key = 'astrophysics',
