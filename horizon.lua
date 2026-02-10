@@ -4950,6 +4950,103 @@ SMODS.Joker{
 	end
 }
 end
+SMODS.Joker{
+	key = 'shattered',
+    loc_txt = {
+        name = 'Shattered',
+        text = {
+          '{C:attention}Retrigger glass{}',
+		  'cards {C:attention}#1#{} Time(s)'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["ModJonklers"] = true,
+		["Horizonjokers"] = true
+	},
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 9, y = 5},
+	config = { 
+		extra = {
+			repetitions = 1,
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
+		return{
+			vars = {
+				center.ability.extra.repetitions
+			}
+		}
+	end,
+	in_pool = function(self, args) --equivalent to `enhancement_gate = 'm_glass'`
+        for _, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_glass') then
+                return true
+            end
+        end
+        return false
+    end,
+	calculate = function(self,card,context)
+		if card.ability.extra.repetitions == 2 then
+			card.children.center:set_sprite_pos({x = 17, y = 1})
+		end
+		if card.ability.extra.repetitions == 3 then
+			card.children.center:set_sprite_pos({x = 18, y = 1})
+		end
+		if context.repetition and context.cardarea == G.play then 
+			if SMODS.has_enhancement(context.other_card, 'm_glass') then
+				return {
+					repetitions = card.ability.extra.repetitions
+				}
+			end
+        end
+		if context.joker_main then
+			card.ability.extra.repetitions = card.ability.extra.repetitions + 1
+			if card.ability.extra.repetitions == 2 then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.children.center:set_sprite_pos({x = 17, y = 1})
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+		end
+		if card.ability.extra.repetitions == 3 then
+			G.E_MANAGER:add_event(Event({
+				func = function()
+					card.children.center:set_sprite_pos({x = 18, y = 1})
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			})) 
+		end
+			if card.ability.extra.repetitions == 4 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						SMODS.Stickers.eternal:apply(card, false)
+						SMODS.destroy_cards{ card }
+						return true
+					end
+				})) 
+				return {
+					message = "Shattered!",
+					message_card = card,
+					card = card
+				}
+			end
+		end
+	end
+}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
