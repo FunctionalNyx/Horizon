@@ -6353,6 +6353,81 @@ SMODS.Joker{
         info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
     end,
 }
+SMODS.Joker{
+	key = 'placebo',
+    loc_txt = {
+        name = 'Placebo',
+        text = {
+          'Copies a random {C:attention}Joker{}',
+		  '{C:inactive}Currently Copying {}{C:attention}#2#{}{}',
+		  '{C:inactive,s:0.8}(Lasts #1# Rounds){}',
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+	end,
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 9,
+    unlocked = true,
+    discovered = false,
+	no_collection = true,
+    blueprint_compat = true,
+    eternal_compat = false,
+    perishable_compat = true,
+    pos = {x = 12, y = 3},
+	config = { 
+		extra = {
+			rounds = 4,
+			card_name = "Nothing",
+			_card = nil
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.rounds,
+				center.ability.extra.card_name,
+				center.ability.extra._card
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.setting_blind then
+			while card.ability.extra._card == nil or card.ability.extra._card.config.center.key == 'j_nyx_placebo' do
+				card.ability.extra._card = G.jokers.cards[math.random(1, #G.jokers.cards)]
+				card.ability.extra.card_name = localize({type = 'name_text', key = card.ability.extra._card.config.center.key, set = 'Joker'})
+			end
+		end
+		if context.after and not context.blueprint then
+			card.ability.extra._card = nil
+			card.ability.extra.card_name = "Nothing"
+            if card.ability.extra.rounds <= 0 then
+                SMODS.destroy_cards(card, nil, nil, true)
+                return {
+                    message = 'Empty!',
+                    colour = G.C.GREEN
+                }
+			else
+				card.ability.extra.rounds = card.ability.extra.rounds - 1
+				return {
+					message = card.ability.extra.rounds .. " rounds left",
+					colour = G.C.GREEN
+				}
+			end
+		end
+		local other_joker = nil
+		for i = 1, #G.jokers.cards do
+			if G.jokers.cards[i] == card.ability.extra._card then other_joker = G.jokers.cards[i] end
+		end
+		local ret = SMODS.blueprint_effect(card, other_joker, context)
+		if ret then
+			ret.colour = G.C.BLUE
+		end
+        return ret
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
