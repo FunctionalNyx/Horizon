@@ -6367,6 +6367,9 @@ SMODS.Joker{
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
 	end,
+	in_pool = function(self, args)
+		return false
+	end,
     atlas = 'Jokers',
     rarity = 3,
     cost = 9,
