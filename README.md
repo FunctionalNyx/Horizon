@@ -8,32 +8,36 @@ Link to Steamodded (Which includes instructions on how to install Lovely): https
 
 A shitty balatro mod made by a bunch of nerds
 
+![Example jokers](assets/thing.png)
+
 Currently adds (Hidden Cards not Included)
 
-    97 Jokers [14 of which are Work in Progress and can be Disabled]
-    -   27 [+3 WIP] Common
-    -   31 [+4 WIP] Uncommon
+    104 Jokers [8 of which are Work in Progress and can be Disabled]
+    -   27 [+2 WIP] Common
+    -   35 [+1 WIP] Uncommon
     -   16 [+4 WIP] Rare
-    -   6 [+1 WIP] Legendary
-    -   11 Modded Rarity
+    -   8 [+1 WIP] Legendary
+    -   10 Modded Rarity
     
-    8 [+1 WIP] Enhancements
+    9 Enhancements
     
-    19 Consumables
+    26 Consumables
     
-    -   3 Tarots
-    -   3 Spectrals
-    -   Rest are custom [8 are Work in Progress]
+    -   3 [+1 WIP] Tarots
+    -   4 Spectrals
+    -   Rest are custom [9 are Work in Progress]
     
     2 Seals
     
     6 Booster packs
     
-    5 Decks
+    6 Decks
     
-    2 Tags
+    3 Tags
     
     8 Blinds
+
+    1 [+1 WIP] Vouchers
 
 There are currently no unlock requirements implemented
 
@@ -50,10 +54,12 @@ Have fun
 
 ## About the Nerds
 
-Nyx - Main Coder
+### Coders
+    Nyx - Main Coder
+    bozo! - Occasionally Helps (Also does art)
 
-bozo! - Rarely codes & art
-
-Milk - Does basically all the art
-
-Asto - who?
+### Artists
+    Milk Mann
+    Astololofo
+    Moist
+    Dread
