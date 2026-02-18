@@ -9504,7 +9504,7 @@ SMODS.Consumable {
     	end
 	end,
     can_use = function(self, card)
-        return #G.jokers.highlighted > 0 and #G.jokers.highlighted <= card.ability.max_highlighted
+        return #G.jokers.highlighted == 1
     end,
 	draw = function(self, card, layer)
         -- This is for the Spectral shader.
@@ -10516,7 +10516,7 @@ SMODS.Booster {
         ease_background_colour_blind(HEX("FFD700"))
     end,
     create_card = function(self, card, i)
-		if math.random() < 0.5 then
+		if pseudorandom('nyx_hnh') < 0.5 then
 			return {
 				set = 'nyx_angelic',
 				area = G.pack_cards,
