@@ -2990,9 +2990,6 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: bozo!', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
-	in_pool = function(self)
-		return false 
-	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3056,7 +3053,7 @@ SMODS.Joker{
 
 				-- You cannot beat ERROR.
 				if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
-					SMODS.debuff_card(jokerToDebuff, true, "stopsign")
+					jokerToDebuff:set_debuff(true)
 				end
 			end
 
@@ -3078,7 +3075,7 @@ SMODS.Joker{
 					end
 
 					if canUndebuff then
-						SMODS.debuff_card(joker, false, "stopsign")
+						joker:set_debuff(false)
 					end
 				end
 			end
@@ -3122,9 +3119,6 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			'every {X:mult,C:white}#4#{}'
         },
     },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: #2#', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
     atlas = 'Jokers',
     rarity = 2,
@@ -3183,7 +3177,7 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 			end
 		end
 
-		--[[if context.cardarea == G.jokers then
+		if context.cardarea == G.jokers then
 			-- Debuff stop sign if it is in front of ERROR
 			local stopIndex = 0
 			for i = 1, #G.jokers.cards do
@@ -3202,14 +3196,14 @@ SMODS.Joker { -- This joker should be referred to as "ERROR"
 
 					if errorIndex ~= #G.jokers.cards and errorIndex > 0 then
 						if G.jokers.cards[errorIndex+1].config.center.key == 'j_nyx_stop' then
-							SMODS.debuff_card(G.jokers.cards[stopIndex], true, "error")
+							G.jokers.cards[stopIndex]:set_debuff(true)
 						else
-							SMODS.debuff_card(G.jokers.cards[stopIndex], false, "error")
+							G.jokers.cards[stopIndex]:set_debuff(false)
 						end
 					end
 				end
 			end
-		end]]
+		end
 
 		if context.before then
 			-- Do a random effect
@@ -4213,9 +4207,6 @@ SMODS.Joker{
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
 	}, 
-	in_pool = function(self)
-		return false 
-	end,
     atlas = 'Jokers',
     rarity = 2,
     cost = 6,
@@ -4255,7 +4246,7 @@ SMODS.Joker{
 			end
 
 			if canUndebuff then
-				SMODS.debuff_card(joker, false, "discordmod")
+				joker:set_debuff(false)
 			end
 		end
 	end,
@@ -4280,7 +4271,7 @@ SMODS.Joker{
 
 			-- You cannot beat ERROR.
 			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
-				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
+				jokerToDebuff:set_debuff(true)
 			end
 		end
 
@@ -4289,10 +4280,9 @@ SMODS.Joker{
 
 			-- You cannot beat ERROR.
 			if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
-				SMODS.debuff_card(jokerToDebuff, true, "discordmod")
+				jokerToDebuff:set_debuff(true)
 			end
 		end
-
 		-- Undebuff other jokers
 		for i = 1, #G.jokers.cards do
 			if i ~= stopIndex and i ~= stopIndex - 1 and i ~= stopIndex + 1 then
@@ -4311,7 +4301,7 @@ SMODS.Joker{
 				end
 
 				if canUndebuff then
-					SMODS.debuff_card(joker, false, "discordmod")
+					joker:set_debuff(false)
 				end
 			end
 		end
@@ -6364,9 +6354,11 @@ SMODS.Joker{
 		  }
 	},
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('Math', G.C.DARK_EDITION, G.C.WHITE, 0.8 )
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
     atlas = 'Jokers',
     rarity = 3,
     cost = 9,
@@ -7833,9 +7825,6 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
-	in_pool = function(self)
-		return false 
-	end,
     atlas = 'Cards',
     rarity = "nyx_Misc",
     cost = 0,
@@ -7857,7 +7846,7 @@ SMODS.Joker{
 
 		-- You cannot beat ERROR.
 		if jokerToDebuff.config.center.key ~= 'j_nyx_err' then
-			SMODS.debuff_card(jokerToDebuff, true, "notfun")
+			jokerToDebuff:set_debuff(true)
 		end
     end,
 	remove_from_deck = function(self, card, from_debuff)
@@ -7877,7 +7866,7 @@ SMODS.Joker{
 			end
 
 			if canUndebuff then
-				SMODS.debuff_card(joker, false, "notfun")
+				joker:set_debuff(false)
 			end
 		end
 	end,
