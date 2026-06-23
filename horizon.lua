@@ -2818,7 +2818,7 @@ SMODS.Joker{
 					colour = G.C.PURPLE
 				}
 			end
-			if context.scoring_hand[1] ~= context.scoring_hand[#context.scoring_hand] then
+			if last_card ~= first_card then
 				if tonumber(last_card:get_id()) > 8 then
 					SMODS.modify_rank(last_card, -1)
 					last_card:juice_up(0.3, 0.4)
@@ -4940,103 +4940,6 @@ SMODS.Joker{
 	end
 }
 end
-SMODS.Joker{
-	key = 'shattered',
-    loc_txt = {
-        name = 'Shattered',
-        text = {
-          '{C:attention}Retrigger glass{}',
-		  'cards {C:attention}#1#{} Time(s)'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
-	pools = {
-		["ModJonklers"] = true,
-		["Horizonjokers"] = true
-	},
-    atlas = 'Jokers',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 9, y = 5},
-	config = { 
-		extra = {
-			repetitions = 1,
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
-		return{
-			vars = {
-				center.ability.extra.repetitions
-			}
-		}
-	end,
-	in_pool = function(self, args) --equivalent to `enhancement_gate = 'm_glass'`
-        for _, playing_card in ipairs(G.playing_cards or {}) do
-            if SMODS.has_enhancement(playing_card, 'm_glass') then
-                return true
-            end
-        end
-        return false
-    end,
-	calculate = function(self,card,context)
-		if card.ability.extra.repetitions == 2 then
-			card.children.center:set_sprite_pos({x = 17, y = 1})
-		end
-		if card.ability.extra.repetitions == 3 then
-			card.children.center:set_sprite_pos({x = 18, y = 1})
-		end
-		if context.repetition and context.cardarea == G.play then 
-			if SMODS.has_enhancement(context.other_card, 'm_glass') then
-				return {
-					repetitions = card.ability.extra.repetitions
-				}
-			end
-        end
-		if context.joker_main then
-			card.ability.extra.repetitions = card.ability.extra.repetitions + 1
-			if card.ability.extra.repetitions == 2 then
-			G.E_MANAGER:add_event(Event({
-				func = function()
-					card.children.center:set_sprite_pos({x = 17, y = 1})
-					card:juice_up(0.3, 0.5)
-					return true
-				end
-			}))
-		end
-		if card.ability.extra.repetitions == 3 then
-			G.E_MANAGER:add_event(Event({
-				func = function()
-					card.children.center:set_sprite_pos({x = 18, y = 1})
-					card:juice_up(0.3, 0.5)
-					return true
-				end
-			})) 
-		end
-			if card.ability.extra.repetitions == 4 then
-				G.E_MANAGER:add_event(Event({
-					func = function()
-						SMODS.Stickers.eternal:apply(card, false)
-						SMODS.destroy_cards{ card }
-						return true
-					end
-				})) 
-				return {
-					message = "Shattered!",
-					message_card = card,
-					card = card
-				}
-			end
-		end
-	end
-}
 -- Rare --
 SMODS.Joker{
     key = 'AEOM', --joker key
@@ -5130,7 +5033,9 @@ SMODS.Joker{
     loc_txt = { -- local text
         name = '{C:red}Beastmode{}',
         text = {
-          'There can only be {C:red}one{}',
+          '{X:mult,C:white}X#1#{} Mult',
+		  '{C:green}#2# in #3#{} Chance to be {C:red}destroyed{}',
+		  '{C:attention}Absorbs{} other duplicates'
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -6344,6 +6249,103 @@ SMODS.Joker{
     end,
 }
 SMODS.Joker{
+	key = 'shattered',
+    loc_txt = {
+        name = 'Shattered',
+        text = {
+          '{C:attention}Retrigger glass{}',
+		  'cards {C:attention}#1#{} Time(s)'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["ModJonklers"] = true,
+		["Horizonjokers"] = true
+	},
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 9, y = 5},
+	config = { 
+		extra = {
+			repetitions = 1,
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
+		return{
+			vars = {
+				center.ability.extra.repetitions
+			}
+		}
+	end,
+	in_pool = function(self, args) --equivalent to `enhancement_gate = 'm_glass'`
+        for _, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_glass') then
+                return true
+            end
+        end
+        return false
+    end,
+	calculate = function(self,card,context)
+		if card.ability.extra.repetitions == 2 then
+			card.children.center:set_sprite_pos({x = 17, y = 1})
+		end
+		if card.ability.extra.repetitions == 3 then
+			card.children.center:set_sprite_pos({x = 18, y = 1})
+		end
+		if context.repetition and context.cardarea == G.play then 
+			if SMODS.has_enhancement(context.other_card, 'm_glass') then
+				return {
+					repetitions = card.ability.extra.repetitions
+				}
+			end
+        end
+		if context.end_of_round and context.main_eval then
+			card.ability.extra.repetitions = card.ability.extra.repetitions + 1
+			if card.ability.extra.repetitions == 2 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.children.center:set_sprite_pos({x = 17, y = 1})
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				}))
+			end
+			if card.ability.extra.repetitions == 3 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						card.children.center:set_sprite_pos({x = 18, y = 1})
+						card:juice_up(0.3, 0.5)
+						return true
+					end
+				})) 
+			end
+			if card.ability.extra.repetitions == 4 then
+				G.E_MANAGER:add_event(Event({
+					func = function()
+						SMODS.Stickers.eternal:apply(card, false)
+						SMODS.destroy_cards{ card }
+						return true
+					end
+				})) 
+				return {
+					message = "Shattered!",
+					message_card = card,
+					card = card
+				}
+			end
+		end
+	end
+}
+SMODS.Joker{
 	key = 'placebo',
     loc_txt = {
         name = 'Placebo',
@@ -6394,7 +6396,7 @@ SMODS.Joker{
 				card.ability.extra.card_name = localize({type = 'name_text', key = card.ability.extra._card.config.center.key, set = 'Joker'})
 			end
 		end
-		if context.after and not context.blueprint then
+		if context.end_of_round and context.main_eval then
 			card.ability.extra._card = nil
 			card.ability.extra.card_name = "Nothing"
             if card.ability.extra.rounds <= 1 then
@@ -8976,7 +8978,7 @@ SMODS.Consumable {
 		if #G.jokers.highlighted > 0 then
 			for i = 1, #G.jokers.highlighted do
 				if G.jokers.highlighted[i].set_cost and not G.jokers.highlighted[i].ability.nyx_prosperous then
-					G.jokers.highlighted[i].ability.extra_value = (G.jokers.highlighted[i].ability.extra_value or 0) + (G.jokers.highlighted[i].config.center.cost or 0)/2
+					G.jokers.highlighted[i].ability.extra_value = G.jokers.highlighted[i].sell_cost
 					G.jokers.highlighted[i]:add_sticker(card.ability.mod_conv, true)
 					G.jokers.highlighted[i]:set_cost()
 				end
@@ -10845,10 +10847,12 @@ SMODS.Seal {
 		text = {
 			'If all {C:attention}scored{} cards',
 			'have a {V:1}Turquoise{} seal',
-			'Create a {C:spectral}Spectral{} card'
+			'Create a {C:spectral}Spectral{} card',
+			'One card is {C:red}Destroyed{}'
 		}
 	},
 	calculate = function(self, card, context)
+		local chosen = nil
 		if context.after and context.cardarea == G.play then
 			local create = true
 			for i=1, #context.scoring_hand do
@@ -10857,6 +10861,9 @@ SMODS.Seal {
 				end
 			end
 			if create then
+				if card == context.scoring_hand[1] then
+					chosen = context.scoring_hand[pseudorandom('nyx_greenblue_Seal',1,#context.scoring_hand)]
+				end
 				if #G.consumeables.cards + G.GAME.consumeable_buffer < G.consumeables.config.card_limit then
 					G.GAME.consumeable_buffer = G.GAME.consumeable_buffer + 1
 					G.E_MANAGER:add_event(Event({
@@ -10869,6 +10876,7 @@ SMODS.Seal {
 							return true
 						end)
 					}))
+					SMODS.destroy_cards { chosen }
 					return {
 						message = localize('k_plus_spectral'),
 						colour = G.C.SECONDARY_SET.Spectral
