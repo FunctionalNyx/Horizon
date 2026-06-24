@@ -2390,10 +2390,10 @@ SMODS.Joker{
     loc_txt = {
         name = 'Milk',
         text = {
-          'Gains {X:mult,C:white}#2#X{} Mult for every {C:attention}Milk{} owned',
+          'Gains {X:mult,C:white}X#2#{} Mult for every {C:attention}Milk{} owned',
 		  '{C:green}#3# in #4#{} Chance to {C:red}not{} be {C:attention}consumed{}',
 		  'when leaving the {C:attention}shop{}',
-		  '{C:inactive,s:0.9}(Currently{} {X:mult,C:white,s:0.8}#1#X{} {C:inactive,s:0.8}Mult){}',
+		  '{C:inactive,s:0.9}(Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult){}',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -2846,7 +2846,7 @@ SMODS.Joker{
         text = {
           '{C:green}#2# in #1#{} Chance to',
 		  '{C:blue}Moisturize{} scoring cards',
-		  '{C:inactive,s:0.8}(Prevents {}{C:red,s:0.8}Drying){}',
+		  '{C:inactive,s:0.8}(Prevents {}{C:red,s:0.8}Drying{}{C:inactive,s:0.8}){}',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -2982,7 +2982,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Stop Sign',
         text = {
-			'Gives {X:mult,C:white}X2{} Mult, but {C:red}debuffs{} the {C:attention}Joker{} to the left',
+			'Gives {X:mult,C:white}X2{} Mult, but {C:red}debuffs{}',
+			'the {C:attention}Joker{} to the left',
 			'{s:0.8}Does not update immediately{}',
 			'{C:red,s:0.8}Will destroy its own duplicates{}'
         },
@@ -3890,9 +3891,9 @@ SMODS.Joker{
     loc_txt = {
         name = 'Vending Machine',
         text = {
-          'When leaving the {C:attention}shop{} takes {C:money}$#1#{}',
-		  'But has a {C:green}#2# in #3#{} chance',
-		  'to create a random {C:attention}Food{} Joker',
+          'When leaving the {C:attention}shop{} lose {C:money}$#1#{}',
+		  'But have a {C:green}#2# in #3#{} chance to',
+		  'create a random {C:attention}Food{} Joker',
 		  }
 	},
 	set_badges = function (self, card, badges)
@@ -5369,7 +5370,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'Ascension Stone',
         text = {
-          'After {C:attention}5{} rounds, becomes a {C:purple}Legendary{} Joker... {C:red,E:1}sometimes{}.',
+          'After {C:attention}5{} rounds, becomes a',
+		  '{C:purple}Legendary{} Joker... {C:red,E:1}sometimes{}.',
 		  "{C:inactive,s:0.8}(#1#/5){}",
 		  }
 	},
