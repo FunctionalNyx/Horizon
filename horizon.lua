@@ -6712,9 +6712,7 @@ SMODS.Joker{
         name = 'The Long Road',
         text = {
           'If playing the {C:attention}final hand{}',
-		  'and have {C:red}<10%{} of {C:attention}Blind Requirements{}',
-		  '{C:attention}Retrigger{} {C:red}ALL{} Cards',
-		  '{C:inactive,s:0.8}(Played and in Hand){}'
+		  '{C:attention}Retrigger{} {C:red}ALL{} Cards twice',
         },
     },
     atlas = 'Jokers',
@@ -6728,7 +6726,7 @@ SMODS.Joker{
     pos = {x = 0, y = 5},
 	config = { 
 		extra = {
-			repetitions = 1
+			repetitions = 2
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -6739,7 +6737,7 @@ SMODS.Joker{
 		}
 	end,
 	calculate = function(self,card,context)
-		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 and (G.GAME.chips < (G.GAME.blind.chips/10)) then
+		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 then
             return {
                 repetitions = card.ability.extra.repetitions
             }
