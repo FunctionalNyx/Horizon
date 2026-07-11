@@ -128,14 +128,6 @@ SMODS.ObjectType({
 	end,
 })
 SMODS.ObjectType({
-	key = "DPGJokers",
-	default = "j_joker",
-	cards = {},
-	inject = function(self)
-		SMODS.ObjectType.inject(self)
-	end,
-})
-SMODS.ObjectType({
 	key = "FoodJokers",
 	default = "j_gros_michel",
 	cards = {
@@ -204,7 +196,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers', --atlas' key
     rarity = 1, --rarity: 1 = Common, 2 = Uncommon, 3 = Rare, 4 = Legendary
@@ -270,7 +262,6 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true,
 		["FoodJokers"] = true
 	},
     atlas = 'Jokers', --atlas' key
@@ -325,7 +316,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers', --atlas' key
     rarity = 1,
@@ -626,7 +617,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers',
     rarity = 1,
@@ -1941,7 +1932,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers',
     rarity = 2,
@@ -2000,7 +1991,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers', --atlas' key
 	soul_pos = { x = 1, y = 1 },
@@ -2039,7 +2030,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
 	config = {
 		extra = {
@@ -2090,7 +2081,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers',
     rarity = 2,
@@ -2145,7 +2136,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers',
     rarity = 2,
@@ -2236,7 +2227,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers',
     rarity = 2,
@@ -2338,7 +2329,7 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
+		
 	},
     atlas = 'Jokers',
     rarity = 2,
@@ -2854,7 +2845,6 @@ SMODS.Joker{
 	end,
 	pools = {
 		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		["DPGJokers"] = true,
 		['Fusable'] = true
 	}, 
 	in_pool = function(self, args)
@@ -4198,7 +4188,7 @@ SMODS.Joker{
     loc_txt = {
         name = 'Discord Mod',
         text = {
-          'Gives {C:money}$5{} every {C:blue}hand{}',
+          'Gives {C:money}$#1#{} every {C:blue}hand{}',
 		  'but debuffs {C:attention}adjacent{} Jokers',
 		  }
 	},
@@ -5002,7 +4992,6 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
 	},
     atlas = 'Jokers', --atlas' key
     rarity = 3,
@@ -5045,7 +5034,6 @@ SMODS.Joker{
 	pools = {
 		["ModJonklers"] = true,
 		["Horizonjokers"] = true,
-		["DPGJokers"] = true
 	},
     atlas = 'Jokers', --atlas' key
     rarity = 3,
@@ -5966,7 +5954,7 @@ SMODS.Joker{
         },
     },
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {
 		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
@@ -6256,7 +6244,7 @@ SMODS.Joker{
         name = 'Shattered',
         text = {
           '{C:attention}Retrigger glass{}',
-		  'cards {C:attention}#1#{} Time(s)'
+		  'cards {C:attention}#1#{} #2#'
         },
     },
 	set_badges = function (self, card, badges)
@@ -6278,13 +6266,15 @@ SMODS.Joker{
 	config = { 
 		extra = {
 			repetitions = 1,
+			time = "time"
 		}
 	},
 	loc_vars = function(self,info_queue,center)
 		info_queue[#info_queue + 1] = G.P_CENTERS.m_glass
 		return{
 			vars = {
-				center.ability.extra.repetitions
+				center.ability.extra.repetitions,
+				center.ability.extra.time,
 			}
 		}
 	end,
@@ -6297,6 +6287,9 @@ SMODS.Joker{
         return false
     end,
 	calculate = function(self,card,context)
+		if card.ability.extra.repetitions > 1 then
+			card.ability.extra.time = "times"
+		end
 		if card.ability.extra.repetitions == 2 then
 			card.children.center:set_sprite_pos({x = 17, y = 1})
 		end
@@ -6529,7 +6522,6 @@ SMODS.Joker{
 	end,
 	pools = {
 		["ModJonklers"] = true,
-		["DPGJokers"] = true,
 		["FoodJokers"] = true
 	},
     atlas = 'Jokers', --atlas' key
@@ -6570,55 +6562,6 @@ SMODS.Joker{
 				dollars = card.ability.extra.money,
 				card = context.other_context and context.other_context.blueprint_card or context.other_card or nil,
 			}
-		end
-	end
-}
-SMODS.Joker{
-    key = 'pyro',
-    loc_txt = {
-        name = 'Owner of DPG.tf',
-        text = {
-          'What more did you expect?'
-        },
-    },
-	pools = {
-		["ModJonklers"] = true,
-		["DPGJokers"] = true
-	},
-    atlas = 'Jokers',
-    rarity = 4,
-    cost = 14,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 10, y = 0},
-	calculate = function(self,card,context)
-		if context.setting_blind then
-			if math.random(0,3) <= 2 then
-				return {
-					message = 'Server Crash!',
-					message_card = card,
-					G.jokers:remove_card(card),
-					card:remove(),
-					card = nil,
-					SMODS.add_card {
-						key = 'c_soul'
-					}
-				}
-			else
-				return {
-					message = 'Server Crash!',
-					message_card = card,
-					G.jokers:remove_card(card),
-					card:remove(),
-					card = nil,
-					SMODS.add_card {
-						key = 'c_nyx_lostsoul'
-					}
-				}
-			end
 		end
 	end
 }
@@ -8183,11 +8126,11 @@ SMODS.Joker {
         },
     },
 	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
 		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
 	end,
 	pools = {["Horizonjokers"] = true},
-    atlas = 'Placeholder',
+    atlas = 'Jokers',
     rarity = 2,
     unlocked = true,
     discovered = false,
@@ -8195,7 +8138,7 @@ SMODS.Joker {
     eternal_compat = false,
     perishable_compat = false,
     cost = 6,
-    pos = { x = 3, y = 0 },
+    pos = {x = 11, y = 5},
     calculate = function(self, card, context)
 		if context.before and context.main_eval and not context.blueprint then
 			if #context.full_hand == 1 and context.full_hand[1]:get_id() == 3 then 
@@ -8214,9 +8157,9 @@ SMODS.Joker {
     end
 }
 SMODS.Joker{
-	key = 'dif',
+	key = 'Knighthood',
     loc_txt = {
-        name = '',
+        name = 'Knighthood',
         text = {
 		  	'Playing a {C:attention}Straight{}',
 			"Increases all scored cards by {C:attention}1{}",
@@ -8236,13 +8179,12 @@ SMODS.Joker{
     atlas = 'Placeholder',
     rarity = 2,
     cost = 6,
-	no_collection = true,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 2, y = 0},
+    pos = {x = 3, y = 0},
 	calculate = function(self,card,context)
 		if context.before and context.main_eval and next(context.poker_hands["Straight"]) then
 			for i=1, #context.scoring_hand do
@@ -8424,9 +8366,9 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'astrophysics',
+	key = 'astronaut',
     loc_txt = {
-        name = 'Astrophysics',
+        name = 'Astronaut',
         text = {
         	'All {C:attention}Star-Crossed{} cards',
 			'{C:attention}Scale{} faster when scored'
@@ -8472,11 +8414,13 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'nil',
+	key = 'Knight Order',
     loc_txt = {
-        name = '',
+        name = 'Knight Order',
         text = {
-        	''
+        	'Playing a {C:planet}Templar{} or {C:planet}Crusade{}',
+			'Creates a {C:attention}White Knight{} and destroys',
+			'All other non-{C:attention}White Knight{} cards'
         },
     },
 	set_badges = function (self, card, badges)
@@ -8499,7 +8443,6 @@ SMODS.Joker{
     cost = 8,
     unlocked = true,
     discovered = false,
-	no_collection = true,
     blueprint_compat = false,
     eternal_compat = true,
     perishable_compat = true,
@@ -9754,6 +9697,69 @@ SMODS.Consumable {
 	end
 }
 SMODS.Consumable {
+    key = 'wrath',
+    set = 'nyx_demonic',
+	atlas = 'Spectral',
+    pos = { x = 7, y = 1 },
+	config = { 
+		extra = {
+			max_highlighted = 1,
+			slots = -1
+		}
+	},
+	loc_txt = {
+        name = 'Wrath', --name of card
+        text = { --text of card
+            '{C:dark_edition}Distorts{} a selected {C:attention}Joker{}',
+			'{C:red}#2#{} Joker Slots'
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	cost = 4,
+	unlocked = true,
+    discovered = false,
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS.e_nyx_distorted
+        return { vars = { card.ability.max_highlighted, card.ability.extra.slots } }
+    end,
+    use = function(self, card, area, copier)
+		if G.jokers.highlighted[1] then
+			local chosen_joker = G.jokers.highlighted[1]
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.4,
+				func = function()
+					chosen_joker:set_edition({ nyx_distorted = true })
+					if G.jokers then
+						G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
+					end
+					card:juice_up(0.3, 0.5)
+					return true
+				end
+			}))
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.2,
+				func = function()
+					G.jokers:unhighlight_all()
+					return true
+				end
+			}))
+		end
+    end,
+	can_use = function(self, card)
+        return #G.jokers.highlighted == 1
+    end,
+	draw = function(self, card, layer)
+        -- This is for the Spectral shader.
+        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
+            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
+        end
+    end
+}
+SMODS.Consumable {
     key = 'transmission',
     set = 'nyx_demonic',
 	atlas = 'Spectral',
@@ -9942,70 +9948,6 @@ SMODS.Consumable {
     	end
 	end,
     can_use = function(self, card)
-        return #G.jokers.highlighted == 1
-    end,
-	draw = function(self, card, layer)
-        -- This is for the Spectral shader.
-        if (layer == 'card' or layer == 'both') and card.sprite_facing == 'front' then
-            card.children.center:draw_shader('booster', nil, card.ARGS.send_to_shader)
-        end
-    end
-}
-SMODS.Consumable {
-    key = 'wrath',
-    set = 'nyx_demonic',
-	atlas = 'Spectral',
-    pos = { x = 1, y = 1 },
-	config = { 
-		extra = {
-			max_highlighted = 1,
-			slots = -1
-		}
-	},
-	loc_txt = {
-        name = 'Wrath', --name of card
-        text = { --text of card
-            '{C:dark_edition}Distorts{} a selected {C:attention}Joker{}',
-			'{C:red}#2#{} Joker Slots'
-		}
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	cost = 4,
-	unlocked = true,
-    discovered = false,
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS.e_nyx_distorted
-        return { vars = { card.ability.max_highlighted, card.ability.extra.slots } }
-    end,
-    use = function(self, card, area, copier)
-		if G.jokers.highlighted[1] then
-			local chosen_joker = G.jokers.highlighted[1]
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.4,
-				func = function()
-					chosen_joker:set_edition({ nyx_distorted = true })
-					if G.jokers then
-						G.jokers.config.card_limit = G.jokers.config.card_limit + card.ability.extra.slots
-					end
-					card:juice_up(0.3, 0.5)
-					return true
-				end
-			}))
-			G.E_MANAGER:add_event(Event({
-				trigger = 'after',
-				delay = 0.2,
-				func = function()
-					G.jokers:unhighlight_all()
-					return true
-				end
-			}))
-		end
-    end,
-	can_use = function(self, card)
         return #G.jokers.highlighted == 1
     end,
 	draw = function(self, card, layer)
@@ -11046,43 +10988,6 @@ SMODS.Booster {
 	end
 }
 SMODS.Booster {
-	key = 'dpgbooster',
-	atlas = 'Boosters',
-	pos = { x = 0, y = 0 },
-	kind = "horizon_pack",
-	loc_txt = {
-        name = 'DPG Pack',
-		group_name = 'Dont pick Joe',
-        text = {
-            'Choose {C:attention}#1#{} of up to {C:attention}#2#{} Joker cards',
-			'From {C:attention,E:2}Dark Pyro Gaming{}'
-		}
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
-	config = {
-        extra = 2,
-        choose = 1, 
-    },
-    loc_vars = function(self, info_queue, card)
-        return { vars = { card.ability.choose, card.ability.extra } }
-    end,
-	cost = 4,
-	create_card = function(self, card, i)
-        ease_background_colour(HEX("eb17eb"))
-        return SMODS.create_card({
-            set = "DPGJokers",
-            area = G.pack_cards,
-            skip_materialize = true,
-            soulable = true
-        })
-    end,
-	in_pool = function() 
-		return true 
-	end
-}
-SMODS.Booster {
     key = "hnh_pack",
 	atlas = "Boosters",
 	pos = { x = 5, y = 0 },
@@ -11439,7 +11344,8 @@ SMODS.Back {
 	loc_txt = {
 		name = "Chess Deck",
 		text = {
-			'Look its hard to explain...',
+			'Limited Deck',
+			'All scored cards gain a rank',
 			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
 		}
 	},
