@@ -3100,7 +3100,7 @@ local enhancements = {'m_bonus','m_mult','m_wild','m_glass','m_steel','m_stone',
 local editions = {'e_negative','e_polychrome','e_foil','e_holo'}
 local seals = {'Red', 'Blue', 'Gold','Purple','nyx_greenseal','nyx_greenblue'}
 
-SMODS.Joker { -- This joker should be referred to as "ERROR"
+SMODS.Joker { -- Bozo's baby
 	key = 'err',
     loc_txt = {
         name = '#5#',
@@ -4449,6 +4449,183 @@ SMODS.Joker{
 				mult = card.ability.extra.mult,
 				card = card
 			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'yani',
+    loc_txt = {
+        name = 'YOU ARE AN IDIOT',
+        text = {
+          'If {C:attention}first discard{} of round',
+		  'has only {C:attention}1{} card, add a',
+		  'permanent copy to deck',
+		  'May not copy {C:attention}perfectly{}'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 13, y = 5},
+	config = { 
+		extra = {
+			odds = 7
+		}
+	},
+	calculate = function(self,card,context)
+		if context.first_hand_drawn and not context.blueprint then
+            local eval = function() return G.GAME.current_round.discards_used == 0 and not G.RESET_JIGGLES end
+            juice_card_until(card, eval, true)
+        end
+		if context.discard and #context.full_hand == 1 and G.GAME.current_round.discards_used == 0 then
+			local card1 = context.full_hand[1]
+			local card2 = SMODS.add_card({set = 'Base', area = G.deck})
+			local suit = card1.base.suit
+			local rank = card1.base.rank
+			G.E_MANAGER:add_event(Event({
+				trigger = 'after',
+				delay = 0.1,
+				func = function()
+					copy_card(card1, card2)
+					return true
+				end
+			}))
+			if pseudorandom('nyx_yani') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				play_sound('nyx_idiot',1,1)
+				local ran = pseudorandom('nyx_yani',1,5)
+				if ran < 3 then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.change_base(card2, suit, ranks[pseudorandom('nyx_yani', 1, #ranks)]))
+							return true
+						end
+					}))
+					print(1)
+				elseif ran < 5 then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.change_base(card2, suits[pseudorandom('nyx_yani', 1, #suits)], rank))
+							return true
+						end
+					}))
+					print(2)
+				else
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							assert(SMODS.change_base(card2, suits[pseudorandom('nyx_yani', 1, #suits)], ranks[pseudorandom('nyx_yani', 1, #ranks)]))
+							return true
+						end
+					}))
+					print(3)
+				end
+				if card1.edition and pseudorandom('nyx_yani',1,6) == 4 then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							card2:set_edition(editions[pseudorandom('nyx_yani',1, #editions)], true)
+							return true
+						end
+					}))
+					print(4)
+				end
+				if next(SMODS.get_enhancements(card1)) and pseudorandom('nyx_yani',1,5) == 3 then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							card2:set_ability(G.P_CENTERS[enhancements[pseudorandom('nyx_yani', 1, #enhancements)]])
+							return true
+						end
+					}))
+					print(5)
+				end
+				if card1.seal and pseudorandom('nyx_yani',1,6) == 4 then
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.1,
+						func = function()
+							card2:set_seal(seals[pseudorandom('nyx_yani',1, #seals)], nil, true)
+							return true
+						end
+					}))
+					print(6)
+				end
+			end
+		end
+		if context.joker_main and pseudorandom('nyx_yani') < G.GAME.probabilities.normal / 1000 then
+			play_sound('nyx_idiot_full',1,1)
+			local deletable_jokers = {}
+			local hasError = false
+			local newcard = SMODS.create_card({key='j_nyx_yani', area = G.title, no_edition = true })
+			newcard.T.w = newcard.T.w * 1.3
+			newcard.T.h = newcard.T.h * 1.3
+			newcard.no_ui = true
+			newcard.states.visible = false
+			newcard:start_materialize()
+			for i=1, 20 do
+				attention_text({
+					text = "YOU ARE AN IDIOT",
+					scale = 1.4,
+					hold = 5,
+					major = G.title,
+					backdrop_colour = G.C.RED,
+					align = (G.STATE == G.STATES.TAROT_PACK or G.STATE == G.STATES.SPECTRAL_PACK or G.STATE == G.STATES.SMODS_BOOSTER_OPENED) and
+						'tm' or 'cm',
+					offset = { x = math.random()*0.1, y = math.random()*0.1 },
+					silent = true
+				})
+			end
+			for k, v in pairs(G.jokers.cards) do
+				deletable_jokers[#deletable_jokers + 1] = v
+
+				-- Check if the joker is an ERROR
+				if v.config.center.key == 'j_nyx_err' then
+					hasError = true
+				end
+			end
+			local _first_dissolve = nil
+			G.E_MANAGER:add_event(Event({
+				trigger = "before",
+				delay = 0.01,
+				func = function()
+					if not hasError then
+						for k, v in pairs(deletable_jokers) do
+							v:start_dissolve(nil, _first_dissolve)
+							_first_dissolve = true
+						end
+					end
+					return true
+				end,
+			}))
+			G.E_MANAGER:add_event(Event({
+				trigger = "after",
+				delay = 1,
+				func = function()
+					SMODS.destroy_cards{ newcard }
+					return true
+				end,
+			}))
+			for i=1, G.jokers.config.card_limit - #G.jokers.cards do
+				SMODS.add_card {key = 'nyx_yani'}
+			end
 		end
 	end
 }
@@ -6426,6 +6603,94 @@ SMODS.Joker{
         return ret
 	end
 }
+SMODS.Joker{
+	key = 'longroad',
+    loc_txt = {
+        name = 'The Long Road',
+        text = {
+          'If playing the {C:attention}final hand{}',
+		  '{C:attention}Retrigger{} {C:red}ALL{} Cards twice',
+        },
+    },
+	in_pool = function(self, args)
+        return false
+    end,
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 10,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 5},
+	config = { 
+		extra = {
+			repetitions = 2
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.repetitions
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 then
+            return {
+                repetitions = card.ability.extra.repetitions
+            }
+        end
+	end
+}
+SMODS.Joker{
+	key = 'astronaut',
+    loc_txt = {
+        name = 'Astronaut',
+        text = {
+        	'All {C:attention}Star-Crossed{} cards',
+			'{C:attention}Scale{} faster when scored'
+        },
+    },
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+	}, 
+	in_pool = function(self)
+		for _, playing_card in ipairs(G.playing_cards or {}) do
+            if SMODS.has_enhancement(playing_card, 'm_nyx_starcrossed') then
+                return true
+            end
+        end
+        return false
+	end,
+    atlas = 'Jokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 12, y = 5},
+    loc_vars = function(self, info_queue, card)
+        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
+    end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play and not context.end_of_round then
+			if SMODS.has_enhancement(context.other_card, 'm_nyx_starcrossed') then
+				context.other_card.ability.extra.mult_gain = context.other_card.ability.extra.mult_gain + 0.01
+				return {
+					message = localize('k_upgrade_ex'),
+					colour = G.C.MULT
+				}
+			end
+		end
+	end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'plaguebearer',
@@ -6704,44 +6969,6 @@ SMODS.Joker{
 			end
 		end
 		return SMODS.merge_effects(effects)
-	end
-}
-SMODS.Joker{
-	key = 'longroad',
-    loc_txt = {
-        name = 'The Long Road',
-        text = {
-          'If playing the {C:attention}final hand{}',
-		  '{C:attention}Retrigger{} {C:red}ALL{} Cards twice',
-        },
-    },
-    atlas = 'Jokers',
-    rarity = 4,
-    cost = 20,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = true,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 0, y = 5},
-	config = { 
-		extra = {
-			repetitions = 2
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.repetitions
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.repetition and (context.cardarea == G.play or context.cardarea == G.hand) and G.GAME.current_round.hands_left == 0 then
-            return {
-                repetitions = card.ability.extra.repetitions
-            }
-        end
 	end
 }
 SMODS.Joker{
@@ -8160,7 +8387,7 @@ SMODS.Joker{
         name = 'Knighthood',
         text = {
 		  	'Playing a {C:attention}Straight{}',
-			"Increases all scored cards by {C:attention}1{}",
+			"Ranks up all {C:attention}scored cards{}",
 			'Aces become {C:attention}Knights{}'
         },
     },
@@ -8364,54 +8591,6 @@ SMODS.Joker{
 	end
 }
 SMODS.Joker{
-	key = 'astronaut',
-    loc_txt = {
-        name = 'Astronaut',
-        text = {
-        	'All {C:attention}Star-Crossed{} cards',
-			'{C:attention}Scale{} faster when scored'
-        },
-    },
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: N/A', G.C.GREEN, G.C.WHITE, 0.8 )
-		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
-	end,
-	pools = {
-		["Horizonjokers"] = true -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-	}, 
-	in_pool = function(self)
-		for _, playing_card in ipairs(G.playing_cards or {}) do
-            if SMODS.has_enhancement(playing_card, 'm_nyx_starcrossed') then
-                return true
-            end
-        end
-        return false
-	end,
-    atlas = 'Placeholder',
-    rarity = 3,
-    cost = 8,
-    unlocked = true,
-    discovered = false,
-    blueprint_compat = false,
-    eternal_compat = true,
-    perishable_compat = true,
-    pos = {x = 4, y = 0},
-    loc_vars = function(self, info_queue, card)
-        info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_starcrossed']
-    end,
-	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play and not context.end_of_round then
-			if SMODS.has_enhancement(context.other_card, 'm_nyx_starcrossed') then
-				context.other_card.ability.extra.mult_gain = context.other_card.ability.extra.mult_gain + 0.01
-				return {
-					message = localize('k_upgrade_ex'),
-					colour = G.C.MULT
-				}
-			end
-		end
-	end
-}
-SMODS.Joker{
 	key = 'Knight Order',
     loc_txt = {
         name = 'Knight Order',
@@ -8438,7 +8617,7 @@ SMODS.Joker{
 	end,
     atlas = 'Placeholder',
     rarity = 3,
-    cost = 8,
+    cost = 10,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -8476,7 +8655,7 @@ SMODS.Joker{
 	end,
     atlas = 'Placeholder',
     rarity = 4,
-    cost = 12,
+    cost = 18,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -8751,6 +8930,8 @@ SMODS.Consumable {
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	cost = 6,
+	hidden = true,
+	soul_rate = 0.05,
 	unlocked = true,
 	discovered = false,
     config = { max_highlighted = 1, multiplier = 1.2 },
@@ -9283,6 +9464,8 @@ SMODS.Consumable {
     	badges[#badges+1] = create_badge('Art Credit: Milk Mann', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	cost = 4,
+	hidden = true,
+	soul_rate = 0.05,
 	unlocked = true,
     discovered = false,
 	loc_vars = function(self, info_queue, card)
@@ -11062,44 +11245,6 @@ SMODS.Tag {
             G.CONTROLLER.locks[lock] = true
             tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
                 local booster = SMODS.create_card { key = 'p_nyx_horizonboost_mega', area = G.play }
-                booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
-                booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
-                booster.T.w = G.CARD_W * 1.27
-                booster.T.h = G.CARD_H * 1.27
-                booster.cost = 0
-                booster.from_tag = true
-                G.FUNCS.use_card({ config = { ref_table = booster } })
-                booster:start_materialize()
-                G.CONTROLLER.locks[lock] = nil
-                return true
-            end)
-            tag.triggered = true
-            return true
-        end
-    end
-}
-SMODS.Tag {
-    key = "dpgtag",
-    min_ante = 2,
-    atlas = 'Tags',
-    pos = { x = 1, y = 0 },
-    loc_vars = function(self, info_queue, tag)
-        info_queue[#info_queue + 1] = G.P_CENTERS.p_nyx_dpgbooster
-    end,
-	loc_txt = {
-		name = "DPG Tag",
-		text = {
-			'Immediately open a free',
-			'{C:attention,T:p_nyx_dpgbooster}DPG Pack.{}',
-			'{C:inactive,s:0.8}Art by {C:green,s:0.8}Milk Mann{}'
-		}
-	},
-    apply = function(self, tag, context)
-        if context.type == 'new_blind_choice' then
-            local lock = tag.ID
-            G.CONTROLLER.locks[lock] = true
-            tag:yep('+', G.C.SECONDARY_SET.Spectral, function()
-                local booster = SMODS.create_card { key = 'p_nyx_dpgbooster', area = G.play }
                 booster.T.x = G.play.T.x + G.play.T.w / 2 - G.CARD_W * 1.27 / 2
                 booster.T.y = G.play.T.y + G.play.T.h / 2 - G.CARD_H * 1.27 / 2
                 booster.T.w = G.CARD_W * 1.27
@@ -13345,6 +13490,19 @@ SMODS.Sound({
 	end,
 })
 
+SMODS.Sound({
+	key = "idiot",
+	path = "idiot.ogg",
+	volume = 1,
+	pitch = 1,
+})
+SMODS.Sound({
+	key = "idiot_full",
+	path = "idiotfull.ogg",
+	volume = 1,
+	pitch = 1,
+})
+
 local game_main_menu_ref = Game.main_menu
 function Game:main_menu(change_context)
 	G.C.COLORSS = HEX("be93d4")
@@ -13501,6 +13659,54 @@ SMODS.Joker:take_ownership('joker',
 		  '{C:mult}+#1#{} Mult'
 		}
     }
+	},
+	true
+)
+--[[ I geniunely have no idea why this doesnt work but yeah.
+SMODS.Joker:take_ownership('dusk',
+	{
+	config = { extra = { repetitions = 1, can_fuse = true } },
+	loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.repetitions } }
+    end,
+    calculate = function(self, card, context)
+		card.ability.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_mime' then
+				card.ability.can_fuse = true
+			end
+		end
+        if context.repetition and context.cardarea == G.play and G.GAME.current_round.hands_left == 0 then
+            return {
+                repetitions = card.ability.extra.repetitions
+            }
+        end
+    end
+	},
+	true
+)
+]]
+SMODS.Joker:take_ownership('mime',
+	{
+	config = { extra = { repetitions = 1, can_fuse = true } },
+	loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.repetitions } }
+    end,
+    calculate = function(self, card, context)
+		card.ability.can_fuse = false
+		for i = 1, #G.jokers.cards do
+			local other_joker = G.jokers.cards[i]
+			if other_joker.config.center.key == 'j_dusk' then
+				card.ability.can_fuse = true
+			end
+		end
+        if context.repetition and context.cardarea == G.hand and (next(context.card_effects[1]) or #context.card_effects > 1) then
+            return {
+                repetitions = card.ability.extra.repetitions
+            }
+        end
+    end
 	},
 	true
 )
@@ -13790,7 +13996,26 @@ function Card:fusion() -- This was a nightmare
 			end
 		end
 	end
-
+	if self.config.center.key == 'j_mime' then
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_dusk' then
+				SMODS.destroy_cards{ self }
+				SMODS.destroy_cards{ G.jokers.cards[i] }
+				SMODS.add_card { set = 'Joker', key = 'j_nyx_longroad', edition = edition }
+				return
+			end
+		end
+	end
+	if self.config.center.key == 'j_dusk' then
+		for i=1,#G.jokers.cards do
+			if G.jokers.cards[i].config.center.key == 'j_mime' then
+				SMODS.destroy_cards{ self }
+				SMODS.destroy_cards{ G.jokers.cards[i] }
+				SMODS.add_card { set = 'Joker', key = 'j_nyx_longroad', edition = edition }
+				return
+			end
+		end
+	end
 	if self.config.center.key == 'j_nyx_allinblack' or self.config.center.key == 'j_nyx_allinred' or self.config.center.key == 'j_nyx_allingreen' then
 		if self.config.center.key == allin[1] then
 			local temp = nil
