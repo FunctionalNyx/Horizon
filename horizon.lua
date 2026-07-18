@@ -4513,7 +4513,6 @@ SMODS.Joker{
 							return true
 						end
 					}))
-					print(1)
 				elseif ran < 5 then
 					G.E_MANAGER:add_event(Event({
 						trigger = 'after',
@@ -4523,7 +4522,6 @@ SMODS.Joker{
 							return true
 						end
 					}))
-					print(2)
 				else
 					G.E_MANAGER:add_event(Event({
 						trigger = 'after',
@@ -4533,7 +4531,6 @@ SMODS.Joker{
 							return true
 						end
 					}))
-					print(3)
 				end
 				if card1.edition and pseudorandom('nyx_yani',1,6) == 4 then
 					G.E_MANAGER:add_event(Event({
@@ -4544,7 +4541,6 @@ SMODS.Joker{
 							return true
 						end
 					}))
-					print(4)
 				end
 				if next(SMODS.get_enhancements(card1)) and pseudorandom('nyx_yani',1,5) == 3 then
 					G.E_MANAGER:add_event(Event({
@@ -4555,7 +4551,6 @@ SMODS.Joker{
 							return true
 						end
 					}))
-					print(5)
 				end
 				if card1.seal and pseudorandom('nyx_yani',1,6) == 4 then
 					G.E_MANAGER:add_event(Event({
@@ -4566,7 +4561,6 @@ SMODS.Joker{
 							return true
 						end
 					}))
-					print(6)
 				end
 			end
 		end
