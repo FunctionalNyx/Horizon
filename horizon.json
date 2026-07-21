@@ -1,7 +1,7 @@
 {
     "id": "Horizon",
     "name": "Horizon",
-    "author": ["nyx","bozo!","Milk Mann"],
+    "author": ["nyx","bozo!","Milk Mann","Moist"],
     "description": "Collection of dumb ideas and bad design",
     "prefix": "nyx",
     "main_file": "horizon.lua",
@@ -9,5 +9,5 @@
     "dependencies": [
         "Steamodded (>=1.0.0~BETA-1224a)"
     ],
-    "version": "0.6.0"
+    "version": "1.0.0-WIP"
 }

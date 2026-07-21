@@ -4471,7 +4471,7 @@ SMODS.Joker{
 	}, 
     atlas = 'Jokers',
     rarity = 3,
-    cost = 10,
+    cost = 7,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
@@ -4617,9 +4617,6 @@ SMODS.Joker{
 					return true
 				end,
 			}))
-			for i=1, G.jokers.config.card_limit - #G.jokers.cards do
-				SMODS.add_card {key = 'nyx_yani'}
-			end
 		end
 	end
 }
@@ -6504,6 +6501,7 @@ SMODS.Joker{
 				})) 
 				return {
 					message = "Shattered!",
+					sound = 'glass1',
 					message_card = card,
 					card = card
 				}
@@ -9651,9 +9649,6 @@ SMODS.Consumable {
     loc_vars = function(self, info_queue, card)
         return { vars = { card.ability.max_highlighted } }
     end,
-	in_pool = function(self)
-		return false 
-	end,
     use = function(self, card, area, copier)
         G.E_MANAGER:add_event(Event({
             trigger = 'after',
@@ -11827,7 +11822,7 @@ SMODS.Enhancement{
 	config = {
 		extra = {
 			odds = 5,
-			mult = 1.33
+			mult = 1.5
 		}
 	},
 	loc_vars = function(self,info_queue,center)
@@ -13306,6 +13301,10 @@ SMODS.PokerHandPart{
         return {}
     end,
 }
+SMODS.PokerHandPart {
+    key = '6',
+    func = function(hand) return get_X_same(6, hand, true) end
+}
 SMODS.PokerHand {
     key = "Templar",
 	loc_txt = {
@@ -13354,6 +13353,32 @@ SMODS.PokerHand {
     evaluate = function(parts, hand)
 		if not next(parts._5) or not next(parts.nyx_knights) or not next(parts._flush) then return {} end
 		return { SMODS.merge_lists(parts._5, parts.nyx_knights, parts._flush) }
+    end
+}
+SMODS.PokerHand {
+    key = "flush6",
+	loc_txt = {
+		name = "Flush Six",
+		description = {
+			'6 Cards of the same Suit'
+		}
+	},
+    visible = false,
+    mult = 18,
+    chips = 180,
+    l_mult = 4,
+    l_chips = 60,
+    example = {
+        { 'S_A', true },
+        { 'S_A', true },
+        { 'S_A', true },
+        { 'S_A', true },
+        { 'S_A', true },
+		{ 'S_A', true }
+    },
+    evaluate = function(parts, hand)
+        if not next(parts.nyx_6) or not next(parts._flush) then return {} end
+        return { SMODS.merge_lists(parts.nyx_6, parts._flush) }
     end
 }
 SMODS.Consumable {
@@ -13416,6 +13441,37 @@ SMODS.Consumable {
     end,
 	set_card_type_badge = function(self, card, badges)
         badges[#badges + 1] = create_badge('Moon', get_type_colour(card.config.center or card.config, card), SMODS.ConsumableTypes.Planet.text_colour, 1.2 )
+    end
+}
+SMODS.Consumable {
+    key = "finkle",
+    set = "Planet",
+    cost = 3,
+	atlas = 'Placeholder',
+    pos = { x = 6, y = 0 },
+    config = { hand_type = 'nyx_flush6', softlock = true },
+    loc_txt = {
+		name = "Finkle",
+		text = {
+			"({V:1}lvl.#1#{}) Level up",
+			"{C:attention}#2#{}",
+			"{C:mult}+#3#{} Mult and",
+			"{C:chips}+#4#{} chips",
+		},
+	},
+	loc_vars = function(self, info_queue, card)
+        return {
+            vars = {
+                G.GAME.hands[card.ability.hand_type].level,
+                localize(card.ability.hand_type, 'poker_hands'),
+                G.GAME.hands[card.ability.hand_type].l_mult,
+                G.GAME.hands[card.ability.hand_type].l_chips,
+                colours = { (G.GAME.hands[card.ability.hand_type].level == 1 and G.C.UI.TEXT_DARK or G.C.HAND_LEVELS[math.min(7, G.GAME.hands[card.ability.hand_type].level)]) }
+            }
+        }
+    end,
+	set_card_type_badge = function(self, card, badges)
+        badges[#badges + 1] = create_badge('???', get_type_colour(card.config.center or card.config, card), SMODS.ConsumableTypes.Planet.text_colour, 1.2 )
     end
 }
 --
