@@ -2738,28 +2738,37 @@ SMODS.Joker{
     end,
 	config = { 
 		extra = {
-			xmult = 1
+			xmult = 0.2
 		}
 	},
 	loc_vars = function(self,info_queue,center)
+		local rock_count = 0
+        if G.playing_cards then
+            for _, playing_card in ipairs(G.playing_cards) do
+                if SMODS.has_enhancement(playing_card, 'm_stone') then rock_count = rock_count + 1 end
+            end
+        end
+
 		return{
 			vars = {
-				center.ability.extra.xmult
+				center.ability.extra.xmult,
+				1 + card.ability.extra.xmult * rock_count
 			}
 		}
 	end,
 	calculate = function(self,card,context)
 		-- Always update
+		local mult = 1;
 		card.ability.extra.xmult = 1
 		for i=1, #G.playing_cards do
 			if G.playing_cards[i].config.center.key == 'm_stone' then
-				card.ability.extra.xmult = card.ability.extra.xmult + 0.2
+				mult = 1 + card.ability.extra.xmult_scale
 			end
 		end
 
 		if context.joker_main then
 			return {
-				Xmult = card.ability.extra.xmult,
+				Xmult = mult,
 				card = card
 			}
 		end
