@@ -2752,7 +2752,7 @@ SMODS.Joker{
 		return{
 			vars = {
 				center.ability.extra.xmult,
-				1 + card.ability.extra.xmult * rock_count
+				1 + center.ability.extra.xmult * rock_count
 			}
 		}
 	end,
