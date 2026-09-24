@@ -2710,9 +2710,9 @@ SMODS.Joker{
     loc_txt = {
         name = 'Tower of Heaven',
         text = {
-		  'Gains {X:mult,C:white}X0.2{} Mult for every',
+		  'Gains {X:mult,C:white}X#1#{} Mult for every',
 		  '{C:attention}Stone{} Card in deck',
-		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#1#{} {C:inactive,s:0.8}Mult{}'
+		  '{C:inactive,s:0.8}Currently{} {X:mult,C:white,s:0.8}X#2#{} {C:inactive,s:0.8}Mult{}'
         },
     },
 	set_badges = function (self, card, badges)
@@ -8641,6 +8641,53 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker {
+    key = "meteor",
+    loc_txt = {
+        name = 'Meteor',
+        text = {
+          '{C:attention}Selling{} this card when',
+		  'all Joker slots are {C:attention}full{}',
+		  '{C:mult}Permanently{} removes them',
+		  'and adds {C:attention}+1{} Joker Slot'
+        },
+    },
+	set_badges = function (self, card, badges)
+		badges[#badges+1] = create_badge('WORK IN PROGRESS', G.C.WHITE, G.C.BLACK, 1 )
+	end,
+	pools = {["Horizonjokers"] = true},
+    atlas = 'Placeholder',
+    rarity = 3,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = false,
+    perishable_compat = false,
+    cost = 8,
+    pos = {x = 4, y = 0},
+    calculate = function(self, card, context)
+		if context.selling_card and context.card == card then
+			if #G.jokers.cards >= G.jokers.config.card_limit then
+				for i = 1, #G.jokers.cards do
+					local joker = G.jokers.cards[i]
+					G.E_MANAGER:add_event(Event({
+						trigger = 'after',
+						delay = 0.15,
+						func = function()
+							SMODS.destroy_cards(joker)
+							G.GAME.banned_keys[joker.config.center_key] = true
+							return true
+						end
+					}))
+				end
+				G.jokers.config.card_limit = G.jokers.config.card_limit + 1
+				return {
+					message = "Meteor!"
+				}
+			end
+		end
+    end
+}
 -- Legendary --
 SMODS.Joker{
 	key = 'loaded',
@@ -11554,6 +11601,36 @@ SMODS.Back {
 		}))
 	end
 }
+SMODS.Back {
+	key = 'inverteddeck',
+	atlas = 'Decks',
+	pos = { x = 6, y = 0 },
+	loc_txt = {
+		name = "Inverted Deck",
+		text = {
+			'Start with an',
+			'{C:attention,T:j_nyx_rotated_i}Inverted Rotated Joker{}'
+		}
+	},
+	unlocked = true,
+    discovered = true,
+	apply = function(self, back)
+		G.E_MANAGER:add_event(Event({
+			func = function()
+				if G.jokers then
+					local temp = nil
+					temp = SMODS.add_card {
+						key = 'j_nyx_rotated_i',
+						stickers = {"eternal"},
+					}
+					temp:add_sticker("eternal",true)
+					G.GAME.banned_keys['j_nyx_rotated'] = true
+					return true
+				end
+			end,
+		}))
+	end
+}
 --
 
 -- ENHANCEMENTS --
@@ -13485,10 +13562,45 @@ SMODS.Consumable {
 }
 --
 
-
+-- INVERTED [HIDDEN] --
+SMODS.Joker{
+	key = 'rotated_i',
+    loc_txt = {
+        name = 'Rotated? Joker',
+        text = {
+          'Swaps {C:chips}Chips{} and',
+		  '{C:mult}Mult{} AFTER scoring',
+		  '{C:inactive,s:0.8}Useless?{}'
+		  }
+	},
+	in_pool = function(self) 
+		return false 
+	end,
+	no_collection = true,
+	display_size = {w = 112, h = 112},
+    atlas = 'RotatedJokers',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 1, y = 0},
+	calculate = function(self,card,context)
+		if context.joker_main then
+			return {
+				swap = true,
+				message = "Rotated!",
+				message_card = card,
+				colour = G.C.GREEN
+			}
+		end
+	end
+}
+--
 
 -- Nyx bullshit --
-
 local position = math.random(1,24)
 local night = false
 local eclipse = false
