@@ -5102,48 +5102,45 @@ SMODS.Joker{
 end
 -- Rare --
 SMODS.Joker{
-    key = 'AEOM', --joker key
-    loc_txt = { -- local text
+    key = 'AEOM',
+    loc_txt = {
         name = 'All Eyes On Me',
         text = {
-          'All {C:attention}face{} Cards',
-          'Grant {X:mult,C:white}X#1#{} Mult'
+          'Last scoring card retriggers',
+		  'For every face card before it'
         },
     },
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Art Credit: Nyx', G.C.GREEN, G.C.WHITE, 0.8 )
 	end,
 	pools = {["ModJonklers"] = true,["Horizonjokers"] = true},
-    atlas = 'Jokers', --atlas' key
-    rarity = 3, --rarity: 1 = Common, 2 = Uncommon, 3 = Rare, 4 = Legendary
-    --soul_pos = { x = 0, y = 0 },
+    atlas = 'Jokers',
+    rarity = 3,
     cost = 8, --cost
-    unlocked = true, --where it is unlocked or not: if true, 
-    discovered = false, --whether or not it starts discovered
-    blueprint_compat = true, --can it be blueprinted/brainstormed/other
-    eternal_compat = true, --can it be eternal
-    perishable_compat = true, --can it be perishable
-    pos = {x = 0, y = 0}, --position in atlas, starts at 0, scales by the atlas' card size (px and py): {x = 1, y = 0} would mean the sprite is 71 pixels to the right
-	config = { 
-		extra = {
-			Xmult = 1.5,
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {center.ability.extra.Xmult}
-		}
-	end,
+    unlocked = true, 
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 0},
 	calculate = function(self,card,context)
-		 if context.individual and context.cardarea == G.play then
-            if context.other_card:is_face() then
-				return {
-					card = card,
-					Xmult = card.ability.extra.Xmult,
-					colour = G.C.MULT
-				}
+		if not card.debuff then
+			if context.repetition and context.cardarea == G.play then
+				local retrigger = 0
+				for i = 1, #context.scoring_hand do
+					local _card = context.scoring_hand[i]
+					if _card.is_face() and not _card == context.scoring_hand[#context.scoring_hand] then
+						retrigger = retrigger + 1
+					end
+				end
+				if context.other_card == context.scoring_hand[#context.scoring_hand] then
+					return {
+						repetitions = retrigger,
+						card = card
+					}
+				end
 			end
-        end
+		end
 	end
 }
 --[[SMODS.Joker{
