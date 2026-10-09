@@ -1,8 +1,8 @@
 {
     "id": "Horizon",
     "name": "Horizon",
-    "author": ["nyx","bozo!","Milk Mann","Moist"],
-    "description": "Collection of dumb ideas and bad design",
+    "author": ["nyx"],
+    "description": "Collection of fun but dumb ideas",
     "prefix": "nyx",
     "main_file": "horizon.lua",
     "badge_colour": "ff6666",

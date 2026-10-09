@@ -12,34 +12,27 @@ A shitty balatro mod made by a bunch of nerds
 
 Currently adds (Hidden Cards not Included)
 
-    104 Jokers [8 of which are Work in Progress and can be Disabled]
-    -   27 [+2 WIP] Common
-    -   35 [+1 WIP] Uncommon
-    -   16 [+4 WIP] Rare
-    -   8 [+1 WIP] Legendary
-    -   10 Modded Rarity
+    113 Jokers
     
     9 Enhancements
     
-    26 Consumables
-    
-    -   3 [+1 WIP] Tarots
-    -   4 Spectrals
-    -   Rest are custom [9 are Work in Progress]
+    29 Consumables
     
     2 Seals
     
-    6 Booster packs
+    5 Booster packs
     
-    6 Decks
+    7 Decks
     
-    3 Tags
+    2 Tags
     
     8 Blinds
 
-    1 [+1 WIP] Vouchers
+    2 Vouchers
 
-There are currently no unlock requirements implemented
+    [Some of these cards are WIP or are otherwise disableable]
+
+There are currently no unlock requirements implemented because I'm lazy
 
 Is it balanced? Probably poorly.
 
@@ -47,19 +40,21 @@ Is it fun? We say so.
 
 How do I download it?
 
-Go to [Releases](https://github.com/FunctionalNyx/Horizon/releases) for a stable experience.
-Otherwise just download the code directly on the [GitHub](https://github.com/FunctionalNyx/Horizon) for the most "up-to-date" version thats probably broken (Proceed at your own risk)
+Download the code directly from the [GitHub](https://github.com/FunctionalNyx/Horizon).
+The releases are usually out of date and old.
 
 Have fun
 
 ## About the Nerds
 
 ### Coders
-    Nyx - Main Coder
-    bozo! - Occasionally Helps (Also does art)
+    Nyx
+    bozo! - (inactive)
 
 ### Artists
     Milk Mann
     Astololofo
     Moist
     Dread
+    Nyx
+    bozo!
