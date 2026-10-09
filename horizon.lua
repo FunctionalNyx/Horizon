@@ -5106,8 +5106,8 @@ SMODS.Joker{
     loc_txt = {
         name = 'All Eyes On Me',
         text = {
-          'Last scoring card retriggers',
-		  'For every face card before it'
+          'The {C:attention}last{} scoring card {C:attention}retriggers{}',
+		  'For every {C:attention}face{} card before it'
         },
     },
 	set_badges = function (self, card, badges)
@@ -5123,23 +5123,24 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 0, y = 0},
+	config = { 
+		extra = {
+			retrigger = 0
+		}
+	},
 	calculate = function(self,card,context)
-		if not card.debuff then
-			if context.repetition and context.cardarea == G.play then
-				local retrigger = 0
-				for i = 1, #context.scoring_hand do
-					local _card = context.scoring_hand[i]
-					if _card.is_face() and not _card == context.scoring_hand[#context.scoring_hand] then
-						retrigger = retrigger + 1
-					end
-				end
-				if context.other_card == context.scoring_hand[#context.scoring_hand] then
-					return {
-						repetitions = retrigger,
-						card = card
-					}
-				end
+		if context.repetition and context.cardarea == G.play then
+			if context.other_card ~= context.scoring_hand[#context.scoring_hand] and context.other_card:is_face() then
+				card.ability.extra.retrigger = card.ability.extra.retrigger + 1
+			elseif context.other_card == context.scoring_hand[#context.scoring_hand] then
+				return {
+					repetitions = card.ability.extra.retrigger,
+					card = card
+				}
 			end
+		end
+		if context.after then
+			card.ability.extra.retrigger = 0
 		end
 	end
 }
