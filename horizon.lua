@@ -9579,7 +9579,7 @@ SMODS.Consumable {
 				delay = 0.1,
 				func = function()
 					G.hand.highlighted[i]:juice_up(0.3, 0.3)
-					ease_dollars(money)
+					ease_dollars(math.floor(money))
 					return true
 				end
 			}))
@@ -12656,6 +12656,97 @@ SMODS.Enhancement{
 		end
 	end
 }
+SMODS.Enhancement{
+	key = 'crystal',
+	atlas = 'enhancements',
+	pos = { x = 9, y = 0 },
+	loc_txt = {
+		name = 'Crystal Card',
+		text = {
+			''
+		}
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	unlocked = true,
+	discovered = true,
+	config = {
+		extra = {
+			odds = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.main_scoring and context.cardarea == G.play then
+			local index
+			for i, v in ipairs(context.scoring_hand) do
+        		if v == card then
+          			index = i
+         			break
+        		end
+      		end
+			if index then
+				local right_card = context.scoring_hand[index + 1]
+				if right_card then
+					if not SMODS.has_enhancement(right_card, 'm_nyx_diseased') then
+						G.E_MANAGER:add_event(Event({
+							trigger = 'after',
+							delay = 0.1,
+							func = function()
+								right_card:set_ability(G.P_CENTERS.m_nyx_diseased)
+								return true
+							end
+						}))
+						return {
+							juice_card = right_card
+						}
+					end
+				end
+			end
+		end
+		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
+			local pestilence = false
+			local steth = false
+			for i, v in ipairs(G.jokers.cards) do
+				if v.config.center.key == 'j_nyx_pestilence' then
+					pestilence = true
+					break
+				end
+			end
+			for i, v in ipairs(G.jokers.cards) do
+				if v.config.center.key == 'j_nyx_steth' then
+					steth = true
+					break
+				end
+			end
+			if pestilence == false then
+				if steth then
+					return {
+						message = "Decayed",
+						message_card = card,
+						remove = true
+					}
+				else
+					if pseudorandom('nyx_diseased') < G.GAME.probabilities.normal / card.ability.extra.odds then
+						return {
+							message = "Decayed",
+							message_card = card,
+							remove = true
+						}
+					end
+				end
+			end
+    	end
+	end
+}
 SMODS.current_mod.set_debuff = function(card)
     if SMODS.has_enhancement(card, "m_nyx_whiteknight") then
         return 'prevent_debuff'
@@ -13364,7 +13455,7 @@ SMODS.Blind {
                     delay = 0.2,
                     func = function()
                         local cash = G.GAME.dollars
-						ease_dollars(cash * -0.5,true)
+						ease_dollars(math.floor(cash * -0.5),true)
                         return true
                     end
                 }))
@@ -13475,6 +13566,10 @@ SMODS.Shader {
   path = 'distorted.fs'
 }
 SMODS.Shader {
+  key = 'slime',
+  path = 'slime.fs'
+}
+SMODS.Shader {
   key = 'blur',
   path = 'blur.fs'
 }
@@ -13495,8 +13590,12 @@ SMODS.Edition {
   shader = 'distorted',
   discovered = true,
   weight = 2,
-  in_shop = false,
-  extra_cost = 10,
+  in_shop = true,
+  extra_cost = 5,
+  apply_to_float = true,
+  set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Shader Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
+  end,
   sound = {
 		sound = "nyx_distorted",
 		per = 1,
@@ -13506,11 +13605,12 @@ SMODS.Edition {
 	name = "Distorted",
 	label = "Distorted",
 	text = {
-	  "All stats are increased by {C:chips}X2{}"
+		"Card appearance is",
+		"warped by shifting waves"
 	}
   },
   config = {
-    multiplier = 2
+    multiplier = 1.5
   },
   loc_vars = function(self, info_queue, card)
     return {
@@ -13562,8 +13662,8 @@ SMODS.Edition {
   key = 'blurred',
   shader = 'blur',
   discovered = true,
-  weight = 1.5,
-  in_shop = false,
+  weight = 0.5,
+  in_shop = true,
   extra_cost = 10,
   loc_txt = {
 	name = "Blurred",
@@ -13573,7 +13673,7 @@ SMODS.Edition {
 	}
   },
   config = {
-    multiplier = 2
+    multiplier = 1
   },
   sound = {
 		sound = "nyx_blurred",
@@ -13626,6 +13726,50 @@ SMODS.Edition {
 		}
 	})
   end,
+}
+SMODS.Edition {
+	key = 'slimed',
+	shader = 'slime',
+	discovered = false,
+	weight = 1,
+	in_shop = false,
+	extra_cost = -100,
+	set_badges = function (self, card, badges)
+			badges[#badges+1] = create_badge('Shader Credit: Milk', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	loc_txt = {
+		name = "Slimed",
+		label = "Slimed",
+		text = {
+			"{C:green}#1# in 2{} chance to {C:green}Stick{}",
+			"when {C:attention}sold{}. Also is {C:attention}pinned{}"
+		}
+	},
+	sound = {
+			sound = "nyx_blurred",
+			per = 1,
+			vol = 1,
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	on_apply = function(card)
+		card:add_sticker('pinned', true)
+	end,
+	calculate = function(self, card, context)
+		if context.selling_self then
+			if pseudorandom('nyx_slime') < G.GAME.probabilities.normal / 2 then
+				SMODS.add_card { set = 'Joker', key = card.config.center.key, edition = card.edition  }
+			end
+		end
+	end,
+	on_remove = function(card)
+		card:remove_sticker('pinned')
+	end,
 }
 --
 
@@ -13876,18 +14020,27 @@ SMODS.Consumable {
 --
 
 -- INVERTED [HIDDEN] --
+SMODS.Atlas {
+  key = 'Invert',
+  path = 'Inverted.png',
+  px = 71,
+  py = 95
+}
 SMODS.Joker{
 	key = 'rotated_i',
     loc_txt = {
         name = 'Rotated? Joker',
         text = {
           'Swaps {C:chips}Chips{} and',
-		  '{C:mult}Mult{} AFTER scoring',
+		  '{C:mult}Mult{} AFTER cards score',
 		  '{C:inactive,s:0.8}Useless?{}'
 		  }
 	},
 	in_pool = function(self) 
 		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
 	no_collection = true,
 	display_size = {w = 112, h = 112},
@@ -13911,9 +14064,218 @@ SMODS.Joker{
 		end
 	end
 }
+SMODS.Joker{
+	key = 'spacejoker_i',
+    loc_txt = {
+        name = 'Space? Joker',
+        text = {
+          '{C:green}#2# in #1#{} chance to',
+		  'retrigger {C:planet}Planets{}'
+		  }
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = true,
+    atlas = 'Invert',
+    rarity = 2,
+    cost = 5,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 0, y = 0},
+	config = {
+		extra = {
+			odds = 4
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+    calculate = function(self, card, context)
+        if context.using_consumeable and context.consumeable.ability.set == 'Planet' then
+			local hand = context.consumeable.ability.hand_type
+			local eff_card = context.blueprint_card or card
+			if hand and pseudorandom('nyx_diseased') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				SMODS.calculate_effect({message = localize("k_again_ex")}, eff_card) 
+				update_hand_text(
+					{ sound = 'button', volume = 0.7, pitch = 0.8, delay = 0.3 },
+					{
+						handname = localize(hand, 'poker_hands'),
+						chips = G.GAME.hands[hand].chips,
+						mult = G.GAME.hands[hand].mult,
+						level = G.GAME.hands[hand].level
+					}
+				)
+				G.E_MANAGER:add_event(Event {
+					func = function()
+						eff_card:juice_up()
+						return true
+					end
+				})
+				level_up_hand(context.consumeable or eff_card, hand)
+				update_hand_text(
+					{ sound = 'button', volume = 0.7, pitch = 1.1, delay = 0 },
+					{ mult = 0, chips = 0, handname = '', level = '' }
+				)
+
+				return nil, true
+			end
+        end
+    end
+}
+SMODS.Joker{
+	key = 'plasma_i',
+    loc_txt = {
+        name = 'Plasma? Deck?!',
+        text = {
+          'Balances {C:attention}before{} cards score',
+		  '{C:inactive,s:0.8}How did this get here?{}'
+		  }
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = false,
+    atlas = 'Invert',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 1, y = 0},
+	calculate = function(self,card,context)
+		if context.initial_scoring_step then
+			return {
+				balance = true
+			}
+		end
+	end
+}
+SMODS.Joker{
+	key = 'tothemoon_i',
+    loc_txt = {
+        name = 'To the Moon?',
+        text = {
+          'Earn {C:money}50%{} more money at',
+		  'the end of a round',
+		  'if currently below an',
+		  '{C:attention}interest cap{}'
+		  }
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = false,
+    atlas = 'Invert',
+    rarity = 3,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = false,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 2, y = 0},
+	config = { extra = { dollars = 0 } },
+	calculate = function(self,card,context)
+		if context.modify_final_cashout then
+			if not G.GAME.dollar_buffer then
+				G.GAME.dollar_buffer = 0
+			end
+			if G.GAME.dollars + G.GAME.dollar_buffer < G.GAME.interest_cap then
+				return {
+					modify = math.floor(context.amount*0.5)
+				}
+			end
+		end
+	end
+}
 --
 
 -- Nyx bullshit --
+
+SMODS.Joker{
+	key = 'crystal2',
+    loc_txt = {
+        name = 'Crystal',
+        text = {
+          ''
+		  }
+	},
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Art Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
+	end,
+	pools = {
+		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
+		['Fusable'] = true
+	}, 
+	in_pool = function(self, args)
+        for _, joker in ipairs(G.jokers.cards or {}) do
+            if joker.config.center.key == "j_nyx_penis" then
+				return false
+            end
+        end
+        return true
+    end,
+    atlas = 'Jokers',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 14, y = 5},
+	config = { 
+		extra = {
+			odds = 3
+		}
+	},
+	loc_vars = function(self,info_queue,center)
+		info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_wet']
+		return{
+			vars = {
+				center.ability.extra.odds,
+				(G.GAME and G.GAME.probabilities.normal or 1)
+			}
+		}
+	end,
+	calculate = function(self,card,context)
+		if context.individual and context.cardarea == G.play then
+			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
+				local funnycard = context.other_card
+				if not SMODS.has_enhancement(funnycard, 'm_nyx_crystal') then
+					funnycard:set_ability(G.P_CENTERS.m_nyx_crystal)
+					return {
+						message = "Crystal!",
+						message_card = card,
+						colour = G.C.BLUE,
+						card = card
+					}
+				end
+			end
+		end
+	end
+}
+
 local position = math.random(1,24)
 local night = false
 local eclipse = false
@@ -14649,7 +15011,7 @@ end
 
 G.FUNCS.can_fuse_card = function(e)
 	local card = e.config.ref_table
-    if card.ability.can_fuse then
+    if card.ability.can_fuse and G.GAME.dollars >= card.sell_cost then
         e.config.colour = G.C.GOLD
         e.config.button = 'fuse_card'
     else
