@@ -13430,9 +13430,9 @@ SMODS.Voucher {
     end
 }
 SMODS.Voucher {
-    key = 'antijimbo',
+    key = 'intervention',
 	loc_txt = {
-		name = "Antijimbo",
+		name = "Divine Intervention",
 		text = {
 			'After beating a Boss Blind',
 			'Adds a Free {V:1}Heaven{} & {V:2}Hell{} Pack',
