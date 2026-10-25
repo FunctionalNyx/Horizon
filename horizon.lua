@@ -12656,97 +12656,6 @@ SMODS.Enhancement{
 		end
 	end
 }
-SMODS.Enhancement{
-	key = 'crystal',
-	atlas = 'enhancements',
-	pos = { x = 9, y = 0 },
-	loc_txt = {
-		name = 'Crystal Card',
-		text = {
-			''
-		}
-	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
-	end,
-	unlocked = true,
-	discovered = true,
-	config = {
-		extra = {
-			odds = 4
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		return{
-			vars = {
-				center.ability.extra.odds,
-				(G.GAME and G.GAME.probabilities.normal or 1)
-			}
-		}
-	end,
-	calculate = function(self,card,context)
-		if context.main_scoring and context.cardarea == G.play then
-			local index
-			for i, v in ipairs(context.scoring_hand) do
-        		if v == card then
-          			index = i
-         			break
-        		end
-      		end
-			if index then
-				local right_card = context.scoring_hand[index + 1]
-				if right_card then
-					if not SMODS.has_enhancement(right_card, 'm_nyx_diseased') then
-						G.E_MANAGER:add_event(Event({
-							trigger = 'after',
-							delay = 0.1,
-							func = function()
-								right_card:set_ability(G.P_CENTERS.m_nyx_diseased)
-								return true
-							end
-						}))
-						return {
-							juice_card = right_card
-						}
-					end
-				end
-			end
-		end
-		if context.destroy_card and context.cardarea == G.play and context.destroy_card == card then
-			local pestilence = false
-			local steth = false
-			for i, v in ipairs(G.jokers.cards) do
-				if v.config.center.key == 'j_nyx_pestilence' then
-					pestilence = true
-					break
-				end
-			end
-			for i, v in ipairs(G.jokers.cards) do
-				if v.config.center.key == 'j_nyx_steth' then
-					steth = true
-					break
-				end
-			end
-			if pestilence == false then
-				if steth then
-					return {
-						message = "Decayed",
-						message_card = card,
-						remove = true
-					}
-				else
-					if pseudorandom('nyx_diseased') < G.GAME.probabilities.normal / card.ability.extra.odds then
-						return {
-							message = "Decayed",
-							message_card = card,
-							remove = true
-						}
-					end
-				end
-			end
-    	end
-	end
-}
 SMODS.current_mod.set_debuff = function(card)
     if SMODS.has_enhancement(card, "m_nyx_whiteknight") then
         return 'prevent_debuff'
@@ -14149,7 +14058,7 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
-	no_collection = false,
+	no_collection = true,
     atlas = 'Invert',
     rarity = 3,
     cost = 8,
@@ -14184,7 +14093,7 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
-	no_collection = false,
+	no_collection = true,
     atlas = 'Invert',
     rarity = 3,
     cost = 8,
@@ -14208,73 +14117,49 @@ SMODS.Joker{
 		end
 	end
 }
---
-
--- Nyx bullshit --
-
 SMODS.Joker{
-	key = 'crystal2',
+	key = 'baseballcard_i',
     loc_txt = {
-        name = 'Crystal',
+        name = 'Baseball? Card',
         text = {
-          ''
-		  }
+          '{C:green}Uncommon{} Joker {C:attention}retrigger{}'
+		}
 	},
-	set_badges = function (self, card, badges)
-    	badges[#badges+1] = create_badge('Art Credit: Moist', G.C.GREEN, G.C.WHITE, 0.8 )
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
 	end,
-	pools = {
-		["Horizonjokers"] = true, -- This needs to be here for it to work with the booster pack, if its legendary dont include this
-		['Fusable'] = true
-	}, 
-	in_pool = function(self, args)
-        for _, joker in ipairs(G.jokers.cards or {}) do
-            if joker.config.center.key == "j_nyx_penis" then
-				return false
-            end
-        end
-        return true
-    end,
-    atlas = 'Jokers',
-    rarity = 2,
-    cost = 6,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = true,
+    atlas = 'Invert',
+    rarity = 3,
+    cost = 8,
     unlocked = true,
     discovered = false,
     blueprint_compat = true,
     eternal_compat = true,
     perishable_compat = true,
-    pos = {x = 14, y = 5},
-	config = { 
-		extra = {
-			odds = 3
-		}
-	},
-	loc_vars = function(self,info_queue,center)
-		info_queue[#info_queue + 1] = G.P_CENTERS['m_nyx_wet']
-		return{
-			vars = {
-				center.ability.extra.odds,
-				(G.GAME and G.GAME.probabilities.normal or 1)
-			}
-		}
-	end,
+    pos = {x = 3, y = 0},
+	config = { extra = { dollars = 0 } },
 	calculate = function(self,card,context)
-		if context.individual and context.cardarea == G.play then
-			if pseudorandom('nyx_moist') < G.GAME.probabilities.normal / card.ability.extra.odds then
-				local funnycard = context.other_card
-				if not SMODS.has_enhancement(funnycard, 'm_nyx_crystal') then
-					funnycard:set_ability(G.P_CENTERS.m_nyx_crystal)
+		if context.retrigger_joker_check and context.other_card and
+		context.other_card.config and context.other_card.config.center.key ~= self.key and context.other_card:is_rarity(2) then
+			if context.other_ret and context.other_ret.jokers and context.other_ret.jokers.was_blueprinted then
+				else
 					return {
-						message = "Crystal!",
-						message_card = card,
-						colour = G.C.BLUE,
-						card = card
+						message = localize("k_again_ex"),
+						repetitions = card.ability.extra,
+						message_card = context.blueprint_card or card,
+						was_blueprinted = context.blueprint,
 					}
 				end
-			end
 		end
 	end
 }
+--
+
+-- Nyx bullshit --
 
 local position = math.random(1,24)
 local night = false
