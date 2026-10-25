@@ -14095,7 +14095,7 @@ SMODS.Joker{
 	end,
 	no_collection = true,
     atlas = 'Invert',
-    rarity = 3,
+    rarity = 2,
     cost = 8,
     unlocked = true,
     discovered = false,
@@ -14117,12 +14117,14 @@ SMODS.Joker{
 		end
 	end
 }
+--[[
 SMODS.Joker{
 	key = 'baseballcard_i',
     loc_txt = {
         name = 'Baseball? Card',
         text = {
-          '{C:green}Uncommon{} Joker {C:attention}retrigger{}'
+          '{C:green}Uncommon{} Jokers',
+		  '{C:attention}retrigger{}'
 		}
 	},
 	in_pool = function(self) 
@@ -14131,7 +14133,7 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
-	no_collection = true,
+	no_collection = false,
     atlas = 'Invert',
     rarity = 3,
     cost = 8,
@@ -14141,22 +14143,13 @@ SMODS.Joker{
     eternal_compat = true,
     perishable_compat = true,
     pos = {x = 3, y = 0},
-	config = { extra = { dollars = 0 } },
 	calculate = function(self,card,context)
-		if context.retrigger_joker_check and context.other_card and
-		context.other_card.config and context.other_card.config.center.key ~= self.key and context.other_card:is_rarity(2) then
-			if context.other_ret and context.other_ret.jokers and context.other_ret.jokers.was_blueprinted then
-				else
-					return {
-						message = localize("k_again_ex"),
-						repetitions = card.ability.extra,
-						message_card = context.blueprint_card or card,
-						was_blueprinted = context.blueprint,
-					}
-				end
-		end
+		 if context.retrigger_joker_check and context.other_card.config.center.rarity == 2 then
+            return { repetitions = 1 }
+        end 
 	end
 }
+]]--
 --
 
 -- Nyx bullshit --
