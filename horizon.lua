@@ -102,6 +102,13 @@ function Card:release(dragged)
     card_release_ref(self, dragged)
     SMODS.calculate_context({card_released = self})
 end
+
+SMODS.current_mod.optional_features = function()
+    return {
+        post_trigger = true,
+        retrigger_joker = true
+    }
+end
 --
 SMODS.ObjectType({
 	key = "ModJonklers",
@@ -7033,7 +7040,7 @@ SMODS.Joker{
 			else
 				return {
 					message = localize("k_again_ex"),
-					repetitions = card.ability.extra,
+					repetitions = 1,
 					message_card = context.blueprint_card or card,
 					was_blueprinted = context.blueprint,
 				}
@@ -14117,7 +14124,6 @@ SMODS.Joker{
 		end
 	end
 }
---[[
 SMODS.Joker{
 	key = 'baseballcard_i',
     loc_txt = {
@@ -14149,7 +14155,6 @@ SMODS.Joker{
         end 
 	end
 }
-]]--
 --
 
 -- Nyx bullshit --
