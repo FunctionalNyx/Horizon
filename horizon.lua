@@ -67,7 +67,7 @@ horizonmod.config_tab = function()
 				create_toggle{ col = true, label = "", scale = 0.85, w = 0.15, shadow = true, ref_table = horizonmod.config, ref_value = "enable_AllIn" },
 			}},
 			{n = G.UIT.C, config = { align = "cl", padding = 0.2 }, nodes = {
-				{n = G.UIT.T, config = { text = ' Enable All In Cards (Needs WIP)', scale = 0.5, colour = G.C.UI.TEXT_LIGHT }},
+				{n = G.UIT.T, config = { text = ' Enable All In Cards', scale = 0.5, colour = G.C.UI.TEXT_LIGHT }},
 			}},
 		}},
 		{n = G.UIT.R, config = {align = "cl", padding = 0}, nodes = {
@@ -13126,7 +13126,7 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Sum',
         text = {
-          'Adds 100 to required',
+          'Adds 10% to required',
 		  'score every Hand',
 		  'Scales with Ante'
         },
@@ -13139,25 +13139,15 @@ SMODS.Blind {
 	boss_colour = HEX('4c56af'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
-			if G.GAME.round_resets.ante < 5 then
-				local sum_amt = 100 * (G.GAME.round_resets.ante - 2)
+			local sum_amt = G.GAME.blind.chips/10
 				G.GAME.blind.loc_debuff_lines[1] = 'Adds '..sum_amt..' to required'
-			elseif G.GAME.round_resets.ante >= 5 then
-				local sum_amt = G.GAME.blind.chips/10
-				G.GAME.blind.loc_debuff_lines[1] = 'Adds '..sum_amt..' to required'
-			end
             if context.press_play then
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
                     delay = 0.2,
                     func = function()
-						if G.GAME.round_resets.ante < 5 then
-                        	G.GAME.blind.chips = G.GAME.blind.chips + (100 * (G.GAME.round_resets.ante - 2))
-							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-						elseif G.GAME.round_resets.ante >= 5 then
-							G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips/10)
-							G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
-						end
+						G.GAME.blind.chips = G.GAME.blind.chips + (G.GAME.blind.chips/10)
+						G.GAME.blind.chip_text = number_format(G.GAME.blind.chips)
                         return true
                     end
                 }))
@@ -13190,7 +13180,7 @@ SMODS.Blind {
     loc_txt = {
         name = 'The Difference',
         text = {
-          'Removes 100 from',
+          'Removes 10% from',
 		  'score every Hand',
 		  'Scales with Ante'
         },
@@ -13203,23 +13193,14 @@ SMODS.Blind {
 	boss_colour = HEX('a03b3b'),
 	calculate = function(self, blind, context)
         if not blind.disabled then
-			if G.GAME.round_resets.ante < 5 then
-				local diff_amt = (100 * (G.GAME.round_resets.ante - 2))
+			local diff_amt = (G.GAME.blind.chips/10)
 				G.GAME.blind.loc_debuff_lines[1] = 'Removes '..diff_amt..' from'
-			elseif G.GAME.round_resets.ante >= 5 then
-				local diff_amt = (G.GAME.blind.chips/10)
-				G.GAME.blind.loc_debuff_lines[1] = 'Removes '..diff_amt..' from'
-			end
             if context.press_play then
                 G.E_MANAGER:add_event(Event({
                     trigger = 'after',
                     delay = 0.2,
                     func = function()
-						if G.GAME.round_resets.ante < 5 then
-                        	G.GAME.chips = G.GAME.chips - (100 * (G.GAME.round_resets.ante - 2))
-						elseif G.GAME.round_resets.ante >= 5 then
-							G.GAME.chips = G.GAME.chips - (G.GAME.blind.chips/10)
-						end
+						G.GAME.chips = G.GAME.chips - (G.GAME.blind.chips/10)
                         return true
                     end
                 }))
@@ -13521,8 +13502,9 @@ SMODS.Edition {
 	name = "Distorted",
 	label = "Distorted",
 	text = {
-		"Card appearance is",
-		"warped by shifting waves"
+		"All Joker values",
+		"are increased",
+		"by {C:mult}X1.5{}"
 	}
   },
   config = {
@@ -13585,7 +13567,9 @@ SMODS.Edition {
 	name = "Blurred",
 	label = "Blurred",
 	text = {
-	  "All stats are {C:chips}randomized{}"
+	  	"All Joker values",
+		"are increased",
+		"{C:chips}randomized{}"
 	}
   },
   config = {
@@ -13962,7 +13946,7 @@ SMODS.Joker{
 	display_size = {w = 112, h = 112},
     atlas = 'RotatedJokers',
     rarity = 3,
-    cost = 8,
+    cost = 6,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -14103,7 +14087,7 @@ SMODS.Joker{
 	no_collection = true,
     atlas = 'Invert',
     rarity = 2,
-    cost = 8,
+    cost = 6,
     unlocked = true,
     discovered = false,
     blueprint_compat = false,
@@ -14139,7 +14123,7 @@ SMODS.Joker{
 	set_badges = function (self, card, badges)
     	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
 	end,
-	no_collection = false,
+	no_collection = true,
     atlas = 'Invert',
     rarity = 3,
     cost = 8,
@@ -14154,6 +14138,188 @@ SMODS.Joker{
             return { repetitions = 1 }
         end 
 	end
+}
+SMODS.Joker{
+	key = 'hologram_i',
+    loc_txt = {
+        name = 'Hologram?',
+        text = {
+          	"Gains {X:mult,C:white}X#1#{} Mult",
+			"every time a {C:attention}playing card{}",
+			"is removed from your deck",
+			"{C:inactive}(Currently {X:mult,C:white}X#2#{C:inactive} Mult)",
+		}
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = true,
+    atlas = 'Invert',
+    rarity = 2,
+    cost = 8,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = false,
+    pos = {x = 4, y = 0},
+	soul_pos = {
+        x = 5, y = 0,
+        draw = function(card, scale_mod, rotate_mod)
+            card.hover_tilt = card.hover_tilt * 1.5
+            card.children.floating_sprite:draw_shader('hologram', nil, card.ARGS.send_to_shader, nil,
+                card.children.center, 2 * scale_mod, 2 * rotate_mod)
+            card.hover_tilt = card.hover_tilt / 1.5
+        end
+    },
+	config = { extra = { xmult = 1, xmult_gain = 0.25 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.xmult_gain, card.ability.extra.xmult } }
+    end,
+    calculate = function(self, card, context)
+        if context.remove_playing_cards and not context.blueprint then
+            local cards = 0
+            for _, removed_card in ipairs(context.removed) do
+                cards = cards + 1
+            end
+            if cards > 0 then
+                card.ability.extra.xmult = card.ability.extra.xmult + cards * card.ability.extra.xmult_gain
+                return { message = localize { type = 'variable', key = 'a_xmult', vars = { card.ability.extra.xmult } } }
+            end
+        end
+        if context.joker_main then
+            return {
+                xmult = card.ability.extra.xmult
+            }
+        end
+    end,
+}
+SMODS.Joker{
+	key = 'hack_i',
+    loc_txt = {
+        name = 'Hack?',
+        text = {
+        	"Retrigger each played",
+        	"{C:attention}Ace{}, {C:attention}King{}, {C:attention}Queen{}, or {C:attention}Jack{}",
+		  }
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = true,
+    atlas = 'Invert',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 6, y = 0},
+	config = { extra = { repetitions = 1 } },
+    calculate = function(self, card, context)
+        if context.repetition and context.cardarea == G.play then
+            local id = context.other_card:get_id()
+            if id == 14 or id == 13 or id == 12 or id == 11 then
+                return {
+                    repetitions = card.ability.extra.repetitions
+                }
+            end
+        end
+    end
+}
+SMODS.Joker{
+	key = 'bull_i',
+    loc_txt = {
+        name = 'Bull?',
+        text = {
+        	"{C:mult}+#1#{} Mult for",
+             "each {C:money}$2{} you have",
+            "{C:inactive}(Currently {C:mult}+#2#{C:inactive} Mult)",
+		  }
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = true,
+    atlas = 'Invert',
+    rarity = 2,
+    cost = 6,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 7, y = 0},
+	config = { extra = { mult = 1 } },
+    loc_vars = function(self, info_queue, card)
+        return { vars = { card.ability.extra.mult, card.ability.extra.mult * math.max(0, ((G.GAME.dollars or 0) + (G.GAME.dollar_buffer or 0))/2) } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            return {
+                mult = card.ability.extra.mult * math.max(0, (G.GAME.dollars + (G.GAME.dollar_buffer or 0))/2)
+            }
+        end
+    end,
+}
+SMODS.Joker{
+	key = 'vampire_i',
+    loc_txt = {
+        name = 'Vampire?',
+        text = {
+        	"Gives {X:mult,C:white} X#1# {} Mult",
+			"for each {C:attention}Enchanced Card",
+			"in your {C:attention}full deck",
+			"{C:inactive}(Currently {X:mult,C:white} X#2# {C:inactive} Mult)",
+		  }
+	},
+	in_pool = function(self) 
+		return G.GAME.selected_back.effect.center.key == "b_nyx_inverteddeck" 
+	end,
+	set_badges = function (self, card, badges)
+    	badges[#badges+1] = create_badge('Inverted', G.C.BLACK, G.C.WHITE, 0.8 )
+	end,
+	no_collection = true,
+    atlas = 'Invert',
+    rarity = 2,
+    cost = 7,
+    unlocked = true,
+    discovered = false,
+    blueprint_compat = true,
+    eternal_compat = true,
+    perishable_compat = true,
+    pos = {x = 8, y = 0},
+    config = { extra = { xmult = 0.1 } },
+    loc_vars = function(self, info_queue, card)
+        local tally = 0
+        if G.playing_cards then
+            for _, playing_card in ipairs(G.playing_cards) do
+                if next(SMODS.get_enhancements(playing_card)) then tally = tally + 1 end
+            end
+        end
+        return { vars = { card.ability.extra.xmult, 1 + card.ability.extra.xmult * tally } }
+    end,
+    calculate = function(self, card, context)
+        if context.joker_main then
+            local tally = 0
+            for _, playing_card in ipairs(G.playing_cards) do
+                if next(SMODS.get_enhancements(playing_card)) then tally = tally + 1 end
+            end
+            return {
+                Xmult = 1 + card.ability.extra.xmult * tally,
+            }
+        end
+    end,
 }
 --
 
